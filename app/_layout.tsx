@@ -5,7 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import "../styles/main.scss";
+import "@/global.css";
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -15,16 +15,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    "Epilogue-Black": require("../assets/fonts/Epilogue/Epilogue-Black.ttf"),
-    "Epilogue-Bold": require("../assets/fonts/Epilogue/Epilogue-Bold.ttf"),
-    "Epilogue-ExtraBold": require("../assets/fonts/Epilogue/Epilogue-ExtraBold.ttf"),
-    "Epilogue-ExtraLight": require("../assets/fonts/Epilogue/Epilogue-ExtraLight.ttf"),
-    "Epilogue-Light": require("../assets/fonts/Epilogue/Epilogue-Light.ttf"),
-    "Epilogue-Medium": require("../assets/fonts/Epilogue/Epilogue-Medium.ttf"),
-    "Epilogue-Regular": require("../assets/fonts/Epilogue/Epilogue-Regular.ttf"),
-    "Epilogue-SemiBold": require("../assets/fonts/Epilogue/Epilogue-SemiBold.ttf"),
-    "Epilogue-Thin": require("../assets/fonts/Epilogue/Epilogue-Thin.ttf"),
-    "ClashDisplay": require('../assets/fonts/ClashDisplay.ttf'),
+    "Poppins-Black": require("../assets/fonts/Poppins/Poppins-Black.ttf"),
+    "Poppins-Bold": require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    "Poppins-ExtraBold": require("../assets/fonts/Poppins/Poppins-ExtraBold.ttf"),
+    "Poppins-ExtraLight": require("../assets/fonts/Poppins/Poppins-ExtraLight.ttf"),
+    "Poppins-Light": require("../assets/fonts/Poppins/Poppins-Light.ttf"),
+    "Poppins-Medium": require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
+    "Poppins-Regular": require("../assets/fonts/Poppins/Poppins-Regular.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/Poppins/Poppins-SemiBold.ttf"),
+    "Poppins-Thin": require("../assets/fonts/Poppins/Poppins-Thin.ttf"),
+    "Righteous-Regular": require('../assets/fonts/Righteous/Righteous-Regular.ttf'),
   });
 
   useEffect(() => {
@@ -38,9 +38,11 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
