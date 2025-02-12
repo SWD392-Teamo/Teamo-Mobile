@@ -6,10 +6,11 @@ type Props = {
     isLoading?: boolean;
     hasIcon?: false;
     variant: 'primary';
+    containerStyles: string,
 }
 
 const textStyles = {
-    'default': 'text-sm font-pmedium',
+    'default': 'text-lg font-pmedium',
     'primary': 'text-tertiary',
     'primary-outline': 'text-primary',
     'secondary': 'text-tertiary',
@@ -17,12 +18,12 @@ const textStyles = {
 }
 
 const buttonStyles = {
-    'default': 'uppercase py-1 px-6 w-max rounded-full text-sm font-pmedium text-tertiary',
+    'default': 'py-1 px-6 min-h-[50px] rounded-full flex items-center justify-center',
     'primary': 'bg-primary',
-    'primary-outline': 'bg-tertiary text-primary outline outline-2 outline-primary',
+    'primary-outline': 'bg-tertiary outline outline-2 outline-primary',
     'secondary': 'bg-secondary',
-    'secondary-outline': 'bg-tertiary text-secondary outline outline-2 outline-secondary',
-    'icon': 'flex items-center justify-center gap-2',
+    'secondary-outline': 'bg-tertiary outline outline-2 outline-secondary',
+    'icon': 'gap-2',
 };
 
 export default function CustomButton(props: Props) {
@@ -35,13 +36,14 @@ export default function CustomButton(props: Props) {
                 ${buttonStyles.default} 
                 ${buttonStyles[props.variant]} 
                 ${props.hasIcon ? buttonStyles.icon : ""} 
+                ${props.containerStyles} 
                 ${props.isLoading ? "opacity-50" : ""}`
             }
             disabled={props.isLoading}
             >
             <Text className={`
                 ${textStyles.default} 
-                ${textStyles[props.variant]} 
+                ${textStyles[props.variant]}
             `}>
                 {props.title}
             </Text>

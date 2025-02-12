@@ -13,6 +13,7 @@ export default function Login() {
           title="Login"
           handlePress={() => router.push("/majors")}
           variant='primary'
+          containerStyles='mt-7'
         />
     </View>
   )
