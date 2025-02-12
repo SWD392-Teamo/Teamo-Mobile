@@ -17,6 +17,10 @@ import send from "../assets/icons/send.png";
 import settings from "../assets/icons/settings.png";
 import trashCan from "../assets/icons/trash-can.png";
 import home from "../assets/icons/home.png";
+import eye from "../assets/icons/eye.png";
+import eyeHide from "../assets/icons/eyeHide.png";
+import google from "../assets/icons/google.png";
+
 
 export default {
   application,
@@ -37,5 +41,8 @@ export default {
   send,
   settings,
   trashCan,
-  home
+  home,
+  eye,
+  eyeHide,
+  google
 };

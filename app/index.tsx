@@ -42,7 +42,7 @@ export default function OnBoarding() {
     }, []);
 
   return (
-    <SafeAreaView className="bg-tertiary h-full">
+    <SafeAreaView className="bg-tertiary h-full p-4">
       <ScrollView
         contentContainerStyle={{
           height: '100%',
@@ -79,8 +79,6 @@ export default function OnBoarding() {
           </Animated.View>
         </View>
       </ScrollView>
-
-      <StatusBar backgroundColor="#161622" />
     </SafeAreaView>
   )
 }
