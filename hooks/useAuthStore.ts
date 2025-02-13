@@ -11,7 +11,7 @@ type Actions = {
     setCurrentUser: (user: User) => void
     setIsAuthenticated: (isAuthenticated: boolean) => void
     setToken: (token: string) => void
-    logout: () => void
+    reset: () => void
 }
 
 const initialState: State = {
@@ -45,5 +45,5 @@ export const useAuthStore = create<State & Actions>()((set) => ({
     },
 
     // Logout
-    logout: () => set(initialState),
+    reset: () => set(initialState),
 }))

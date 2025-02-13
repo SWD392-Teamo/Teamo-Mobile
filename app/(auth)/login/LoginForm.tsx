@@ -7,6 +7,9 @@ import { View } from 'react-native';
 import CustomButton from '@/components/CustomButton';
 import { icons } from '@/constants';
 import { colors } from '@/constants/colors';
+import { useAuthStore } from '@/hooks/useAuthStore';
+import { useShallow } from 'zustand/shallow';
+import { User } from '@/types/auth';
 
 export default function LoginForm() {
   // Next navigation
@@ -18,16 +21,34 @@ export default function LoginForm() {
             mode: 'onTouched'
         });
 
+  // Use auth store to set state
+  const setIsAuthenticated = useAuthStore(state => state.setIsAuthenticated)
+  const setCurrentUser = useAuthStore(state => state.setCurrentUser)
+  const setToken = useAuthStore(state => state.setToken)
+
+
   // On submit logic
   async function onSubmit(data: FieldValues) {
         try {
             const res = await login(data);
 
+            // Set authentication status
+            setIsAuthenticated(true);
+
+            // Set current user
+            setCurrentUser({
+                email: res.email,
+                role: res.role
+            } as User);
+
+            // Set token for later request
+            setToken(res.token);
+
             if(res?.error) {
                 throw res.error;
             }
 
-            router.push(`/`)
+            router.push(`/majors`)
         } catch (error: any) {
             console.log(error.message)
         }
@@ -62,16 +83,15 @@ export default function LoginForm() {
                 containerStyles='w-full mt-7'
                 isLoading={isSubmitting}
                 isNotValid={!isValid}
+                spinnerColor={colors.light.tint}
             />
             <CustomButton
                 title='Login with'
                 handlePress={handleSubmit(onSubmit)}
                 variant='primary'
                 containerStyles='w-full mt-5'
-                isLoading={isSubmitting}
-                isNotValid={!isValid}
                 icon={icons.google}
-                iconColor={colors['dark'].icon}
+                iconColor={colors.dark.icon}
             />
         </View>
     </View>

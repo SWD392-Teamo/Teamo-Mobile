@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
 // GET request
 async function get(url: string) {
@@ -20,9 +20,8 @@ async function post(url: string, body: NonNullable<unknown>) {
         headers: await getHeaders(),
         body: JSON.stringify(body)
     }
-
+    
     const response = await fetch(baseUrl + url, requestOptions);
-
     return handleResponse(response);
 }
 
@@ -35,7 +34,6 @@ async function put(url: string, body: NonNullable<unknown>) {
     }
 
     const response = await fetch(baseUrl + url, requestOptions);
-
     return handleResponse(response);
 }
 
@@ -47,7 +45,6 @@ async function del(url: string) {
     }
 
     const response = await fetch(baseUrl + url, requestOptions);
-
     return handleResponse(response);
 }
 

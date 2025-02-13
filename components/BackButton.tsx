@@ -17,13 +17,12 @@ export default function BackButton({url}: Props) {
     }
 
   return (
-
-        <TouchableOpacity onPress={() => goBack()}>
-            <Image
-                source={icons.backArrow}
-                className="w-8 h-8 mb-5"
-                resizeMode="contain"
-            />
-        </TouchableOpacity>
+    <TouchableOpacity onPress={() => goBack()}>
+        <Image
+            source={icons.backArrow}
+            className="w-8 h-8 mb-5"
+            resizeMode="contain"
+        />
+    </TouchableOpacity>
   )
 }

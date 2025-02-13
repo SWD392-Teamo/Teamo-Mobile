@@ -9,3 +9,7 @@ export async function login(data: FieldValues) {
 export async function getCurrentUser() {
     return await fetchWrapper.get(`account/user-info`);
 }
+
+export async function logout() {
+    return await fetchWrapper.post(`account/logout`, {});
+}

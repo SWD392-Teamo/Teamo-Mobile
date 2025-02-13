@@ -10,6 +10,7 @@ type Props = {
     isNotValid?: boolean,
     icon?: ImageSourcePropType
     iconColor?: ColorValue
+    spinnerColor?: ColorValue
 }
 
 const textStyles = {
@@ -60,11 +61,10 @@ export default function CustomButton(props: Props) {
 
             {props.isLoading && (
                 <ActivityIndicator
-                animating={props.isLoading}
-                color="#fff"
-                size="small"
-                className="ml-2"
-                />
+                    animating={props.isLoading}
+                    color={props.spinnerColor}
+                    size="small"
+                    className="ml-2" />
             )}
         </TouchableOpacity>
     </View>
