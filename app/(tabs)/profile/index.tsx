@@ -3,17 +3,20 @@ import CustomButton from '@/components/CustomButton'
 import { icons } from '@/constants'
 import { colors } from '@/constants/colors'
 import { useAuthStore } from '@/hooks/useAuthStore'
+import { useRouter } from 'expo-router'
 import React from 'react'
 import { Text, View } from 'react-native'
 
 export default function Profile() {
   const reset = useAuthStore(state => state.reset)
 
+  const router = useRouter();
+
   // Logout on the server and client
   async function onLogout() {
-    console.log('ok')
     await logout();
     reset();
+    router.push('/login')
   }
 
   return (
