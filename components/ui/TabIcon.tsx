@@ -1,6 +1,5 @@
 import React from 'react'
 import { ColorValue, Image, ImageSourcePropType, Text, View } from 'react-native'
-import { icons } from "../../constants";
 
 type Props ={
   icon: ImageSourcePropType,
