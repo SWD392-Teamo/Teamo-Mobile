@@ -1,5 +1,6 @@
 import { getProfile } from '@/actions/profileAction'
 import ProfileDetails from '@/components/ProfileDetails'
+import ProfileImage from '@/components/ProfileImage'
 import ProfileNameCard from '@/components/ProfileNameCard'
 import Spinner from '@/components/Spinner'
 import { colors } from '@/constants/colors'
@@ -46,12 +47,10 @@ export default function Profile() {
         }}
       >
         <View className = 'w-full flex justify-content-start h-full'>  
-          <View className='flex flex-row mt-40 ml-10'>
-            <Image
-                source = {{uri: data?.imgUrl}}
-                className = 'max-w-40 max-h-40 rounded-full mr-8 ml-10 mb-8 border-2 border-darkgrey'
-                alt = 'Profile'
-            />
+          <View className='flex flex-row mt-20 ml-10'>
+            <View className='mr-8 ml-10'>
+              <ProfileImage imgUrl = {data?.imgUrl}/>
+            </View>
             <ProfileNameCard
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
