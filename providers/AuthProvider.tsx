@@ -38,7 +38,8 @@ export default function AuthProvider({ children }: Props) {
     const fetchCurrentUser = async () => {
       try {
         const res = await getCurrentUser();
-        if (res) {
+        console.log(res)
+        if (res.ok) {
           // If the user exists then persist login
           setIsAuthenticated(true);
           setCurrentUser(res);

@@ -13,7 +13,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push('/majors');
+      router.push('/home');
     }
   }, [loading, isAuthenticated, router]);
 

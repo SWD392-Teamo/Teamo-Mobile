@@ -48,7 +48,7 @@ export default function LoginForm() {
                 throw res.error;
             }
 
-            router.push(`/majors`)
+            router.push(`/home`)
         } catch (error: any) {
             console.log(error.message)
         }

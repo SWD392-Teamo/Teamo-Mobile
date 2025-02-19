@@ -37,6 +37,19 @@ async function put(url: string, body: NonNullable<unknown>) {
     return handleResponse(response);
 }
 
+
+// PATCH request
+async function patch(url: string, body: NonNullable<unknown>) {
+    const requestOptions = {
+        method: 'PATCH',
+        headers: await getHeaders(),
+        body: JSON.stringify(body)
+    }
+
+    const response = await fetch(baseUrl + url, requestOptions);
+    return handleResponse(response);
+}
+
 // DELETE request
 async function del(url: string) {
     const requestOptions = {
@@ -94,5 +107,6 @@ export const fetchWrapper = {
     get,
     post,
     put,
+    patch,
     del
 }

@@ -31,13 +31,13 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="majors/index"
+        name="home/index"
         options={{
-          title: 'Major',
+          title: 'Home',
           tabBarIcon: ({ color, focused }) => <TabIcon
-            icon={icons.major}
+            icon={icons.home}
             color={color}
-            name="Major"
+            name="Home"
             focused={focused}
           />,
         }}
@@ -45,11 +45,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="groups/index"
         options={{
-          title: 'Your Group',
+          title: 'Your Groups',
           tabBarIcon: ({ color, focused }) => <TabIcon
             icon={icons.group}
             color={color}
-            name="Your Group"
+            name="Your Groups"
             focused={focused}
           />,
         }}
@@ -62,18 +62,6 @@ export default function TabLayout() {
             icon={icons.profile}
             color={color}
             name="Profile"
-            focused={focused}
-          />,
-        }}
-      />
-      <Tabs.Screen
-        name="applications/index"
-        options={{
-          title: 'Application',
-          tabBarIcon: ({ color, focused }) => <TabIcon
-            icon={icons.application}
-            color={color}
-            name="Application"
             focused={focused}
           />,
         }}

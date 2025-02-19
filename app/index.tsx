@@ -15,7 +15,7 @@ export default function OnBoarding() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push('/majors');
+      router.push('/home');
     }
   }, [loading, isAuthenticated, router]);
 
