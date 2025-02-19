@@ -28,10 +28,10 @@ module.exports = {
         righteous: ["Righteous-Regular", "sans-serif"],
       },
       fontSize: {
-        pxl: 35,
-        pl: 30,
-        pm: 25,
-        psm: 20,
+        pxl: 30,
+        pl: 25,
+        pm: 20,
+        psm: 15,
       }
     },
   },

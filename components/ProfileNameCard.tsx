@@ -1,4 +1,3 @@
-import { Profile } from '@/types'
 import { Text, View } from 'react-native'
 
 interface ProfileNameCardProps {
@@ -9,8 +8,8 @@ interface ProfileNameCardProps {
 const ProfileNameCard = ({name, description} : ProfileNameCardProps) => {
     return(
         <View >
-            <Text className="text-pxl font-psemibold text-black">{name}</Text>
-            <Text className="text-m font-pregular text-gray-800">{description}</Text>
+            <Text className="text-pxl font-pbold text-black">{name}</Text>
+            <Text className="text-pm font-pregular text-gray-800">{description}</Text>
         </View>
     )
 }
