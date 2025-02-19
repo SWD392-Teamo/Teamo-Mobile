@@ -1,5 +1,7 @@
 import { getProfile } from '@/actions/profileAction'
+import MyApplicationsButton from '@/components/MyApplicationsButton'
 import ProfileDetails from '@/components/ProfileDetails'
+import ProfileDetailsButton from '@/components/ProfileDetailsButton'
 import ProfileImage from '@/components/ProfileImage'
 import ProfileNameCard from '@/components/ProfileNameCard'
 import Spinner from '@/components/Spinner'
@@ -55,6 +57,11 @@ export default function Profile() {
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
             />
+          </View>
+
+          <View className='flex flex-row justify-content-start m-20 justify-evenly'>
+             <ProfileDetailsButton />
+             <MyApplicationsButton />
           </View>
 
           <View className='flex flex-row mt-10 ml-20 justify-content-start'>
