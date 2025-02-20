@@ -3,10 +3,10 @@ import Divider from '@/components/Divider'
 import ExternalLink from '@/components/ExternalLink'
 import LogoutButton from '@/components/LogoutButton'
 import MyApplicationsButton from '@/components/MyApplicationsButton'
-import ProfileDetails from '@/components/ProfileDetails'
-import ProfileDetailsButton from '@/components/ProfileDetailsButton'
-import ProfileImage from '@/components/ProfileImage'
-import ProfileNameCard from '@/components/ProfileNameCard'
+import ProfileDetails from '@/app/(tabs)/profile/ProfileDetails'
+import ProfileDetailsButton from '@/app/(tabs)/profile/ProfileDetailsButton'
+import ProfileImage from '@/app/(tabs)/profile/ProfileImage'
+import ProfileNameCard from '@/app/(tabs)/profile/ProfileNameCard'
 import Spinner from '@/components/Spinner'
 import { colors } from '@/constants/colors'
 import { useAuthStore } from '@/hooks/useAuthStore'
@@ -16,22 +16,24 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { View, ScrollView, SafeAreaView, Text } from 'react-native'
 import { useShallow } from 'zustand/shallow'
+import CustomButton from '@/components/CustomButton'
+import ApplicationsListing from './applications'
 
 export default function Profile() {
-  const reset = useAuthStore(state => state.reset)
-
   const [isLoading, setLoading] = useState(true);
 
   const {currentUser, isAuthenticated} = useGlobalContext()
 
   const router = useRouter();
 
+  // Check if the user is logged in
   useEffect(() => {
-      if (!isAuthenticated) {
-        router.push('/login');
-      }
-    }, [isAuthenticated, router]);
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
 
+  // Get the user profile from the store
   const data = useProfileStore(
     useShallow((state) => (
       state.profile
@@ -47,8 +49,9 @@ export default function Profile() {
     })
   }, [getProfile])
 
+  const [view, setView] = useState('details');
+
   return (
-    
     <SafeAreaView>
       <Spinner 
         isLoading={isLoading}
@@ -76,38 +79,30 @@ export default function Profile() {
           <View className='flex flex-row justify-content-start m-12 justify-evenly'>
              <ProfileDetailsButton />
              <MyApplicationsButton />
-          </View>
-
-          <View className='flex flex-row mt-10 ml-20 justify-content-start'>
-            <ProfileDetails
-              code = {data?.code}
-              majorCode = {data?.majorCode}
-              email = {data?.email}
-              gender = {data?.gender}
-              dob = {data?.dob}
+             <CustomButton
+                title='Details'
+                handlePress={() => setView('details')}
+                variant={'primary'}
+                containerStyles='small'
             />
+             <CustomButton
+                  title='Applications'
+                  handlePress={() => setView('applications')}
+                  variant={'primary-outline'}
+                  containerStyles='small'
+              />
           </View>
 
-          <Divider />
-
-          <View className='flex flex-row mt-10 ml-20 justify-content-start'>
-            <Text className="mb-1 text-pl font-psemibold text-black">Skills</Text>
-          </View>
-
-          <Divider />
-
-          <View className='flex flex-row mt-10 ml-20 justify-content-start'>
-            <Text className="mb-1 text-pl font-psemibold text-black">Links</Text>
-            <View>
-              {data?.links.map((link) => (
-                <ExternalLink 
-                  key={link.id}
-                  title={link.name}
-                  url={link.url}
-                />
-              ))}
-            </View>
-          </View>
+          {
+            (view == 'details') ? 
+            (
+              <ProfileDetails profile={data}/>
+            ) : (view == 'applications') ? (
+              <ApplicationsListing />
+            ) : (
+              <Text>Random shi</Text>
+            )
+          }
 
           <View className='m-3'>
             <LogoutButton />
