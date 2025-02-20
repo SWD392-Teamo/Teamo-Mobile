@@ -5,6 +5,7 @@ import { View } from "react-native";
 import CustomButton from "./CustomButton";
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LogoutButton() {
     const reset = useAuthStore(state => state.reset)
@@ -12,9 +13,10 @@ export default function LogoutButton() {
     const router = useRouter()
 
     async function onLogout() {
-        await logout()
-        reset()
-        router.push('/login')
+        reset();
+        await AsyncStorage.removeItem("authToken");
+        await logout();
+        router.push('/login');
     }
 
     return(

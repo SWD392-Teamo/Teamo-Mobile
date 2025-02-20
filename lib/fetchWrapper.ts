@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/hooks/useAuthStore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -63,8 +63,8 @@ async function del(url: string) {
 
 async function getHeaders() {
 
-    // Get token from auth store
-    const { token } = useAuthStore.getState();
+    // Get token from async storage
+    const token = await AsyncStorage.getItem("authToken");
 
     // Set header attributes
     const headers: Record<string, string> = {
