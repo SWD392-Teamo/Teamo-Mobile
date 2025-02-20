@@ -1,16 +1,23 @@
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { View } from "react-native";
 import CustomButton from "./CustomButton";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function MyApplicationsButton() {
     const router = useRouter()
 
     const [isActive, setIsActive] = useState(false)
 
+    useFocusEffect(
+        useCallback(() => {
+            setIsActive(false);
+            return () => {};
+        }, [])
+    );
+
     async function onMyApplications() {
         setIsActive(true)
-        router.push('/applications')
+        router.push('/profile/applicationIndex')
     }
 
     return(

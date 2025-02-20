@@ -15,7 +15,6 @@ export default function TabHeader() {
             }}
         >
             <Text className = "text-primary font-righteous text-4xl ml-1">Teamo</Text>
-            <LogoutButton />
         </View>
     )
 }

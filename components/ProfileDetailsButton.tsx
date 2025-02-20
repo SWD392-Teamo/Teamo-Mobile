@@ -1,16 +1,16 @@
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { View } from "react-native";
 import CustomButton from "./CustomButton";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function ProfileDetailsButton() {
     const router = useRouter()
 
-    const [isActive, setIsActive] = useState(false)
+    const [isActive, setIsActive] = useState(true)
 
     async function onProfileDetails() {
         setIsActive(true)
-        router.push('/(tabs)/(profile)')
+        router.push('/profile')
     }
 
     return(

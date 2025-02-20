@@ -37,6 +37,7 @@ export default function LoginForm() {
 
             // Set current user
             setCurrentUser({
+                id: res.userId,
                 email: res.email,
                 role: res.role
             } as User);
