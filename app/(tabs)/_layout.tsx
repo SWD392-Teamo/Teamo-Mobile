@@ -12,7 +12,6 @@ export default function TabLayout() {
   return (
     <>
       <TabHeader />
-
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: colors.light.tint,
@@ -59,7 +58,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile/index"
+          name="profile"
           options={{
             title: 'Profile',
             tabBarIcon: ({ color, focused }) => <TabIcon

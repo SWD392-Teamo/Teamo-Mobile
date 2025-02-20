@@ -17,7 +17,7 @@ export default function MyApplicationsButton() {
 
     async function onMyApplications() {
         setIsActive(true)
-        router.push('/profile/applicationIndex')
+        router.push('/profile/applications')
     }
 
     return(

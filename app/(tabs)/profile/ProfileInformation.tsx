@@ -5,7 +5,7 @@ interface ProfileDetailCardProps {
     description: string | undefined
 }
 
-const ProfileDetailCard = ({name, description} : ProfileDetailCardProps) => {
+const ProfileInformation = ({name, description} : ProfileDetailCardProps) => {
     return(
         <View className = 'mb-1'>
             <Text className="text-pm font-psemibold text-black">{name}</Text>
@@ -14,4 +14,4 @@ const ProfileDetailCard = ({name, description} : ProfileDetailCardProps) => {
     )
 }
 
-export default ProfileDetailCard
+export default ProfileInformation

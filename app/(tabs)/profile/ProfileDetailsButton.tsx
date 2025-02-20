@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { View } from "react-native";
-import CustomButton from "./CustomButton";
+import CustomButton from "../../../components/CustomButton";
 import { useCallback, useState } from "react";
 
 export default function ProfileDetailsButton() {
