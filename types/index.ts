@@ -25,3 +25,15 @@ export type StudentSkill = {
     skillType: string
     skillLevel: string
 }
+
+export type Application = {
+    id: number
+    groupName: string
+    studentName: string
+    studentEmail: string
+    imgUrl: string
+    requestTime: Date
+    requestContent: string
+    groupPositionName: string
+    status: string
+}

@@ -1,24 +1,52 @@
-import { Link } from 'expo-router';
-import { openBrowserAsync } from 'expo-web-browser';
-import { type ComponentProps } from 'react';
-import { Platform } from 'react-native';
+import React from "react"
+import { Text, TouchableOpacity, StyleSheet, Platform } from "react-native"
+import * as WebBrowser from "expo-web-browser"
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { href: string };
+type ExternalLinkProps = {
+  url: string     
+  title?: string  
+}
 
-export function ExternalLink({ href, ...rest }: Props) {
+/**
+ * - On native: opens in an in-app browser (via expo-web-browser).
+ * - On web: opens in a new tab by default.
+ */
+export default function ExternalLink({ url, title }: ExternalLinkProps) {
+  const handlePress = async () => {
+    if (Platform.OS === "web") {
+      // On web, open the link in a new tab
+      window.open(url, "_blank")
+    } else {
+      // On native, open in an in-app browser
+      await WebBrowser.openBrowserAsync(url)
+    }
+  };
+
   return (
-    <Link
-      target="_blank"
-      {...rest}
-      href={href}
-      onPress={async (event) => {
-        if (Platform.OS !== 'web') {
-          // Prevent the default behavior of linking to the default browser on native.
-          event.preventDefault();
-          // Open the link in an in-app browser.
-          await openBrowserAsync(href);
-        }
-      }}
-    />
+    <TouchableOpacity
+      style={[styles.linkContainer, { flexDirection: "row", alignItems: "center" }]}
+      onPress={handlePress}
+    >
+      <Text style={styles.titleText}>{title} </Text>
+      <Text style={styles.linkText}>{url}</Text>
+    </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  linkContainer: {
+    marginVertical: 6
+  },
+  linkText: {
+    color: "#007AFF",
+    textDecorationLine: "underline",
+    fontSize: 15
+  },
+  titleText: {
+    color: "#1C1C1C",
+    fontSize: 15,
+    fontWeight: "bold",
+    marginRight: 2,
+    fontFamily: "Poppins-Regular"
+  }
+})

@@ -5,7 +5,7 @@ type Props = {
     title: string;
     handlePress: (event: GestureResponderEvent) => void,
     isLoading?: boolean,
-    variant: 'default' | 'primary' | 'primary-outline' | 'secondary' | 'secondary-outline',
+    variant: 'default' | 'primary' | 'primary-outline' | 'secondary' | 'secondary-outline' | 'inactive' | 'active',
     containerStyles: string,
     isNotValid?: boolean,
     icon?: ImageSourcePropType
@@ -19,6 +19,8 @@ const textStyles = {
     'primary-outline': 'text-primary',
     'secondary': 'text-tertiary',
     'secondary-outline': 'text-secondary',
+    'inactive': 'text-primary',
+    'active': 'text-tertiary'
 }
 
 const buttonStyles = {
@@ -26,7 +28,10 @@ const buttonStyles = {
     'primary': 'bg-primary',
     'primary-outline': 'bg-tertiary border-primary border-2',
     'secondary': 'bg-secondary',
-    'secondary-outline': 'bg-tertiary border-secondary border-2'
+    'secondary-outline': 'bg-tertiary border-secondary border-2',
+    'small': 'py-0.5 px-2 min-h-[25px] text-sm border-1',
+    'inactive': 'bg-tertiary',
+    'active': 'bg-primary'
 };
 
 export default function CustomButton(props: Props) {
