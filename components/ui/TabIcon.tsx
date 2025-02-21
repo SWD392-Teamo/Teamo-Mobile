@@ -19,7 +19,7 @@ export default function TabIcon(props: Props) {
         className="w-6 h-6"
       />
       <Text
-        className={`${props.focused ? "font-psemibold" : "font-pregular"} text-xs`}
+        className={`${props.focused ? "font-bsemibold" : "font-bregular"} text-xs`}
         style={{ color: props.color }}
       >
         {props.name}

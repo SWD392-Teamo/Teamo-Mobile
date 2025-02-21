@@ -14,7 +14,7 @@ type Props = {
 }
 
 const textStyles = {
-    'default': 'text-lg font-pmedium',
+    'default': 'text-lg font-bmedium',
     'primary': 'text-tertiary',
     'primary-outline': 'text-primary',
     'secondary': 'text-tertiary',
