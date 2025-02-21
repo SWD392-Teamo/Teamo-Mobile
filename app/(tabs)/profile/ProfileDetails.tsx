@@ -39,7 +39,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             
             {/* Profile skills section */}
             <View className='flex flex-row mt-10 ml-20 justify-content-start'>
-                <Text className="mb-1 text-pl font-psemibold text-black">Skills</Text>
+                <Text className="mb-1 text-pl font-bsemibold text-black">Skills</Text>
                 <View className='ml-10'>
                     <ProfileSkills skills={profile?.studentSkills}/>
                 </View>
@@ -49,7 +49,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
 
             {/* Profile links section */}
             <View className='flex flex-row mt-10 ml-20 justify-content-start'>
-                <Text className="mb-1 text-pl font-psemibold text-black">Links</Text>
+                <Text className="mb-1 text-pl font-bsemibold text-black">Links</Text>
                 <View className='ml-10'>
                     <ProfileLinks links={profile?.links}/>
                 </View>
