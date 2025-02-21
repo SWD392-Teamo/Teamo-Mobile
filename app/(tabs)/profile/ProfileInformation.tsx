@@ -7,9 +7,9 @@ interface ProfileDetailCardProps {
 
 const ProfileInformation = ({name, description} : ProfileDetailCardProps) => {
     return(
-        <View className = 'mb-1'>
-            <Text className="text-pm font-bsemibold text-black">{name}</Text>
-            <Text className="text-psm font-bregular text-gray-800">{description}</Text>
+        <View className = 'p-1'>
+            <Text className="text-bsm font-bsemibold text-black">{name}</Text>
+            <Text className="text-bsm font-bregular text-gray-800">{description}</Text>
         </View>
     )
 }

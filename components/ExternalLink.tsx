@@ -27,7 +27,7 @@ export default function ExternalLink({ url, title }: ExternalLinkProps) {
       style={[styles.linkContainer, { flexDirection: "row", alignItems: "center" }]}
       onPress={handlePress}
     >
-      <Text style={styles.titleText}>{title} </Text>
+      <Text style={styles.titleText} className="p-2">{title} </Text>
       <Text style={styles.linkText}>{url}</Text>
     </TouchableOpacity>
   );
@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#007AFF",
     textDecorationLine: "underline",
-    fontSize: 15
+    fontSize: 15,
+    fontFamily: "BeVietnamePro-Regular"
   },
   titleText: {
     color: "#1C1C1C",
     fontSize: 15,
     fontWeight: "bold",
-    marginRight: 2,
-    fontFamily: "Poppins-Regular"
+    fontFamily: "BeVietnamPro-Regular"
   }
 })

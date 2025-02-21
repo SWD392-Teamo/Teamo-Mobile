@@ -22,23 +22,20 @@ export default function ProfileSkills({ skills }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginTop: 10,
-    marginLeft: 20,
-    flexWrap: "wrap",
+    marginTop: 5,
   },
   skillBadge: {
     borderWidth: 3,
     borderColor: "#4CA4CD",
-    borderRadius: 50,     
-    paddingVertical: 10,   
-    paddingHorizontal: 16,
-    marginHorizontal: 8,
+    borderRadius: 40,     
+    paddingVertical: 5,   
+    paddingHorizontal: 10,
+    marginRight: 8,
     marginBottom: 8,
     minWidth: 100,        
-    alignItems: "center"
   },
   skillName: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#4CA4CD"
   },
