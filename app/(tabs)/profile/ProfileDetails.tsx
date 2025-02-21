@@ -29,7 +29,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
                 </View>
             ) : (
                 <View>
-                    <Text className="text-center text-primary font-pmedium text-pxl">
+                    <Text className="text-center text-primary font-bmedium text-pxl">
                         Cannot Retrieve User Profile
                     </Text>
                 </View>
