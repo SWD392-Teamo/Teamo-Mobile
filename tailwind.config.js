@@ -10,6 +10,7 @@ module.exports = {
     extend: {
       colors: {
         primary: '#4CA4CD',
+        primaryLight: '#c5deeb',
         secondary: '#1C1C1C',
         tertiary: '#FCFCFC',
         grey: '#606261',
@@ -28,10 +29,10 @@ module.exports = {
         righteous: ["Righteous-Regular", "sans-serif"],
       },
       fontSize: {
-        pxl: 30,
-        pl: 25,
-        pm: 20,
-        psm: 15,
+        bxl: 30,
+        bl: 25,
+        bm: 20,
+        bsm: 15,
       }
     },
   },

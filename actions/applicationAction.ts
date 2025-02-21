@@ -1,6 +1,6 @@
 import { fetchWrapper } from "@/lib/fetchWrapper";
-import { Application } from "@/types";
+import { Application, PagedResult } from "@/types";
 
-export async function getSentApplications(params:string) : Promise<Application> {
-    return await fetchWrapper.get(`applications`)
+export async function getSentApplications(studentId: number) : Promise<PagedResult<Application>> {
+    return await fetchWrapper.get(`applications?studentId=${studentId}`)
 }
