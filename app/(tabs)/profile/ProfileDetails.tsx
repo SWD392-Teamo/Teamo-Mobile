@@ -3,8 +3,9 @@ import ProfileInformation from './ProfileInformation'
 import { format } from 'date-fns';
 import { Profile } from '@/types';
 import Divider from '@/components/Divider';
-import ExternalLink from '@/components/ExternalLink';
 import ProfileLinks from './ProfileLinks';
+import ProfileSkills from './ProfileSkills';
+import dateFormatter from '@/utils/dateFormatter';
 
 interface ProfileDetailsProps {
     profile: Profile | null;
@@ -17,12 +18,14 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
         <View>
             {/* Profile information section */}
             { profile ? (
-                <View>
+                <View className='ml-20'>
                     <ProfileInformation name='Code' description={profile?.code}/>
                     <ProfileInformation name='Major' description={profile?.majorCode}/>
                     <ProfileInformation name='Email' description={profile?.email}/>
-                    <ProfileInformation name='Gender' description={profile?.gender}/>
-                    <ProfileInformation name='D.O.B' description={formattedDob}/>
+                    <ProfileInformation name='Gender' description={profile?.gender}/> 
+                    <ProfileInformation name='D.O.B' description={
+                        dateFormatter(profile.dob)
+                    }/>
                 </View>
             ) : (
                 <View>
@@ -30,13 +33,16 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
                         Cannot Retrieve User Profile
                     </Text>
                 </View>
-            )}
+            )} 
 
             <Divider />
             
             {/* Profile skills section */}
             <View className='flex flex-row mt-10 ml-20 justify-content-start'>
                 <Text className="mb-1 text-pl font-psemibold text-black">Skills</Text>
+                <View className='ml-10'>
+                    <ProfileSkills skills={profile?.studentSkills}/>
+                </View>
             </View>
 
             <Divider />
@@ -44,7 +50,9 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             {/* Profile links section */}
             <View className='flex flex-row mt-10 ml-20 justify-content-start'>
                 <Text className="mb-1 text-pl font-psemibold text-black">Links</Text>
-                <ProfileLinks links={profile?.links}/>
+                <View className='ml-10'>
+                    <ProfileLinks links={profile?.links}/>
+                </View>
             </View>
         </View>
     )

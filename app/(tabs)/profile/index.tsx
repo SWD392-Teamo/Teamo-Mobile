@@ -14,6 +14,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
 import ApplicationsListing from './applications'
+import NotFoundScreen from '@/app/+not-found'
 
 export default function Profile() {
   const [isLoading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export default function Profile() {
             ) : (activeView == 'applications') ? (
               <ApplicationsListing />
             ) : (
-              <Text>Random shi</Text>
+              <NotFoundScreen />
             )
           }
 
