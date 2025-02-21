@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/actions/authActions";
 import { AuthContext } from "@/context/AuthContext";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -25,7 +26,6 @@ export default function AuthProvider({ children }: Props) {
     useShallow((state) => ({
       isAuthenticated: state.isAuthenticated,
       currentUser: state.currentUser,
-      token: state.token,
     }))
   );
 
@@ -38,17 +38,23 @@ export default function AuthProvider({ children }: Props) {
     const fetchCurrentUser = async () => {
       try {
         const res = await getCurrentUser();
-        console.log(res)
-        if (res.ok) {
+        if (res) {
           // If the user exists then persist login
           setIsAuthenticated(true);
           setCurrentUser(res);
         } else {
           // Else reset authentication state
+          AsyncStorage.removeItem("authToken");
           reset();
         }
-      } catch (error) {
-        console.error("Failed to fetch current user:", error);
+
+        // Throw error if user is unauthorized
+        if(res?.error) {
+          throw res.error;
+        }
+      } catch (error: any) {
+        console.log("Failed to fetch current user:", error.message);
+        AsyncStorage.removeItem("authToken");
         reset(); // Ensure the user is logged out on error
       } finally {
         setLoading(false);
