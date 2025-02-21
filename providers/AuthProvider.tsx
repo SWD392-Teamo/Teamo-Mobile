@@ -38,17 +38,22 @@ export default function AuthProvider({ children }: Props) {
     const fetchCurrentUser = async () => {
       try {
         const res = await getCurrentUser();
-        console.log(res)
-        if (res.ok) {
+        if (res) {
           // If the user exists then persist login
           setIsAuthenticated(true);
           setCurrentUser(res);
         } else {
           // Else reset authentication state
+          AsyncStorage.removeItem("authToken");
           reset();
         }
-      } catch (error) {
-        console.error("Failed to fetch current user:", error);
+
+        // Throw error if user is unauthorized
+        if(res?.error) {
+          throw res.error;
+        }
+      } catch (error: any) {
+        console.log("Failed to fetch current user:", error.message);
         AsyncStorage.removeItem("authToken");
         reset(); // Ensure the user is logged out on error
       } finally {

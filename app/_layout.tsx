@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "@/global.css";
 import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
+import { protectedRoutes } from '@/routes/protectedRoutes';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,7 +34,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    if (!isAuthenticated && pathName != '/') {
+    if (!isAuthenticated && protectedRoutes.includes(pathName)) {
       router.push('/login');
     }
   }, [loaded, isAuthenticated, router]);
@@ -45,22 +46,19 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider value={DefaultTheme}>
-          <Stack>
-            {isAuthenticated ? (    
-              <>
-                {/* Protected Routes */}
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </>
-            ) : (
-              <>
-                {/* Unprotected Routes */}
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </>
-            )}
-          </Stack>
-          <StatusBar style="auto" />
+          {isAuthenticated ? (    
+            <Stack screenOptions={{ headerShown: false }}>
+              {/* Protected Routes */}
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+          ) : (
+            <Stack screenOptions={{ headerShown: false }}>
+              {/* Unprotected Routes */}
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          )}
       </ThemeProvider>
     </AuthProvider>
   );

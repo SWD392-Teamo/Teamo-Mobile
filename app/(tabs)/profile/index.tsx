@@ -47,11 +47,7 @@ export default function Profile() {
         spinnerColor={colors.light.tint} 
       />
 
-      <ScrollView
-        contentContainerStyle={{
-          height: '100%',
-        }}
-      >
+      <ScrollView>
         <View className = 'w-full flex justify-content-start h-full'>  
           <View className='flex flex-row mt-20 ml-10'>
             <View className='mr-8 ml-10'>
