@@ -12,15 +12,15 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    "Poppins-Black": require("../assets/fonts/Poppins/Poppins-Black.ttf"),
-    "Poppins-Bold": require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
-    "Poppins-ExtraBold": require("../assets/fonts/Poppins/Poppins-ExtraBold.ttf"),
-    "Poppins-ExtraLight": require("../assets/fonts/Poppins/Poppins-ExtraLight.ttf"),
-    "Poppins-Light": require("../assets/fonts/Poppins/Poppins-Light.ttf"),
-    "Poppins-Medium": require("../assets/fonts/Poppins/Poppins-Medium.ttf"),
-    "Poppins-Regular": require("../assets/fonts/Poppins/Poppins-Regular.ttf"),
-    "Poppins-SemiBold": require("../assets/fonts/Poppins/Poppins-SemiBold.ttf"),
-    "Poppins-Thin": require("../assets/fonts/Poppins/Poppins-Thin.ttf"),
+    "BeVietnamPro-Black": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Black.ttf"),
+    "BeVietnamPro-Bold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Bold.ttf"),
+    "BeVietnamPro-ExtraBold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf"),
+    "BeVietnamPro-ExtraLight": require("../assets/fonts/BeVietnamPro/BeVietnamPro-ExtraLight.ttf"),
+    "BeVietnamPro-Light": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Light.ttf"),
+    "BeVietnamPro-Medium": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Medium.ttf"),
+    "BeVietnamPro-Regular": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Regular.ttf"),
+    "BeVietnamPro-SemiBold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf"),
+    "BeVietnamPro-Thin": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Thin.ttf"),
     "Righteous-Regular": require('../assets/fonts/Righteous/Righteous-Regular.ttf'),
   });
   

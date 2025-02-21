@@ -75,12 +75,12 @@ export default function OnBoarding() {
           />
 
           <Animated.View style={[sloganStyle]}>
-            <Text className="text-3xl text-grey font-pbold text-center">
+            <Text className="text-3xl text-grey font-bbold text-center">
               Explore Boundless{"\n"}
               Collaboration with{" "}
               <Text className="text-primary font-righteous">Teamo</Text>
             </Text>
-            <Text className="text-sm font-pregular text-grey mt-7 text-center">
+            <Text className="text-sm font-bregular text-grey mt-7 text-center">
               Find Your Perfect Teammates, Build Stronger Projects!
             </Text>
           </Animated.View>

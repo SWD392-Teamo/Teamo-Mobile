@@ -8,8 +8,8 @@ interface ProfileNameCardProps {
 const ProfileNameCard = ({name, description} : ProfileNameCardProps) => {
     return(
         <View >
-            <Text className="text-pxl font-pbold text-black">{name}</Text>
-            <Text className="text-pm font-pregular text-gray-800">{description}</Text>
+            <Text className="text-pxl font-bbold text-black">{name}</Text>
+            <Text className="text-pm font-bregular text-gray-800">{description}</Text>
         </View>
     )
 }
