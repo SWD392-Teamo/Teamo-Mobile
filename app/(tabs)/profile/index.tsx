@@ -13,7 +13,8 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
-import ApplicationsListing from './applications'
+import NotFoundScreen from '@/app/+not-found'
+import ApplicationsListing from './ApplicationsListing'
 
 export default function Profile() {
   const [isLoading, setLoading] = useState(true);
@@ -48,11 +49,9 @@ export default function Profile() {
       />
 
       <ScrollView>
-        <View className = 'w-full flex justify-content-start h-full'>  
-          <View className='flex flex-row mt-20 ml-10'>
-            <View className='mr-8 ml-10'>
-              <ProfileImage imgUrl = {data?.imgUrl}/>
-            </View>
+        <View className = 'w-full flex justify-content-start h-full flex-wrap'>  
+          <View className='flex flex-row mt-5 ms-5'>
+            <ProfileImage imgUrl = {data?.imgUrl}/>
             <ProfileNameCard
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
@@ -61,7 +60,7 @@ export default function Profile() {
 
           <Divider />
 
-          <View className='flex flex-row justify-content-start m-12 justify-evenly'>
+          <View className='flex flex-row justify-content-start m-7 justify-evenly'>
              <CustomButton
                 title='Details'
                 handlePress={() => setActiveView('details')}
@@ -83,11 +82,11 @@ export default function Profile() {
             ) : (activeView == 'applications') ? (
               <ApplicationsListing />
             ) : (
-              <Text>Random shi</Text>
+              <NotFoundScreen />
             )
           }
 
-          <View className='m-3'>
+          <View className='mt-10'>
             <LogoutButton />
           </View>
         </View>
