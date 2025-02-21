@@ -1,13 +1,11 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack, usePathname, useRouter } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
 import "@/global.css";
 import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
 import { protectedRoutes } from '@/routes/protectedRoutes';
+import { useFonts } from 'expo-font';
+import { Stack, usePathname, useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import 'react-native-reanimated';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -45,21 +43,19 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={DefaultTheme}>
-          {isAuthenticated ? (    
-            <Stack screenOptions={{ headerShown: false }}>
-              {/* Protected Routes */}
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
-          ) : (
-            <Stack screenOptions={{ headerShown: false }}>
-              {/* Unprotected Routes */}
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          )}
-      </ThemeProvider>
+      {isAuthenticated ? (    
+        <Stack screenOptions={{ headerShown: false }}>
+          {/* Protected Routes */}
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      ) : (
+        <Stack screenOptions={{ headerShown: false }}>
+          {/* Unprotected Routes */}
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      )}
     </AuthProvider>
   );
 }
