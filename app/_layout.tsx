@@ -1,6 +1,8 @@
 import "@/global.css";
+import requestUserPermission from "@/lib/getUserPermission";
 import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
 import { protectedRoutes } from '@/routes/protectedRoutes';
+import { getMessaging } from "@react-native-firebase/messaging";
 import { useFonts } from 'expo-font';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -27,8 +29,16 @@ export default function RootLayout() {
   const {isAuthenticated} = useGlobalContext();
   const router = useRouter();
   const pathName = usePathname();
-  
+
+  const getToken = async () => {
+    const token = await getMessaging().getToken();
+    console.log(token);
+  }
+
+
   useEffect(() => {
+    requestUserPermission();
+    getToken();
     if (loaded) {
       SplashScreen.hideAsync();
     }
@@ -40,6 +50,8 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+
 
   return (
     <AuthProvider>
