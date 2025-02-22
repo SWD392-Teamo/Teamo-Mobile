@@ -1,5 +1,4 @@
 {
-  "icon": "./assets/images/icon.png",
   "expo": {
     "name": "Teamo",
     "slug": "teamo-mobile",
