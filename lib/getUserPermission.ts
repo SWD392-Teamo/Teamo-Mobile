@@ -12,10 +12,6 @@ export default async function requestUserPermissionAndListen() {
     if (enabled) {
       console.log('Authorization status:', authStatus);
 
-      // Subscribe to multiple topics
-      await messaging.subscribeToTopic('applications');
-      await messaging.subscribeToTopic('posts');
-
       // Handle foreground messages
       const unsubscribeForeground = messaging.onMessage(async remoteMessage => {
         console.log('Received foreground message:', remoteMessage);

@@ -1,7 +1,7 @@
 {
   "icon": "./assets/images/icon.png",
   "expo": {
-    "name": "teamo-mobile",
+    "name": "Teamo",
     "slug": "teamo-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
