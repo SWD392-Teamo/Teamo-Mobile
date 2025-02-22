@@ -2,6 +2,7 @@ import "@/global.css";
 import requestUserPermission from "@/lib/getUserPermission";
 import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
 import { protectedRoutes } from '@/routes/protectedRoutes';
+import { getApp } from "@react-native-firebase/app";
 import { getMessaging } from "@react-native-firebase/messaging";
 import { useFonts } from 'expo-font';
 import { Stack, usePathname, useRouter } from 'expo-router';
@@ -31,22 +32,38 @@ export default function RootLayout() {
   const pathName = usePathname();
 
   const getToken = async () => {
-    const token = await getMessaging().getToken();
+    const token = await getMessaging(getApp()).getToken();
     console.log(token);
   }
 
 
   useEffect(() => {
-    requestUserPermission();
-    getToken();
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-    if (!isAuthenticated && protectedRoutes.includes(pathName)) {
-      router.push('/login');
-    }
-  }, [loaded, isAuthenticated, router]);
-
+    let unsubscribe: (() => void) | null;
+  
+    const setup = async () => {
+      // Handle notifications setup
+      unsubscribe = await requestUserPermission();
+      await getToken();
+  
+      // Handle splash screen and routing
+      if (loaded) {
+        await SplashScreen.hideAsync();
+      }
+      if (!isAuthenticated && protectedRoutes.includes(pathName)) {
+        router.push('/login');
+      }
+    };
+  
+    setup();
+  
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [loaded, isAuthenticated, router, pathName]);
+  
   if (!loaded) {
     return null;
   }
