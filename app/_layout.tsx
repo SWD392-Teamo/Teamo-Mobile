@@ -1,5 +1,5 @@
 import "@/global.css";
-import requestUserPermission from "@/lib/getUserPermission";
+import requestUserPermissionAndListen from "@/lib/getUserPermission";
 import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
 import { protectedRoutes } from '@/routes/protectedRoutes';
 import { getApp } from "@react-native-firebase/app";
@@ -42,7 +42,7 @@ export default function RootLayout() {
   
     const setup = async () => {
       // Handle notifications setup
-      unsubscribe = await requestUserPermission();
+      unsubscribe = await requestUserPermissionAndListen();
       await getToken();
   
       // Handle splash screen and routing

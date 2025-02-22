@@ -1,7 +1,7 @@
 import { getMessaging, requestPermission, AuthorizationStatus } from "@react-native-firebase/messaging";
 import { getApp } from "@react-native-firebase/app";
 
-export default async function requestUserPermission() {
+export default async function requestUserPermissionAndListen() {
   try {
     const messaging = getMessaging(getApp());
     const authStatus = await requestPermission(messaging);
@@ -11,6 +11,10 @@ export default async function requestUserPermission() {
 
     if (enabled) {
       console.log('Authorization status:', authStatus);
+
+      // Subscribe to multiple topics
+      await messaging.subscribeToTopic('applications');
+      await messaging.subscribeToTopic('posts');
 
       // Handle foreground messages
       const unsubscribeForeground = messaging.onMessage(async remoteMessage => {
