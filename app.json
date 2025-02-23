@@ -12,6 +12,11 @@
       "supportsTablet": true,
       "entitlements": {
         "aps-environment": "production"
+      },
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.teamomobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
