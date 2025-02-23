@@ -12,13 +12,12 @@ interface ProfileDetailsProps {
 }
 
 const ProfileDetails = ({profile} : ProfileDetailsProps) => {
-    const formattedDob = profile?.dob? format(profile.dob, 'dd-MM-yyyy') : '';
-
     return(
         <View>
             {/* Profile information section */}
             { profile ? (
                 <View className='ml-10'>
+                    <Text className="mb-2 text-bm font-bsemibold text-black">About</Text>
                     <ProfileInformation name='Code' description={profile?.code}/>
                     <ProfileInformation name='Major' description={profile?.majorCode}/>
                     <ProfileInformation name='Email' description={profile?.email}/>
@@ -38,9 +37,9 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <Divider />
             
             {/* Profile skills section */}
-            <View className='mt-10 ml-20 justify-content-start'>
-                <Text className="mb-2 text-bl font-bsemibold text-black">Skills</Text>
-                <View className='flex flex-row flex-1 flex-wrap'>
+            <View className='mt-2 ml-10 justify-content-start'>
+                <Text className="mb-2 text-bm font-bsemibold text-black">Skills</Text>
+                <View className='flex flex-row flex-wrap'>
                     <ProfileSkills skills={profile?.studentSkills}/>
                 </View>
             </View>
@@ -48,9 +47,9 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <Divider />
 
             {/* Profile links section */}
-            <View className='mt-10 ml-20 justify-content-start'>
-                <Text className="mb-2 text-bl font-bsemibold text-black">Links</Text>
-                <View className='flex flex-row flex-1 flex-wrap'>
+            <View className='mt-2 ml-10 justify-content-start'>
+                <Text className="mb-2 text-bm font-bsemibold text-black">Links</Text>
+                <View className='flex flex-row flex-wrap'>
                     <ProfileLinks links={profile?.links}/>
                 </View>
             </View>

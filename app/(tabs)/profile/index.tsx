@@ -49,7 +49,7 @@ export default function Profile() {
       />
 
       <ScrollView>
-        <View className = 'w-full flex justify-content-start h-full flex-wrap'>  
+        <View className = 'w-full flex-1 justify-content-start'>  
           <View className='flex flex-row mt-5 ms-5'>
             <ProfileImage imgUrl = {data?.imgUrl}/>
             <ProfileNameCard
@@ -60,7 +60,7 @@ export default function Profile() {
 
           <Divider />
 
-          <View className='flex flex-row justify-content-start m-7 justify-evenly'>
+          <View className='flex flex-row justify-content-start m-5 justify-evenly'>
              <CustomButton
                 title='Details'
                 handlePress={() => setActiveView('details')}
@@ -86,9 +86,7 @@ export default function Profile() {
             )
           }
 
-          <View className='mt-10'>
-            <LogoutButton />
-          </View>
+          <LogoutButton />
         </View>
       </ScrollView>
     </SafeAreaView>

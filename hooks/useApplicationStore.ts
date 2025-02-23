@@ -4,7 +4,6 @@ import { create } from "zustand"
 type State = {
     applications: Application[]
     totalCount: number
-    pageCount: number
     selectedApplication: Application | null
 }
 
@@ -15,7 +14,6 @@ type Actions = {
 
 const initialState: State = {
     applications: [],
-    pageCount: 0,
     totalCount: 0,
     selectedApplication: null
 }
@@ -25,7 +23,6 @@ export const useApplicationStore = create<State & Actions>((set) => ({
     setData: (data: PagedResult<Application>) => {
         set(() => ({
             applications: data.data,
-            pageCount: data.pageSize,
             totalCount: data.count
         }))
     },

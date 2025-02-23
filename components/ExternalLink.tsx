@@ -24,7 +24,7 @@ export default function ExternalLink({ url, title }: ExternalLinkProps) {
 
   return (
     <TouchableOpacity
-      style={[styles.linkContainer, { flexDirection: "row", alignItems: "center" }]}
+      style={styles.linkContainer}
       onPress={handlePress}
     >
       <Text style={styles.titleText} className="p-2">{title} </Text>
@@ -35,7 +35,9 @@ export default function ExternalLink({ url, title }: ExternalLinkProps) {
 
 const styles = StyleSheet.create({
   linkContainer: {
-    marginVertical: 6
+    margin: 2,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   linkText: {
     color: "#007AFF",

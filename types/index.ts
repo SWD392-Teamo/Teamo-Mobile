@@ -35,6 +35,7 @@ export type StudentSkill = {
 
 export type Application = {
     id: number
+    groupId:number
     groupName: string
     studentName: string
     studentEmail: string
@@ -43,4 +44,24 @@ export type Application = {
     requestContent: string
     groupPositionName: string
     status: string
+}
+
+export type Major = {
+    id: number
+    code: string
+    name: string
+    subjects: Subject[]
+}
+
+export type Subject = {
+    id: number
+    code: string
+    name: string
+    fields: Field[]
+}
+
+export type Field = {
+    id: number
+    name: string
+    description: string
 }
