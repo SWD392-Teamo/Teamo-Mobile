@@ -1,16 +1,12 @@
 import "@/global.css";
-import requestUserPermissionAndListen from "@/lib/getUserPermission";
-import AuthProvider, { useGlobalContext } from '@/providers/AuthProvider';
-import { protectedRoutes } from '@/routes/protectedRoutes';
-import { getApp } from "@react-native-firebase/app";
-import { getMessaging } from "@react-native-firebase/messaging";
+import AuthProvider from '@/providers/AuthProvider';
+import NotificationProvider from "@/providers/NotificationProvider";
 import { useFonts } from 'expo-font';
-import { Stack, usePathname, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import StackNavigator from "./StackNavigator";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -26,65 +22,22 @@ export default function RootLayout() {
     "BeVietnamPro-Thin": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Thin.ttf"),
     "Righteous-Regular": require('../assets/fonts/Righteous/Righteous-Regular.ttf'),
   });
-  
-  const {isAuthenticated} = useGlobalContext();
-  const router = useRouter();
-  const pathName = usePathname();
-
-  const getToken = async () => {
-    const token = await getMessaging(getApp()).getToken();
-    console.log(token);
-  }
-
 
   useEffect(() => {
-    let unsubscribe: (() => void) | null;
-  
-    const setup = async () => {
-      // Handle notifications setup
-      unsubscribe = await requestUserPermissionAndListen();
-      await getToken();
-  
-      // Handle splash screen and routing
-      if (loaded) {
-        await SplashScreen.hideAsync();
-      }
-      if (!isAuthenticated && protectedRoutes.includes(pathName)) {
-        router.push('/login');
-      }
-    };
-  
-    setup();
-  
-    // Cleanup function
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [loaded, isAuthenticated, router, pathName]);
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
   
   if (!loaded) {
     return null;
   }
 
-
-
   return (
-    <AuthProvider>
-      {isAuthenticated ? (    
-        <Stack screenOptions={{ headerShown: false }}>
-          {/* Protected Routes */}
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          {/* Unprotected Routes */}
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      )}
-    </AuthProvider>
+    <NotificationProvider>
+      <AuthProvider>
+        <StackNavigator />
+      </AuthProvider>
+    </NotificationProvider>
   );
 }

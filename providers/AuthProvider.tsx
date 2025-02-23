@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/actions/authActions";
 import { AuthContext } from "@/context/AuthContext";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usePathname } from "expo-router";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -20,6 +21,7 @@ type Props = {
 
 export default function AuthProvider({ children }: Props) {
   const [loading, setLoading] = useState(true);
+  const pathName = usePathname();
 
   // Put all auth state into a single object
   const auth = useAuthStore(
@@ -44,6 +46,7 @@ export default function AuthProvider({ children }: Props) {
           setCurrentUser(res);
         } else {
           // Else reset authentication state
+          console.log("User not found: " + res)
           AsyncStorage.removeItem("authToken");
           reset();
         }
@@ -62,7 +65,7 @@ export default function AuthProvider({ children }: Props) {
     };
 
     fetchCurrentUser();
-  }, [setIsAuthenticated, setCurrentUser, reset]);
+  }, [setIsAuthenticated, setCurrentUser, reset, pathName]);
 
   return (
     <AuthContext.Provider

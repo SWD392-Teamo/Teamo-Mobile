@@ -10,6 +10,9 @@ import { colors } from '@/constants/colors';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { User } from '@/types/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addDevice } from '@/actions/deviceAction';
+import { getMessaging } from '@react-native-firebase/messaging';
+import { getApp } from '@react-native-firebase/app';
 
 export default function LoginForm() {
   // Next navigation
@@ -24,6 +27,12 @@ export default function LoginForm() {
   // Use auth store to set state
   const setIsAuthenticated = useAuthStore(state => state.setIsAuthenticated)
   const setCurrentUser = useAuthStore(state => state.setCurrentUser)
+
+  // Get device tokens
+  const getToken = async () => {
+    const token = await getMessaging(getApp()).getToken();
+    return token;
+  }
 
   // On submit logic
   async function onSubmit(data: FieldValues) {
@@ -46,6 +55,9 @@ export default function LoginForm() {
         if(res?.error) {
             throw res.error;
         }
+
+        // Add device
+        await addDevice(await getToken());
 
         router.push(`/home`)
     } catch (error: any) {

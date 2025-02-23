@@ -12,11 +12,16 @@ export default async function requestUserPermissionAndListen() {
     if (enabled) {
       console.log('Authorization status:', authStatus);
 
+      // Create an array to store all unsubscribe functions
+      const unsubscribeFunctions: (() => void)[] = [];
+
       // Handle foreground messages
       const unsubscribeForeground = messaging.onMessage(async remoteMessage => {
         console.log('Received foreground message:', remoteMessage);
         // Handle foreground notification here (e.g., show an in-app notification)
       });
+
+      unsubscribeFunctions.push(unsubscribeForeground);
 
       // Handle background messages
       messaging.setBackgroundMessageHandler(async remoteMessage => {
@@ -25,27 +30,20 @@ export default async function requestUserPermissionAndListen() {
       });
 
       // Handle notification open events
-      messaging.onNotificationOpenedApp(remoteMessage => {
+      const unsubscribeOpenedApp = messaging.onNotificationOpenedApp(remoteMessage => {
         console.log('Notification opened app:', remoteMessage);
         // Navigate to appropriate screen based on notification
       });
 
-      // Check if app was opened from a notification
-      messaging
-        .getInitialNotification()
-        .then(remoteMessage => {
-          if (remoteMessage) {
-            console.log('App opened from quit state:', remoteMessage);
-            // Handle initial notification (e.g., navigate to specific screen)
-          }
-        });
+      unsubscribeFunctions.push(unsubscribeOpenedApp);
 
-      // Return unsubscribe function for cleanup
-      return unsubscribeForeground; 
-    } else {
-      console.log('Permission not granted.');
-      return null;
+      // Return a function that will unsubscribe from all listeners
+      return () => {
+        unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+      };
     }
+     // Return empty cleanup function if not enabled
+    return () => {};
   } catch (error) {
     console.error('Failed to request permission:', error);
     return null;
