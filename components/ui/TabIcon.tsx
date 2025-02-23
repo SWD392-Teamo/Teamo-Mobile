@@ -11,7 +11,7 @@ type Props ={
 
 export default function TabIcon(props: Props) {
   return (
-    <View className="flex items-center justify-center gap-2 min-w-[100px]">
+    <View className="flex items-center justify-center gap-0.5 min-w-[100px]">
       <Image
         source={props.icon}
         resizeMode="contain"

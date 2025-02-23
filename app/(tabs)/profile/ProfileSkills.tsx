@@ -22,24 +22,28 @@ export default function ProfileSkills({ skills }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginTop: 5,
+    flexWrap: "wrap",
+    flex: 1,
+    marginTop: 2,
+    marginBottom: 2
   },
   skillBadge: {
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: "#4CA4CD",
-    borderRadius: 40,     
-    paddingVertical: 5,   
-    paddingHorizontal: 10,
-    marginRight: 8,
-    marginBottom: 8,
-    minWidth: 100,        
+    borderRadius: 30,     
+    paddingVertical: 8,   
+    paddingHorizontal: 8,
+    marginRight: 6,
+    marginBottom: 6,
+    minWidth: 100,
   },
   skillName: {
+    fontFamily: "BeVietnamPro-Bold",
     fontSize: 15,
-    fontWeight: "bold",
     color: "#4CA4CD"
   },
   skillLevel: {
+    fontFamily: "BeVietnamPro-Regular",
     fontSize: 15,
     color: "#4CA4CD"
   },

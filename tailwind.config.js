@@ -3,7 +3,7 @@ module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}"
   ],
   presets: [require("nativewind/preset")],
   theme: {
@@ -14,7 +14,7 @@ module.exports = {
         secondary: '#1C1C1C',
         tertiary: '#FCFCFC',
         grey: '#606261',
-        darkgrey: '#3E424A',
+        darkgrey: '#3E424A'
       },
       fontFamily: {
         bthin: ["BeVietnamPro-Thin", "sans-serif"],
@@ -26,13 +26,13 @@ module.exports = {
         bbold: ["BeVietnamPro-Bold", "sans-serif"],
         bextrabold: ["BeVietnamPro-ExtraBold", "sans-serif"],
         bblack: ["BeVietnamPro-Black", "sans-serif"],
-        righteous: ["Righteous-Regular", "sans-serif"],
+        righteous: ["Righteous-Regular", "sans-serif"]
       },
       fontSize: {
         bxl: 30,
         bl: 25,
         bm: 20,
-        bsm: 15,
+        bsm: 15
       }
     },
   },

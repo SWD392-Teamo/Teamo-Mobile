@@ -9,6 +9,8 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "#606261", 
-    margin: 10        
+    margin: 10,
+    flexDirection: "row",
+    flexWrap: "wrap"       
   }
 })
