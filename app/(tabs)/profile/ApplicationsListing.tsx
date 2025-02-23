@@ -62,7 +62,7 @@ export default function ApplicationsListing() {
         spinnerColor={colors.light.tint} 
       />
       <ScrollView>
-        <View className = 'w-full flex justify-content-center h-full'>  
+        <View className = 'w-full flex justify-content-center'>  
           <ApplicationsCard applications={data} />
         </View>
       </ScrollView>
