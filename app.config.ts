@@ -15,8 +15,29 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
-    entitlements: {
-      'aps-environment': 'production',
-    },
+    googleServicesFile: process.env.GOOGLE_SERVICES_PLIST ?? './GoogleService-Info.plist',
+    bundleIdentifier: "com.teamomobile"
   },
+  plugins: [
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          useFrameworks: 'static',
+          modular: true,
+          podModules: [
+            'FirebaseCore',
+            'FirebaseAuth',
+            'FirebaseCoreInternal',
+            'FirebaseCrashlytics',
+            'FirebaseSessions',
+            'GoogleUtilities',
+            'FirebaseInstallations',
+            'GoogleDataTransport',
+            'nanopb'
+          ]
+        },
+      },
+    ],
+  ]
 });
