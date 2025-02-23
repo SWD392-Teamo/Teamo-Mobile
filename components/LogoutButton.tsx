@@ -20,7 +20,7 @@ export default function LogoutButton() {
     }
 
     return(
-        <View className='flex flex-row justify-center'>
+        <View className='flex flex-row justify-center m-5'>
             <CustomButton
                 title='Logout'
                 handlePress={onLogout}

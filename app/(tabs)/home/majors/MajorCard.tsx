@@ -13,13 +13,13 @@ export default function MajorCard({major} : Props) {
 
     function onSelectedMajor() {
         setSelectedMajor(major)
-        router.push('/');
+        router.push('/home/majors/subjects')
     }
 
     return (
         <Pressable onPress={onSelectedMajor}>
-            <View className="m-5">
-                <View className="border border-primary p-5 rounded-lg shadow-sm flex flex-col items-start justify-between text-center hover:shadow-lg transition">
+            <View className="m-3">
+                <View className="border-2 border-primary p-5 rounded-lg flex flex-col items-start justify-between text-center transition">
                     <Text className="font-bbold text-primary text-bm">{major.code}</Text>
                     <Text className="mb-2 font-bregular text-primary text-bm text-wrap">{major.name}</Text>
                 </View>

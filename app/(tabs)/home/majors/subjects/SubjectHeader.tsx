@@ -1,23 +1,25 @@
 import BackButton from "@/components/BackButton";
 import SearchBar from "@/components/SearchBar";
+import { Major } from "@/types";
 import React from "react";
 import { Text, View } from "react-native";
 
 interface Props{
+    major: Major
     setSearch: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function MajorHeader({setSearch}:Props) {
+export default function SubjectHeader({major, setSearch}:Props) {
     return (
         <View className="m-2 ml-5">
             <View className="flex flex-row justify-content-start">
                 <BackButton
-                    url="home"
+                    url="home/majors"
                 />
-                <Text className="ml-5 text-bsm font-blight">Home</Text>
+                <Text className="ml-5 text-bsm font-blight">{major?.code}</Text>
             </View >
             <View className="flex flex-row justify-content-center">
-                <Text className="m-2 mr-5 text-bl text-primary font-bsemibold">Majors</Text>
+                <Text className="m-2 mr-5 text-bl text-primary font-bsemibold">Subjects</Text>
                 <SearchBar 
                     setSearch = {setSearch}
                 />

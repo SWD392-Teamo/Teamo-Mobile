@@ -20,30 +20,40 @@ export default function ApplicationsCard({ applications: initialApps }: Props) {
   }
 
   return (
-    <View className="px-3">
+    <View className="flex-1 px-4 w-full">
       {apps?.map((app) => (
         <View
           key={app.id}
-          className="flex flex-row justify-center align-middle max-w-sm p-2 bg-primary border-0 rounded-lg shadow-sm mb-2"
+          className="flex flex-row items-center justify-between w-full p-3 bg-primary rounded-lg shadow-sm mb-3"
         >
-          <Text className="m-1 font-bregular text-bsm text-tertiary">
-            {app.groupName} | {app.groupPositionName}
-            {"\n"}
-            {dateTimeFormatter(app.requestTime)}
-            {"\n"}
-            <Text className="font-bbold">{app.status}</Text>
-          </Text>
+          <View className="flex-1 ml-2">
+            <Text className="font-bregular text-bsm text-tertiary">
+              {app.groupName}
+            </Text>
+            <Text className="font-bregular text-bsm text-tertiary mt-1">
+              {app.groupPositionName}
+            </Text>
+            <View className="mt-1 flex-row">
+              <Text className="font-bregular text-bsm text-tertiary mr-4">
+                {dateTimeFormatter(app.requestTime)}
+              </Text>
+              <Text className="font-bbold text-tertiary">
+                {app.status}
+              </Text>
+            </View>
+          </View>
+          
           {app.status === "Requested" && (
-            <CustomButton
-              title={""}
-              variant={"default"}
-              icon={icons.trashCan}
-              iconColor={colors.dark.icon}
-              handlePress={() => {
-                onDeleteApplication(app.groupId, app.id);
-              }}
-              containerStyles="w-2"
-            />
+            <View className="w-10 mr-5">
+              <CustomButton
+                title=""
+                variant="default"
+                icon={icons.trashCan}
+                iconColor={colors.dark.icon}
+                handlePress={() => onDeleteApplication(app.groupId, app.id)}
+                containerStyles="w-full"
+              />
+            </View>
           )}
         </View>
       ))}

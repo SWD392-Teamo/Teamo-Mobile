@@ -25,7 +25,7 @@ export default function SearchBar({setSearch}:Props) {
         onSubmitEditing={handleSearch}
       />
       <TouchableOpacity onPress={handleSearch} style={styles.button}>
-        <Ionicons name="search" size={24} color="#4B5563" />
+        <Ionicons name="search" size={15} color="#4B5563" />
       </TouchableOpacity>
     </View>
   );
@@ -33,28 +33,28 @@ export default function SearchBar({setSearch}:Props) {
 
 const styles = StyleSheet.create({
     container: {
-      marginTop: 24, // ~ mt-6
-      width: '50%',  // ~ w-1/2
-      position: 'relative',
+      marginTop: 5,
+      width: '60%',  
+      position: 'relative'
     },
     input: {
       width: '100%',
-      paddingVertical: 12,  // ~ py-3
-      paddingLeft: 40,      // ~ pl-10
-      paddingRight: 60,     // ~ pr-24
-      borderRadius: 9999,   // ~ rounded-full
-      borderWidth: 1,       // ~ border
-      borderColor: '#D1D5DB', // ~ border-gray-300
-      fontSize: 18,         // ~ text-lg
-      color: '#4B5563',     // ~ text-gray-600
+      paddingVertical: 12, 
+      paddingLeft: 20,      
+      paddingRight: 20,     
+      borderRadius: 9999,   
+      borderWidth: 1,       
+      borderColor: '#D1D5DB', 
+      fontSize: 15,         
+      color: '#4B5563'     
     },
     button: {
       position: 'absolute',
-      right: 4,
-      top: '50%',
-      transform: [{ translateY: -16 }], // ~ half of p-3 for center alignment
+      right: 6,
+      top: '40%',
+      transform: [{ translateY: -16 }], 
       backgroundColor: '#E2EFFF',
-      padding: 12,    // ~ p-3
-      borderRadius: 9999, // ~ rounded-full
+      padding: 12,   
+      borderRadius: 9999
     },
 });

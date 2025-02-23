@@ -47,7 +47,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <Divider />
 
             {/* Profile links section */}
-            <View className='mt-2 ml-10 justify-content-start'>
+            <View className='mt-2 mb-2 ml-10 justify-content-start'>
                 <Text className="mb-2 text-bm font-bsemibold text-black">Links</Text>
                 <View className='flex flex-row flex-wrap'>
                     <ProfileLinks links={profile?.links}/>

@@ -60,19 +60,23 @@ export default function Profile() {
 
           <Divider />
 
-          <View className='flex flex-row justify-content-start m-5 justify-evenly'>
-             <CustomButton
+          <View className='flex flex-row items-center justify-center w-full px-4 my-3 gap-4'>
+            <View className='flex-1 max-w-[160px]'> 
+              <CustomButton
                 title='Details'
                 handlePress={() => setActiveView('details')}
                 variant={activeView == 'details' ? 'active' : 'inactive'}
                 containerStyles='small'
-            />
-             <CustomButton
+              />
+            </View>
+            <View className='flex-1 max-w-[160px]'>
+              <CustomButton
                   title='Applications'
                   handlePress={() => setActiveView('applications')}
                   variant={activeView == 'applications' ? 'active' : 'inactive'}
                   containerStyles='small'
               />
+            </View>
           </View>
 
           {
@@ -86,7 +90,7 @@ export default function Profile() {
             )
           }
 
-          <LogoutButton />
+            <LogoutButton />
         </View>
       </ScrollView>
     </SafeAreaView>
