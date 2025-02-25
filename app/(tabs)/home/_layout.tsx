@@ -11,7 +11,7 @@ export default function HomeLayout() {
     }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="majors/index" />
-      <Stack.Screen name="majors/subjects/index" />
+      <Stack.Screen name="majors/[majorId]/subjects/index" />
     </Stack>
   );
 }

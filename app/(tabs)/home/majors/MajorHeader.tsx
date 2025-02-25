@@ -16,8 +16,8 @@ export default function MajorHeader({setSearch}:Props) {
                 />
                 <Text className="ml-5 text-bsm font-blight">Home</Text>
             </View >
-            <View className="flex flex-row justify-content-center">
-                <Text className="m-2 mr-5 text-bl text-primary font-bsemibold">Majors</Text>
+            <View className="mt-3 mb-3 flex flex-row justify-content-center">
+                <Text className="m-2 mr-5 text-bl text-secondary font-bsemibold">Majors</Text>
                 <SearchBar 
                     setSearch = {setSearch}
                 />

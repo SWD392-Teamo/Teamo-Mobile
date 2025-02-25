@@ -9,7 +9,8 @@ type State = {
 
 type Actions = {
     setData: (data: PagedResult<Subject>) => void
-    setSelectedSubject: (subject: Subject) => void
+    setSelectedSubject: (subject: Subject) => void     
+    appendData: (newSubjects: Subject[]) => void
 }
 
 const initialState: State = {
@@ -31,6 +32,12 @@ export const useSubjectStore = create<State & Actions>((set) => ({
     setSelectedSubject: (subject: Subject) => {
         set(() => ({
             selectedSubject: subject
+        }))
+    },
+
+    appendData: (newSubjects: Subject[]) => {
+        set((state) => ({
+            subjects: [...state.subjects,...newSubjects]
         }))
     }
 }))
