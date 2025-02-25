@@ -65,3 +65,15 @@ export type Field = {
     name: string
     description: string
 }
+
+// Generic type for loadMore function
+export type LoadMoreFunction<T> = (
+    page: number,
+    currentData: T[],
+    urlFn: (page: number) => string,
+    fetchFn: (url: string) => Promise<PagedResult<T>>,
+    appendFn: (items: T[]) => void
+  ) => Promise<{
+    hasMore: boolean;
+    newPage: number;
+  }>;

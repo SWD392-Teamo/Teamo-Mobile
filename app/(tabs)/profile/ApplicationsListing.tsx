@@ -21,17 +21,10 @@ export default function ApplicationsListing() {
   
   const params = useParamsStore(
     useShallow((state) => ({
-      studentId: currentUser?.id,
       sort: state.sort,
       status: state.status
     }))
   );
-
-  useEffect(() => {
-    if (currentUser) {
-      setParams({ studentId: currentUser.id })
-    }
-  }, [currentUser, setParams]);
 
   const data = useApplicationStore(
       useShallow((state) => state.applications)

@@ -4,10 +4,6 @@ type State = {
     search?: string
     sort?: string
     status?: string
-    studentId?: number
-    majorId?: number
-    subjectId?: number
-    fieldId?: number
 }
 
 type Actions = {
@@ -16,7 +12,9 @@ type Actions = {
 }
 
 const initialState: State = {
-
+    search: undefined,
+    sort: undefined,
+    status: undefined
 }
 
 export const useParamsStore = create<State & Actions>()((set) => ({
