@@ -10,6 +10,7 @@ type State = {
 type Actions = {
     setData: (data: PagedResult<Major>) => void
     setSelectedMajor: (major: Major) => void
+    appendData: (newMajors: Major[]) => void
 }
 
 const initialState: State = {
@@ -24,13 +25,19 @@ export const useMajorStore = create<State & Actions>((set) => ({
     setData: (data: PagedResult<Major>) => {
         set(() => ({
             majors: data.data,
-            totalCount: data.count,
+            totalCount: data.count
         }))
     },
 
     setSelectedMajor: (major: Major) => {
         set(() => ({
-            selectedMajor: major, 
+            selectedMajor: major
         }));
     },
+    
+    appendData: (newMajors: Major[]) => {
+        set((state) => ({
+            majors: [...state.majors, ...newMajors]
+        }));
+    }
 }))

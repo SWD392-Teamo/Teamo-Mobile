@@ -1,6 +1,6 @@
 import { icons } from '@/constants';
-import { RelativePathString, useRouter } from 'expo-router';
-import React, { useEffect } from 'react'
+import { useRouter } from 'expo-router';
+import React from 'react'
 import { Image, TouchableOpacity } from 'react-native';
 
 type Props = {
