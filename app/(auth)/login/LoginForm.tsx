@@ -1,4 +1,4 @@
-import { login } from '@/actions/authActions';
+import { googleLogin, login } from '@/actions/authActions';
 import { useRouter } from 'expo-router';
 import React from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
@@ -13,6 +13,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDevice } from '@/actions/deviceAction';
 import { getMessaging } from '@react-native-firebase/messaging';
 import { getApp } from '@react-native-firebase/app';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth, { getAuth, signInWithCredential } from '@react-native-firebase/auth';
+import GoogleAuthProvider  from '@react-native-firebase/auth';
+import configureGoogleSignIn from '@/lib/configureGoogleSignIn';
 
 export default function LoginForm() {
   // Next navigation
@@ -24,6 +28,25 @@ export default function LoginForm() {
             mode: 'onTouched'
         });
 
+// Set up auth state
+const handleGoogleSignIn = async () => {
+    try {
+        // Configure Google Sign In
+        const idToken = await signInWithGoogle();
+
+        if (idToken) {
+            // Call your backend endpoint with the token
+            const res = await googleLogin(idToken);
+            
+            // Set authentication status
+            await authenticateUser(res);
+        }
+    } catch (error: any) {
+        // More detailed error logging
+        console.error('Error Message:', error.message);
+    }
+};
+
   // Use auth store to set state
   const setIsAuthenticated = useAuthStore(state => state.setIsAuthenticated)
   const setCurrentUser = useAuthStore(state => state.setCurrentUser)
@@ -34,32 +57,58 @@ export default function LoginForm() {
     return token;
   }
 
+async function signInWithGoogle() {
+    // Configure Google Sign In
+    await configureGoogleSignIn();
+
+    // Sign in and get token
+    const signInResult = await GoogleSignin.signIn();
+    const signInToken = signInResult.data?.idToken ?? null;
+
+    // Get firebase authentication instance
+    const auth = getAuth(getApp());
+
+    // Create a Google credential with the token
+    const googleCredential = GoogleAuthProvider.GoogleAuthProvider.credential(signInToken);
+
+    // Sign in to Firebase with the Google credential
+    const userCredential = await signInWithCredential(auth, googleCredential);
+
+    // Get the Firebase ID token
+    const idToken = await userCredential.user.getIdToken();
+    return idToken;
+}
+
+async function authenticateUser(res: any) {
+    // Set authentication status to true
+    setIsAuthenticated(true);
+
+    // Set current user
+    setCurrentUser({
+        id: res.userId,
+        email: res.email,
+        role: res.role
+    } as User);
+
+    // Persist token using AsyncStorage
+    await AsyncStorage.setItem("authToken", res.token);
+
+    if (res?.error) {
+        throw res.error;
+    }
+
+    // Add device
+    await addDevice(await getToken());
+
+    router.push(`/home`);
+}
+
   // On submit logic
   async function onSubmit(data: FieldValues) {
     try {
         const res = await login(data);
-
         // Set authentication status
-        setIsAuthenticated(true);
-
-        // Set current user
-        setCurrentUser({
-            id: res.userId,
-            email: res.email,
-            role: res.role
-        } as User);
-
-        // Persist token using AsyncStorage
-        await AsyncStorage.setItem("authToken", res.token);
-
-        if(res?.error) {
-            throw res.error;
-        }
-
-        // Add device
-        await addDevice(await getToken());
-
-        router.push(`/home`)
+        await authenticateUser(res);
     } catch (error: any) {
         console.log(error.message)
     }
@@ -98,7 +147,7 @@ export default function LoginForm() {
             />
             <CustomButton
                 title='Login with'
-                handlePress={handleSubmit(onSubmit)}
+                handlePress={handleGoogleSignIn}
                 variant='primary'
                 containerStyles='w-full mt-5'
                 icon={icons.google}
