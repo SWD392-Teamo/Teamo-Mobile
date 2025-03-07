@@ -5,7 +5,7 @@ import { colors } from '@/constants/colors';
 import { useGlobalContext } from '@/providers/AuthProvider';
 import { useRouter } from 'expo-router'
 import React, { useEffect } from 'react'
-import { Image, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native'
+import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function OnBoarding() {
@@ -48,8 +48,8 @@ export default function OnBoarding() {
 
   // Trigger animation on mount
   useEffect(() => {
-    sloganOpacity.value = 1;
-    buttonTranslateY.value = 0;
+    sloganOpacity.set(1);
+    buttonTranslateY.set(0);
   }, []);
 
   return (

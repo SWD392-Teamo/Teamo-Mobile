@@ -6,6 +6,11 @@ export async function login(data: FieldValues) {
     return response;
 }
 
+export async function googleLogin(idToken: string) {
+    const response = await fetchWrapper.post(`account/google-login`, {idToken});
+    return response;
+}
+
 export async function getCurrentUser() {
     return await fetchWrapper.get(`account/user-info`);
 }
