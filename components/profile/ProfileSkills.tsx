@@ -1,3 +1,4 @@
+import { useGlobalContext } from '@/providers/AuthProvider';
 import { StudentSkill } from '@/types'
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'

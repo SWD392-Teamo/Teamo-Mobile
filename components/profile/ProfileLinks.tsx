@@ -1,7 +1,8 @@
 import ExternalLink from '@/components/ExternalLink'
+import { useGlobalContext } from '@/providers/AuthProvider';
 import { Link } from '@/types';
 import React from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 
 interface Props {
     links: Link[] | undefined;

@@ -1,7 +1,7 @@
 import { getProfile } from '@/actions/profileAction'
-import ProfileDetails from '@/app/(tabs)/profile/ProfileDetails'
-import ProfileImage from '@/app/(tabs)/profile/ProfileImage'
-import ProfileNameCard from '@/app/(tabs)/profile/ProfileNameCard'
+import ProfileDetails from '@/components/profile/ProfileDetails'
+import ProfileImage from '@/components/profile/ProfileImage'
+import ProfileNameCard from '@/components/profile/ProfileNameCard'
 import CustomButton from '@/components/CustomButton'
 import Divider from '@/components/Divider'
 import LogoutButton from '@/components/LogoutButton'
@@ -9,9 +9,8 @@ import Spinner from '@/components/Spinner'
 import { colors } from '@/constants/colors'
 import { useProfileStore } from '@/hooks/useProfileStore'
 import { useGlobalContext } from '@/providers/AuthProvider'
-import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
 import NotFoundScreen from '@/app/+not-found'
 import ApplicationsListing from './ApplicationsListing'
@@ -53,6 +52,7 @@ export default function Profile() {
           <View className='flex flex-row mt-5 ms-5'>
             <ProfileImage imgUrl = {data?.imgUrl}/>
             <ProfileNameCard
+              id = {data?.id}
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
             />
@@ -82,7 +82,9 @@ export default function Profile() {
           {
             (activeView == 'details') ? 
             (
-              <ProfileDetails profile={data}/>
+              <ProfileDetails 
+                profile={data}
+              />
             ) : (activeView == 'applications') ? (
               <ApplicationsListing />
             ) : (

@@ -1,9 +1,13 @@
+import { useGlobalContext } from '@/providers/AuthProvider'
 import { Text, View } from 'react-native'
 
 interface ProfileNameCardProps {
+    id: number | undefined
     name: string | undefined
     description: string | undefined
 }
+
+const {currentUser} = useGlobalContext()
 
 const ProfileNameCard = ({name, description} : ProfileNameCardProps) => {
     return(

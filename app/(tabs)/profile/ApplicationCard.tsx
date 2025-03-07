@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { deleteApplication } from "@/actions/applicationAction";
 import CustomButton from "@/components/CustomButton";
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";

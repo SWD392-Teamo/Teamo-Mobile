@@ -1,8 +1,11 @@
+import { useGlobalContext } from "@/providers/AuthProvider";
 import { Image } from "react-native";
 
 interface ProfileImageProps{
     imgUrl: string | undefined
 }
+
+const {currentUser} = useGlobalContext();
 
 const ProfileImage = ({imgUrl} : ProfileImageProps) => {
     return(
