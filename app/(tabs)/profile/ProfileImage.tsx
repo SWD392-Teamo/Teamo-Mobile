@@ -1,23 +1,38 @@
-import { Image } from "react-native";
+import FilePicker from "@/components/FilePicker";
+import { DocumentPickerResponse } from "@react-native-documents/picker";
+import { Image, View } from "react-native";
 
 interface ProfileImageProps{
     imgUrl: string | undefined
+    onImageSelect: (file: DocumentPickerResponse) => void;
 }
 
-const ProfileImage = ({imgUrl} : ProfileImageProps) => {
+const ProfileImage = ({imgUrl, onImageSelect} : ProfileImageProps) => {
     return(
-        <Image
-            style={{
-                width: 96, //w-24
-                height: 96, //h-24
-                borderRadius: 48, // Half of width/height to make it circular
-                borderWidth: 2,
-                borderColor: "#A0A0A0", //border-darkgrey
-                resizeMode: "cover" //object-cover
-            }}
-            source={{uri: imgUrl}}
-            alt="Profile"
-        />
+        <View className="relative">
+            <Image
+                style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: 48,
+                    borderWidth: 2,
+                    borderColor: "#A0A0A0",
+                    resizeMode: "cover"
+                }}
+                source={{ uri: imgUrl }}
+                alt="Profile"
+            />
+            <View className="absolute bottom-0 right-0">
+                <FilePicker
+                    onFileSelect={onImageSelect}
+                    accept={['image/*']}
+                    multiple={false}
+                    hasIcon={true}
+                    placeholder="Change Photo"
+                    showFileName={false}
+                />
+            </View>
+        </View>
     )
 }
 

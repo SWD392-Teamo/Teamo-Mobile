@@ -15,13 +15,22 @@ async function get(url: string) {
 
 // POST request
 async function post(url: string, body: NonNullable<unknown>) {
+    const headers = await getHeaders();
+    
+    // If body is FormData, don't set Content-Type header
+    if (body instanceof FormData) {
+        delete headers['Content-Type'];
+    }
+
     const requestOptions = {
         method: 'POST',
-        headers: await getHeaders(),
-        body: JSON.stringify(body)
+        headers: headers,
+        // Don't stringify if it's FormData
+        body: body instanceof FormData ? body : JSON.stringify(body)
     }
-    
+
     const response = await fetch(baseUrl + url, requestOptions);
+
     return handleResponse(response);
 }
 

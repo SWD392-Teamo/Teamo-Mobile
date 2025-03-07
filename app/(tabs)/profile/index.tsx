@@ -11,10 +11,13 @@ import { useProfileStore } from '@/hooks/useProfileStore'
 import { useGlobalContext } from '@/providers/AuthProvider'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
 import NotFoundScreen from '@/app/+not-found'
 import ApplicationsListing from './ApplicationsListing'
+import { uploadImage } from '@/actions/userActions'
+import { DocumentPickerResponse } from '@react-native-documents/picker'
+import convertDocument from '@/utils/DocumentConverter'
 
 export default function Profile() {
   const [isLoading, setLoading] = useState(true);
@@ -39,6 +42,28 @@ export default function Profile() {
     }
   }, [getProfile])
 
+  async function handleImageUpload(image: DocumentPickerResponse) {
+    const formData = new FormData();
+  
+    // Convert to File
+    const imageToUpload = convertDocument(image);
+
+    // Create formdata payload with image
+    formData.append('image', imageToUpload);
+  
+    const userId = currentUser?.id!;
+  
+    const res = await uploadImage(userId, formData);
+  
+    if (res.statusCode == 200) {
+      ToastAndroid.show("Image uploaded successfully!", ToastAndroid.SHORT);
+      // Refresh profile data to show new image
+      getProfile(userId).then(setData);
+    } else {
+      ToastAndroid.show("Image upload failed!", ToastAndroid.SHORT);
+    }
+  }
+
   const [activeView, setActiveView] = useState('details');
 
   return (
@@ -51,7 +76,7 @@ export default function Profile() {
       <ScrollView>
         <View className = 'w-full flex-1 justify-content-start'>  
           <View className='flex flex-row mt-5 ms-5'>
-            <ProfileImage imgUrl = {data?.imgUrl}/>
+            <ProfileImage imgUrl = {data?.imgUrl} onImageSelect={handleImageUpload}/>
             <ProfileNameCard
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
