@@ -16,7 +16,7 @@ export default function ApplicationCard({application, action}: Props) {
   
   return (
     <View
-      className="flex flex-row items-center justify-between w-full p-3 bg-primary rounded-lg shadow-sm mb-3"
+      className="flex flex-row items-center justify-between w-full p-3 bg-primary rounded-lg mb-3"
     >
       <View className="flex-1 ml-2">
         <Text className="font-bregular text-bsm text-tertiary">
