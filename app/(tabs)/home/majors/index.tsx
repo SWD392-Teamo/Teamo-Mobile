@@ -81,7 +81,7 @@ export default function MajorsListing() {
   };
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
-    const paddingToBottom = 20;
+    const paddingToBottom = 40;
     return layoutMeasurement.height + contentOffset.y >= 
       contentSize.height - paddingToBottom;
   };

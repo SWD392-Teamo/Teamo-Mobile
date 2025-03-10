@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import StackNavigator from "./StackNavigator";
+import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +22,12 @@ export default function RootLayout() {
     "BeVietnamPro-SemiBold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf"),
     "BeVietnamPro-Thin": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Thin.ttf"),
     "Righteous-Regular": require('../assets/fonts/Righteous/Righteous-Regular.ttf'),
+  });
+
+  // Reanimated configuration
+  configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false,
   });
 
   useEffect(() => {
