@@ -1,33 +1,31 @@
-import { googleLogin, login } from '@/actions/authActions';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react'
-import { FieldValues, useForm } from 'react-hook-form'
-import InputField from '@/components/InputField';
-import { ToastAndroid, View } from 'react-native';
+import { sendApplication, uploadApplicationDocument } from '@/actions/applicationAction';
 import CustomButton from '@/components/CustomButton';
-import { icons } from '@/constants';
+import InputField from '@/components/InputField';
 import { colors } from '@/constants/colors';
-import { useAuthStore } from '@/hooks/useAuthStore';
-import { User } from '@/types/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addDevice } from '@/actions/deviceAction';
-import { getMessaging } from '@react-native-firebase/messaging';
-import { getApp } from '@react-native-firebase/app';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth, { getAuth, signInWithCredential } from '@react-native-firebase/auth';
-import GoogleAuthProvider  from '@react-native-firebase/auth';
-import configureGoogleSignIn from '@/lib/configureGoogleSignIn';
-import { uploadApplicationDocument } from '@/actions/applicationAction';
+import { useLoading } from '@/providers/LoadingProvider';
+import convertDocument from '@/utils/DocumentConverter';
+import { DocumentPickerResponse } from '@react-native-documents/picker';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
+import { Text, ToastAndroid, View } from 'react-native';
+import FilePicker from '../FilePicker';
 
 interface ApplicationFormProps {
     groupPositionId: number;
     groupId: number;
+    majorId: number;
+    subjectId: number
   }
 
 export default function ApplicationForm({
     groupPositionId,
-    groupId
+    groupId,
+    majorId,
+    subjectId
 }: ApplicationFormProps) {
+    const{ showLoading, hideLoading } = useLoading();
+    const [isLoading, setLoading] = useState(false);
     const [documentUrl, setDocumentUrl] = useState<string>('');
 
     // Next navigation
@@ -39,9 +37,10 @@ export default function ApplicationForm({
                 mode: 'onTouched'
             });
 
-    async function handleDocumentUpload(document: File) {
+    async function handleDocumentUpload(document: DocumentPickerResponse) {
         const formData = new FormData();
-        formData.append('document', document);
+        formData.append('document', convertDocument(document));
+        setLoading(true);
         const res = await uploadApplicationDocument(formData);
         
         if (res.statusCode == 200) {
@@ -51,116 +50,67 @@ export default function ApplicationForm({
         } else {
             ToastAndroid.show("Document upload failed!", ToastAndroid.SHORT);
         }
+
+        setLoading(false)
     }
 
-// Set up auth state
-const handleGoogleSignIn = async () => {
-    try {
-        // Configure Google Sign In
-        const idToken = await signInWithGoogle();
-
-        if (idToken) {
-            // Call your backend endpoint with the token
-            const res = await googleLogin(idToken);
-            
-            // Set authentication status
-            await authenticateUser(res);
+    // On submit logic
+    async function onSubmit(data: FieldValues) {
+        try {
+            showLoading();
+            const res = await sendApplication(groupId, {
+                ...data,
+            documentUrl
+            })
+            if (res.statusCode == 200) {
+                ToastAndroid.show('Send application succeeded', ToastAndroid.SHORT)
+                router.push(`home/majors/${majorId}/subjects/${subjectId}/groups/details/${groupId}` as `/?${string}`);
+            }
+            else {
+                ToastAndroid.show('Send application failed', ToastAndroid.SHORT)
+            }
+        } catch (error: any) {
+            ToastAndroid.show('Send application failed: ' + error.message, ToastAndroid.SHORT)
+        } finally {
+            hideLoading();
         }
-    } catch (error: any) {
-        // More detailed error logging
-        console.error('Error Message:', error.message);
     }
-};
-
-  // Use auth store to set state
-  const setIsAuthenticated = useAuthStore(state => state.setIsAuthenticated)
-  const setCurrentUser = useAuthStore(state => state.setCurrentUser)
-
-  // Get device tokens
-  const getToken = async () => {
-    const token = await getMessaging(getApp()).getToken();
-    return token;
-  }
-
-async function signInWithGoogle() {
-    // Configure Google Sign In
-    await configureGoogleSignIn();
-
-    // Sign in and get token
-    const signInResult = await GoogleSignin.signIn();
-    const signInToken = signInResult.data?.idToken ?? null;
-
-    // Get firebase authentication instance
-    const auth = getAuth(getApp());
-
-    // Create a Google credential with the token
-    const googleCredential = GoogleAuthProvider.GoogleAuthProvider.credential(signInToken);
-
-    // Sign in to Firebase with the Google credential
-    const userCredential = await signInWithCredential(auth, googleCredential);
-
-    // Get the Firebase ID token
-    const idToken = await userCredential.user.getIdToken();
-    return idToken;
-}
-
-async function authenticateUser(res: any) {
-    // Set authentication status to true
-    setIsAuthenticated(true);
-
-    // Set current user
-    setCurrentUser({
-        id: res.userId,
-        email: res.email,
-        role: res.role
-    } as User);
-
-    // Persist token using AsyncStorage
-    await AsyncStorage.setItem("authToken", res.token);
-
-    if (res?.error) {
-        throw res.error;
-    }
-
-    // Add device
-    await addDevice(await getToken());
-
-    router.push(`/home`);
-}
-
-  // On submit logic
-  async function onSubmit(data: FieldValues) {
-    try {
-        const res = await login(data);
-        // Set authentication status
-        await authenticateUser(res);
-    } catch (error: any) {
-        console.log(error.message)
-    }
-}
 
   return (
     <View>
         <InputField 
-            title='Email' 
-            name='email' control={control}
+            title='Request' 
+            name='requestContent' control={control}
             showlabel='true'
-            multiline={false}
+            multiline={true}
+            rows={4}
             rules={{
-                required: 'Email is required',
-                pattern: {
-                    value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                    message: 'Invalid email address'
+                required: 'Please provide your request content',
+                minLength: {
+                    value: 10,
+                    message: 'Content must be at least 10 characters'
                 }
-            }}/>
+            }} 
+        />
 
-        <InputField 
-            title='Password' 
-            name='password' 
+        <Controller
+            name="groupPositionId"
             control={control}
-            multiline={false}
-            showlabel='true'
-            rules={{required: 'Password is required'}}/>
+            defaultValue={groupPositionId}
+            render={() => (<></>)}
+        />
+
+        <View className="mt-5">
+          <Text className="text-base text-grey font-bmedium mb-3">Add Your CV (.PDF only)</Text>
+          <FilePicker
+            onFileSelect={handleDocumentUpload}
+            accept={["application/pdf"]}
+            placeholder="Upload CV"
+            hasIcon={true}
+            multiple={false}
+            showFileName={true}
+          />
+        </View>
 
         <View className='mt-5'>
             <CustomButton
@@ -169,16 +119,8 @@ async function authenticateUser(res: any) {
                 variant='primary-outline'
                 containerStyles='w-full mt-7'
                 isLoading={isSubmitting}
-                isNotValid={!isValid}
+                isNotValid={!isValid || isLoading}
                 spinnerColor={colors.light.tint}
-            />
-            <CustomButton
-                title='Login with'
-                handlePress={handleGoogleSignIn}
-                variant='primary'
-                containerStyles='w-full mt-5'
-                icon={icons.google}
-                iconColor={colors.dark.icon}
             />
         </View>
     </View>

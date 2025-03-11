@@ -1,4 +1,4 @@
-import { Group, PagedResult } from "@/types"
+import { Group, GroupPosition, PagedResult } from "@/types"
 import { create } from "zustand"
 
 type State = {
@@ -6,18 +6,21 @@ type State = {
    totalCount: number
    pageCount: number
    selectedGroup: Group | null
+   selectedGroupPosition: GroupPosition | null
 }
 
 type Actions = {
    setData: (data: PagedResult<Group>) => void
    setSelectedGroup: (group: Group) => void
+   setSelectedGroupPosition: (position: GroupPosition) => void
 }
 
 const initialState: State = {
    groups: [],
    totalCount: 0,
    pageCount: 0,
-   selectedGroup: null
+   selectedGroup: null,
+   selectedGroupPosition: null
 }
 
 export const useGroupStore = create<State & Actions>((set) => ({
@@ -30,5 +33,6 @@ export const useGroupStore = create<State & Actions>((set) => ({
          pageCount: data.pageSize
       }))
    },
-   setSelectedGroup: (group: Group) => set(() => ({ selectedGroup: group }))
+   setSelectedGroup: (group: Group) => set(() => ({ selectedGroup: group })),
+   setSelectedGroupPosition: (position: GroupPosition) => set(() => ({ selectedGroupPosition: position }))
 }))

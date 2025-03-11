@@ -48,12 +48,15 @@ const FilePicker: React.FC<FilePickerProps> = ({
                 className="bg-secondary rounded-full p-3"
             >
                 {hasIcon ? (
-                    <Image
-                        source={icons.edit}
-                        resizeMode="contain"
-                        className="w-6 h-6"
-                        tintColor={colors.dark.icon}
-                    />
+                    <View className="flex flex-row gap-2">
+                        <Text className="text-tertiary">{placeholder}</Text>
+                        <Image
+                            source={icons.edit}
+                            resizeMode="contain"
+                            className="w-6 h-6"
+                            tintColor={colors.dark.icon}
+                        />
+                    </View>
                 ) : (
                     <Text className="text-tertiary">{placeholder}</Text>
                 )}

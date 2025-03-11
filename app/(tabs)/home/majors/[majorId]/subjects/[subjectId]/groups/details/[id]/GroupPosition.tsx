@@ -9,18 +9,14 @@ import { defaultAvatar } from '@/utils/defaultImage';
 import CustomButton from '@/components/CustomButton';
 import { icons } from '@/constants';
 import { colors } from '@/constants/colors';
+import { useRouter } from 'expo-router';
 
 const GroupPositionCard: React.FC<{
   positions: GroupPosition[];
   members: GroupMember[];
 }> = ({ positions, members }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedPositionId, setSelectedPositionId] = useState<number>(0);
-  const { selectedgroup } = useGroupStore(
-    useShallow((state) => ({
-      selectedgroup: state.selectedGroup,
-    }))
-  );
+  const router = useRouter();
+  const setSelectedGroupPosition = useGroupStore(state => state.setSelectedGroupPosition);
 
   return (
     <View className="grid grid-cols-2 gap-6 shadow-md">
@@ -90,16 +86,13 @@ const GroupPositionCard: React.FC<{
                 </View>
               ))}
             </View>
-            <Pressable 
-              className="btn btn--primary justify-self-end" 
-              onPress={() => {
-                setShowModal(true);
-                setSelectedPositionId(position.id);
-              }}
-            >  
+            <Pressable className="btn btn--primary justify-self-end">  
                 <CustomButton
                     title='Easy Apply'
-                    handlePress={() => {}}
+                    handlePress={() => {
+                      setSelectedGroupPosition(position);
+                      router.push('/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups/details/[id]/apply');
+                    }}
                     variant='primary'
                     containerStyles='w-full mt-5'
                     icon={icons.bolt}
