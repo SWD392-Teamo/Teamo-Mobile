@@ -1,19 +1,20 @@
-import { deleteApplication, getSentApplications } from '@/actions/applicationAction';
+import { deleteApplication, getUserApplications } from '@/actions/applicationAction';
+import CustomButton from '@/components/CustomButton';
 import Spinner from '@/components/Spinner';
 import { colors } from '@/constants/colors';
 import { useApplicationStore } from '@/hooks/useApplicationStore';
-import { useGlobalContext } from '@/providers/AuthProvider';
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native'
-import { useShallow } from 'zustand/shallow';
 import { useParamsStore } from '@/hooks/useParamsStore';
-import queryString from 'query-string';
+import { useGlobalContext } from '@/providers/AuthProvider';
 import loadMore from '@/utils/loadMore';
+import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { useShallow } from 'zustand/shallow';
 import ApplicationCard from './ApplicationCard';
-import CustomButton from '@/components/CustomButton';
+import { useLoading } from '@/providers/LoadingProvider';
 
 export default function ApplicationsListing() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
   const [status, setStatus] = useState<string>("");
   const [sort, setSort] = useState<string>("")
@@ -51,12 +52,12 @@ export default function ApplicationsListing() {
   async function initData() {
     setPage(1);
     setHasMore(true);
-    setLoading(true);
+    showLoading();
 
-    await getSentApplications(getUrl(1)).then((response) => {
+    await getUserApplications(getUrl(1)).then((response) => {
       setData(response);
       setHasMore(response.data.length < response.count);
-      setLoading(false);
+      hideLoading();
     });
   }
 
@@ -72,7 +73,7 @@ export default function ApplicationsListing() {
     }
 
     fetchInitialData();
-  }, [sort, status, getSentApplications]);
+  }, [sort, status, getUserApplications]);
 
   if (!currentUser) {
     return (
@@ -95,7 +96,7 @@ export default function ApplicationsListing() {
       page,
       data,
       getUrl,
-      getSentApplications, 
+      getUserApplications,
       appendData
     );
         
@@ -112,10 +113,6 @@ export default function ApplicationsListing() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView
         onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
           if (isCloseToBottom(nativeEvent)) {

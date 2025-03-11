@@ -1,6 +1,6 @@
 import { googleLogin, login } from '@/actions/authActions';
 import { useRouter } from 'expo-router';
-import React from 'react'
+import React, { useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import InputField from '@/components/InputField';
 import { ToastAndroid, View } from 'react-native';
@@ -17,16 +17,41 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth, { getAuth, signInWithCredential } from '@react-native-firebase/auth';
 import GoogleAuthProvider  from '@react-native-firebase/auth';
 import configureGoogleSignIn from '@/lib/configureGoogleSignIn';
+import { uploadApplicationDocument } from '@/actions/applicationAction';
 
-export default function LoginForm() {
-  // Next navigation
-  const router = useRouter();
+interface ApplicationFormProps {
+    groupPositionId: number;
+    groupId: number;
+  }
 
-  // Set up form state
-  const {control, handleSubmit,
-        formState: {isSubmitting, isValid}} = useForm({
-            mode: 'onTouched'
-        });
+export default function ApplicationForm({
+    groupPositionId,
+    groupId
+}: ApplicationFormProps) {
+    const [documentUrl, setDocumentUrl] = useState<string>('');
+
+    // Next navigation
+    const router = useRouter();
+
+    // Set up form state
+    const {control, handleSubmit,
+            formState: {isSubmitting, isValid}} = useForm({
+                mode: 'onTouched'
+            });
+
+    async function handleDocumentUpload(document: File) {
+        const formData = new FormData();
+        formData.append('document', document);
+        const res = await uploadApplicationDocument(formData);
+        
+        if (res.statusCode == 200) {
+            const url = res.details;
+            setDocumentUrl(url);
+            ToastAndroid.show("Document uploaded successfully!", ToastAndroid.SHORT);
+        } else {
+            ToastAndroid.show("Document upload failed!", ToastAndroid.SHORT);
+        }
+    }
 
 // Set up auth state
 const handleGoogleSignIn = async () => {
@@ -80,12 +105,6 @@ async function signInWithGoogle() {
 }
 
 async function authenticateUser(res: any) {
-    // Check for incorrect email or password
-    if (res?.error && res?.error.status == 401) {
-        ToastAndroid.show('Incorrect email or password', ToastAndroid.SHORT);
-        return;
-    }
-
     // Set authentication status to true
     setIsAuthenticated(true);
 
@@ -98,6 +117,10 @@ async function authenticateUser(res: any) {
 
     // Persist token using AsyncStorage
     await AsyncStorage.setItem("authToken", res.token);
+
+    if (res?.error) {
+        throw res.error;
+    }
 
     // Add device
     await addDevice(await getToken());

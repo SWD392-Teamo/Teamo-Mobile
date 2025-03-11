@@ -10,9 +10,10 @@ import { getMajors } from '@/actions/majorAction';
 import MajorHeader from './MajorHeader';
 import MajorCard from './MajorCard';
 import loadMore from '@/utils/loadMore';
+import { useLoading } from '@/providers/LoadingProvider';
 
 export default function MajorsListing() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -53,12 +54,12 @@ export default function MajorsListing() {
     // Reset pagination when search changes
     setPage(1);
     setHasMore(true);
-    setLoading(true);
+    showLoading()
     
     getMajors(getUrl(1)).then((response) => {
       setData(response);
       setHasMore(response.data.length < response.count);
-      setLoading(false);
+      hideLoading();
     });
   }, [search, params]);
 
@@ -88,10 +89,6 @@ export default function MajorsListing() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView
         onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
           if (isCloseToBottom(nativeEvent)) {

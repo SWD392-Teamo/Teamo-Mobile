@@ -8,43 +8,13 @@ interface Props {
 
 export default function ProfileSkills({ skills }: Props) {
   return (
-    <View style={styles.container}>
+    <View className='flex flex-row flex-wrap gap-4 my-2'>
       {skills?.map((skill) => (
-        <View key={skill.id} style={styles.skillBadge}>
-          <Text style={styles.skillName}>{skill.skillName}</Text>
-          <Text style={styles.skillLevel}>{skill.skillLevel}</Text>
+        <View key={skill.id} className='border-2 border-primary p-4 my-6 min-w-[130px] rounded-full'>
+          <Text className='font-bbold font-xl text-primary'>{skill.skillName}</Text>
+          <Text className='font-bregular font-xl text-primary'>{skill.skillLevel}</Text>
         </View>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    flex: 1,
-    marginTop: 2,
-    marginBottom: 2
-  },
-  skillBadge: {
-    borderWidth: 2,
-    borderColor: "#4CA4CD",
-    borderRadius: 30,     
-    paddingVertical: 8,   
-    paddingHorizontal: 8,
-    marginRight: 6,
-    marginBottom: 6,
-    minWidth: 100,
-  },
-  skillName: {
-    fontFamily: "BeVietnamPro-Bold",
-    fontSize: 15,
-    color: "#4CA4CD"
-  },
-  skillLevel: {
-    fontFamily: "BeVietnamPro-Regular",
-    fontSize: 15,
-    color: "#4CA4CD"
-  },
-});

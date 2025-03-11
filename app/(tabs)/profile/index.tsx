@@ -18,10 +18,10 @@ import ApplicationsListing from './ApplicationsListing'
 import { uploadImage } from '@/actions/userActions'
 import { DocumentPickerResponse } from '@react-native-documents/picker'
 import convertDocument from '@/utils/DocumentConverter'
+import { useLoading } from '@/providers/LoadingProvider'
 
 export default function Profile() {
-  const [isLoading, setLoading] = useState(true);
-
+  const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
 
   // Get the user profile from the store
@@ -35,9 +35,10 @@ export default function Profile() {
 
   useEffect(() => {
     if (currentUser) {
+      showLoading();
       getProfile(currentUser.id).then((data) => {
         setData(data)
-        setLoading(false)
+        hideLoading();
       })
     }
   }, [getProfile])
@@ -68,11 +69,6 @@ export default function Profile() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
-
       <ScrollView>
         <View className = 'w-full flex-1 justify-content-start px-5'>  
           <View className='flex flex-row mt-5'>

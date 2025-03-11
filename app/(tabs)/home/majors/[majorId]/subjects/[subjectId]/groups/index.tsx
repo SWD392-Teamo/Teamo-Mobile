@@ -9,8 +9,11 @@ import GroupHeader from "./GroupHeader";
 import GroupCard from "./GroupCard";
 import { useGroupStore } from "@/hooks/useGroupStore";
 import { SafeAreaView, ScrollView, ToastAndroid, View } from "react-native";
+import { useLoading } from "@/providers/LoadingProvider";
 
 export default function Listings() {
+  const { showLoading, hideLoading } = useLoading();
+
   const { selectedSubject } = useSubjectStore(
     useShallow((state) => ({
       selectedSubject: state.selectedSubject,
@@ -52,6 +55,7 @@ export default function Listings() {
   });
 
   useEffect(() => {
+    showLoading();
     getData(url)
       .then((data) => {
         setData(data);
@@ -60,6 +64,7 @@ export default function Listings() {
         ToastAndroid.show(error.status + " " + error.message, ToastAndroid.SHORT);
       })
       .finally(() => {
+        hideLoading();
       });
   }, [url, setData]);
 
