@@ -65,7 +65,6 @@ export default function ApplicationsListing() {
     await initData();
   }
 
-
   useEffect(() => {
     const fetchInitialData = async () => {
       await initData();

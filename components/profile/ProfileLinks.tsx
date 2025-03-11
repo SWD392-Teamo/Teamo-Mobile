@@ -1,7 +1,8 @@
 import ExternalLink from '@/components/ExternalLink'
+import { icons } from '@/constants';
 import { Link } from '@/types';
 import React from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 
 interface Props {
     links: Link[] | undefined;
@@ -15,6 +16,7 @@ export default function ProfileLinks({links}: Props) {
             key={link.id}
             title={link.name}
             url={link.url}
+            icon={icons.link}
           />
         ))}
       </View>
