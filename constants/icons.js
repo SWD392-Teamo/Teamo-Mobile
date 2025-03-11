@@ -22,6 +22,7 @@ import eyeHide from "../assets/icons/eyeHide.png";
 import google from "../assets/icons/google.png";
 import star from "../assets/icons/star.png";
 import bolt from "../assets/icons/bolt.png";
+import download from "../assets/icons/download.png";
 
 export default {
   application,
@@ -47,5 +48,6 @@ export default {
   eyeHide,
   google,
   star,
-  bolt
+  bolt,
+  download
 };

@@ -122,7 +122,7 @@ export default function ApplicationsListing() {
         scrollEventThrottle={400}
       >
         <View className = 'w-full flex justify-content-center'>
-          <View className='flex flex-row justify-start m-2'>
+          <View className='flex flex-row justify-start'>
             <View className='max-w-[150px]'> 
               <CustomButton
                 title='All'
