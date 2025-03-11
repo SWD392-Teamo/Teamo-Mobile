@@ -16,10 +16,10 @@ export default function Login() {
   const {selectedGroup, selectedGroupPosition} = useGroupStore();
 
   return (
-    <SafeAreaView className="bg-tertiary h-full p-4 flex flex-row items-center">
+    <SafeAreaView>
       <ScrollView>
         {/* Header */}
-        <View className="m-2 ml-5">
+        <View>
             <View className="flex flex-row justify-content-start">
                 <BackButton url={`home/majors/${selectedMajor?.id}/subjects/${selectedSubject?.id}/groups/details/${selectedGroup?.id}`} />
                 <Text className="ml-5 text-bsm font-blight">{selectedGroup?.name}</Text>

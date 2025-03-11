@@ -27,7 +27,7 @@ const ProfileImage = ({imgUrl, onImageSelect} : ProfileImageProps) => {
                     onFileSelect={onImageSelect}
                     accept={['image/*']}
                     multiple={false}
-                    hasIcon={true}
+                    showLabel={false}
                     placeholder="Change Photo"
                     showFileName={false}
                 />

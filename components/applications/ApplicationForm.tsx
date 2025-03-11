@@ -106,7 +106,7 @@ export default function ApplicationForm({
             onFileSelect={handleDocumentUpload}
             accept={["application/pdf"]}
             placeholder="Upload CV"
-            hasIcon={true}
+            showLabel={true}
             multiple={false}
             showFileName={true}
           />
