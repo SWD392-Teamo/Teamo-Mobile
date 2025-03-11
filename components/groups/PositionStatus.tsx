@@ -1,10 +1,9 @@
 import { Text } from "react-native";
 
-export default function GroupStatusBadge({ status }: { status: string }) {
+export default function PositionStatusBadge({ status }: { status: string }) {
     const statusClasses: Record<string, string> = {
-      Recruiting: "bg-[#DEFCE6] text-[#198254]",
-      Full: "bg-[#FEF8BE] text-[#854900]",
-      Archived: "bg-[#F3F4F6] text-[#4B5566]",
+      Open: "bg-[#DEFCE6] text-[#198254]",
+      Closed: "bg-[#FEF8BE] text-[#854900]",
       Deleted: "bg-[#FDE2E1] text-[#BE0000]",
     };
   

@@ -16,7 +16,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
         <View>
             {/* Profile information section */}
             { profile ? (
-                <View className='ml-10'>
+                <View className='pl-5'>
                     <Text className="mb-2 text-bm font-bsemibold text-black">About</Text>
                     <ProfileInformation name='Code' description={profile?.code}/>
                     <ProfileInformation name='Major' description={profile?.majorCode}/>
@@ -27,7 +27,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
                     }/>
                 </View>
             ) : (
-                <View>
+                <View className='pl-5'>
                     <Text className="text-center text-primary font-bmedium text-bxl">
                         Cannot Retrieve User Profile
                     </Text>
@@ -37,7 +37,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <Divider />
             
             {/* Profile skills section */}
-            <View className='mt-2 ml-10 justify-content-start'>
+            <View className='mt-2 pl-4 justify-content-start'>
                 <Text className="mb-2 text-bm font-bsemibold text-black">Skills</Text>
                 <View className='flex flex-row flex-wrap'>
                     <ProfileSkills skills={profile?.studentSkills}/>
@@ -47,7 +47,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <Divider />
 
             {/* Profile links section */}
-            <View className='mt-2 mb-2 ml-10 justify-content-start'>
+            <View className='mt-2 mb-2 pl-4 justify-content-start'>
                 <Text className="mb-2 text-bm font-bsemibold text-black">Links</Text>
                 <View className='flex flex-row flex-wrap'>
                     <ProfileLinks links={profile?.links}/>

@@ -73,8 +73,8 @@ export default function Listings() {
           <View className="w-full p-3">
             {data.groups &&
               data.groups
-                .map((a) => (
-                  <GroupCard key={a.id} group={a} />
+                .map((group) => (
+                  <GroupCard key={group.id} group={group} />
                 ))}
           </View>
         </View>
