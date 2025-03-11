@@ -1,5 +1,6 @@
 import { fetchWrapper } from "@/lib/fetchWrapper";
 import { Profile } from "@/types";
+import { FieldValues } from "react-hook-form";
 
 export async function getProfile(userId: number) : Promise<Profile> {
     return await fetchWrapper.get(`users/${userId}/profile`);
@@ -21,14 +22,14 @@ export async function updateProfileSkill(userId: number, {studentSkillId, level}
     return await fetchWrapper.patch(`users/${userId}/profile/skills/${studentSkillId}`, {studentSkillId, level});
 }
 
-export async function addProfileLink(userId: number, {name, url}: any) : Promise<any> {
-    return await fetchWrapper.post(`users/${userId}/profile/links`, {name, url});
+export async function addProfileLink(userId: number, data: FieldValues) : Promise<any> {
+    return await fetchWrapper.post(`users/${userId}/profile/links`, data);
 }
 
 export async function removeProfileLink(userId: number, linkId: number) : Promise<any> {
     return await fetchWrapper.del(`users/${userId}/profile/links/${linkId}`)
 }
 
-export async function updateProfileLink(userId: number, {linkId, name, url}: any) : Promise<any> {
-    return await fetchWrapper.patch(`users/${userId}/profile/links/${linkId}`, {name, url});
+export async function updateProfileLink(userId: number, linkId: number, data: FieldValues) : Promise<any> {
+    return await fetchWrapper.patch(`users/${userId}/profile/links/${linkId}`, data);
 }

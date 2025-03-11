@@ -6,6 +6,7 @@ import { icons } from "@/constants";
 type Props = {
     title: string
     showlabel?: string
+    placeholder?: string
 } & UseControllerProps
 
 export default function InputField(props: Props) {
@@ -26,7 +27,7 @@ export default function InputField(props: Props) {
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
-                placeholder={props.title}
+                placeholder={props.placeholder ? props.placeholder : props.title}
                 secureTextEntry={props.title === "Password" && !showPassword}
                 className='flex-1 text-secondary font-bsemibold text-base'
             />

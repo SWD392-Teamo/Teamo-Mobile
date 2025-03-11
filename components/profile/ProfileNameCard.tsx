@@ -7,7 +7,6 @@ interface ProfileNameCardProps {
     description: string | undefined
 }
 
-const {currentUser} = useGlobalContext()
 
 const ProfileNameCard = ({name, description} : ProfileNameCardProps) => {
     return(

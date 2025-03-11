@@ -1,55 +1,38 @@
-import { useParamsStore } from "@/hooks/useParamsStore";
-import { useSkillStore } from "@/hooks/useSkillStore";
 import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import queryString from 'query-string';
-import { getSkills } from "@/actions/skillAction";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spinner from "@/components/Spinner";
 import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
+import ProfileSkills from "@/components/profile/ProfileSkills";
+import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
+import { useProfileStore } from "@/hooks/useProfileStore";
+import { getProfile } from "@/actions/profileAction";
+import CustomButton from "@/components/CustomButton";
 
 export default function EditProfileSkills() {
   const [isLoading, setLoading] = useState(true);
-  const [search, setSearch] = useState<string>("");
 
   const {currentUser} = useGlobalContext();
 
-  const { setParams } = useParamsStore();
-  const setData = useSkillStore((state) => state.setData);
-  
-  const params = useParamsStore(
-    useShallow((state) => ({
-      search: state.search
-    }))
-  );
-
-  const data = useSkillStore(
-    useShallow((state) => state.skills)
-  );
-
-  const getUrl = () => {
-    return queryString.stringifyUrl({
-      url: "",
-      query: {
-        ...params,
-        ...(search.trim() ? { search } : {}),
-        studentId: currentUser?.id
-      },
-    });
-  };
-
-  useEffect(() => {
-    // Reset when search changes
-    setLoading(true);
+  const studentSkills = useProfileStore(
+    useShallow((state) => (
+      state.profile?.studentSkills
+    ))
+  )
     
-    getSkills(getUrl()).then((response) => {
-      setData(response);
-      setLoading(false);
-    });
-  }, [search, params]);
+  const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills)
+    
+  useEffect(() => {
+    if (currentUser) {
+      getProfile(currentUser.id).then((profile) => {
+        setStudentSkills(profile.studentSkills)
+        setLoading(false)
+      })
+    }
+  }, [getProfile])
 
   return (
     <SafeAreaView>
@@ -59,13 +42,26 @@ export default function EditProfileSkills() {
       />
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
-          <View className="flex flex-row justify-content-start">
-            <BackButton
-                url="(tabs)/profile"
-            />
-            <Text className="ml-5 text-bsm font-blight">Profile</Text>
-            
-          </View >
+          <View className="m-5 ml-5">
+            <View className="flex flex-row justify-content-start mt-2">
+              <BackButton url="(tabs)/profile"/>
+              <Text className="ml-5 text-bsm font-blight">Profile</Text>
+            </View >
+              <Text className="m-2 mr-5 text-bl text-secondary font-bsemibold">Skills</Text>
+          </View>
+          <View className='flex flex-row flex-wrap m-5 mt-1'>
+            <ProfileSkills skills={studentSkills}/>
+          </View>
+          <View className="items-center m-5">
+            <View className='max-w-[500px]'>
+              <CustomButton
+                title='Add skill'
+                handlePress={() => ({})}
+                variant='active'
+                containerStyles='small'
+              />
+            </View>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

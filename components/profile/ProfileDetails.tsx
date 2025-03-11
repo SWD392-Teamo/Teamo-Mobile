@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 import ProfileInformation from './ProfileInformation'
-import { Link, Profile, Skill, StudentSkill } from '@/types';
+import { Profile } from '@/types';
 import Divider from '@/components/Divider';
 import ProfileLinks from './ProfileLinks';
 import ProfileSkills from './ProfileSkills';
@@ -10,25 +10,19 @@ import CustomButton from '../CustomButton';
 import { icons } from '@/constants';
 import { colors } from '@/constants/colors';
 import { router } from 'expo-router';
-import { useState } from 'react';
 
 interface ProfileDetailsProps {
     profile: Profile | null;
 }
 
-const {currentUser} = useGlobalContext()
-
 const ProfileDetails = ({profile} : ProfileDetailsProps) => {
-    const [skills, setSkills] = useState<StudentSkill[]>(profile?.studentSkills || []) 
-    const [links, setLinks] = useState<Link[]>(profile?.links || [])
+    const {currentUser} = useGlobalContext()
 
     async function onEditSkills() {
-        setSkills(profile?.studentSkills || [])
         router.push('/EditProfileSkills')
     }
 
     async function onEditLinks() {
-        setLinks(profile?.links || [])
         router.push('/EditProfileLinks')
     }
 
@@ -60,14 +54,14 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             
             {/* Profile skills section */}
             <View className='mt-2 ml-10 justify-content-start'>
-                <View className='flex flex-row flex-wrap'>
+                <View className='flex flex-row items-center justify-between w-full'>
                     <Text className="mb-2 text-bm font-bsemibold text-black">Skills</Text>
                     {currentUser?.id == profile?.id && (
-                        <View className="w-10 mr-5">
+                        <View className="items-end">
                                 <CustomButton
                                     title=""
                                     variant="default"
-                                    icon={icons.trashCan}
+                                    icon={icons.edit}
                                     iconColor={colors.light.icon}
                                     handlePress={onEditSkills}
                                     containerStyles="w-full"
@@ -84,14 +78,14 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
 
             {/* Profile links section */}
             <View className='mt-2 mb-2 ml-10 justify-content-start'>
-                <View className='flex flex-row flex-wrap'>
+                <View className='flex flex-row items-center justify-between w-full'>
                     <Text className="mb-2 text-bm font-bsemibold text-black">Links</Text>
                     {currentUser?.id == profile?.id && (
-                        <View className="w-10 mr-5">
+                        <View className='items-end'>
                             <CustomButton
                                 title=""
                                 variant="default"
-                                icon={icons.trashCan}
+                                icon={icons.edit}
                                 iconColor={colors.light.icon}
                                 handlePress={onEditLinks}
                                 containerStyles="w-full"

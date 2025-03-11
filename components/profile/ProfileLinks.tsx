@@ -1,5 +1,5 @@
 import ExternalLink from '@/components/ExternalLink'
-import { useGlobalContext } from '@/providers/AuthProvider';
+import { icons } from '@/constants';
 import { Link } from '@/types';
 import React from 'react'
 import { View } from 'react-native'
@@ -16,6 +16,7 @@ export default function ProfileLinks({links}: Props) {
             key={link.id}
             title={link.name}
             url={link.url}
+            icon={icons.link}
           />
         ))}
       </View>
