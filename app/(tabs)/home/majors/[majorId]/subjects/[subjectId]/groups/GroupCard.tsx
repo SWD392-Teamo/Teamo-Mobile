@@ -26,7 +26,6 @@ const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
     }))
   );
 
-  const link = `/${selectedMajor?.code}/${selectedSubject?.code}/groups/details/${group.id}`;
   const { setSelectedGroup } = useGroupStore();
 
   const handleDetailsClick = () => {
