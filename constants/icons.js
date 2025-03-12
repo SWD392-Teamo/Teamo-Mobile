@@ -16,6 +16,7 @@ import profileEdit from "../assets/icons/profile-edit.png";
 import school from "../assets/icons/school.png";
 import send from "../assets/icons/send.png";
 import settings from "../assets/icons/settings.png";
+import shieldCheck from "../assets/icons/shield-check.png"
 import trashCan from "../assets/icons/trash-can.png";
 import home from "../assets/icons/home.png";
 import eye from "../assets/icons/eye.png";
@@ -44,6 +45,7 @@ export default {
   school,
   send,
   settings,
+  shieldCheck,
   trashCan,
   home,
   eye,

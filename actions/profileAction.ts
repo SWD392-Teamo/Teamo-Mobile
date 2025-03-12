@@ -10,16 +10,16 @@ export async function updateProfileDescription({id, description, imgUrl }: Profi
     return await fetchWrapper.patch(`users/${id}/profile/descriptions`, {description, imgUrl});
 }
 
-export async function addProfileSkill(userId: number, {skillId, level}: any) : Promise<any> {
-    return await fetchWrapper.post(`users/${userId}/profile/skills`, {skillId, level});
+export async function addProfileSkill(userId: number, data: FieldValues) : Promise<any> {
+    return await fetchWrapper.post(`users/${userId}/profile/skills`, data);
 }
 
 export async function deleteProfileSkill(userId: number, studentSkillId: number) : Promise<any> {
     return await fetchWrapper.del(`users/${userId}/profile/skills/${studentSkillId}`);
 }
 
-export async function updateProfileSkill(userId: number, {studentSkillId, level}: any) : Promise<any> {
-    return await fetchWrapper.patch(`users/${userId}/profile/skills/${studentSkillId}`, {studentSkillId, level});
+export async function updateProfileSkill(userId: number, studentSkillId: number, data: FieldValues) : Promise<any> {
+    return await fetchWrapper.patch(`users/${userId}/profile/skills/${studentSkillId}`, data);
 }
 
 export async function addProfileLink(userId: number, data: FieldValues) : Promise<any> {
