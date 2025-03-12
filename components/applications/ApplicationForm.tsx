@@ -42,8 +42,8 @@ export default function ApplicationForm({
         formData.append('document', convertDocument(document));
         setLoading(true);
         const res = await uploadApplicationDocument(formData);
-        
-        if (res.statusCode == 200) {
+
+        if (res) {
             const url = res.details;
             setDocumentUrl(url);
             ToastAndroid.show("Document uploaded successfully!", ToastAndroid.SHORT);
@@ -62,11 +62,12 @@ export default function ApplicationForm({
                 ...data,
             documentUrl
             })
-            if (res.statusCode == 200) {
+
+            if (res) {
                 ToastAndroid.show('Send application succeeded', ToastAndroid.SHORT)
                 router.push(`home/majors/${majorId}/subjects/${subjectId}/groups/details/${groupId}` as `/?${string}`);
             }
-            else {
+            else if (res.statusCode == 400){
                 ToastAndroid.show('Send application failed', ToastAndroid.SHORT)
             }
         } catch (error: any) {

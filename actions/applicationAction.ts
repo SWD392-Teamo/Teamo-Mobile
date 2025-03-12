@@ -23,7 +23,6 @@ export async function reviewApplication(groupId: number, applicationId: number, 
 }
 
 export async function sendApplication(groupId: number, data: FieldValues): Promise<any> {
-    console.log(data)
     return await fetchWrapper.post(`groups/${groupId}/applications`, data)
 }
 
