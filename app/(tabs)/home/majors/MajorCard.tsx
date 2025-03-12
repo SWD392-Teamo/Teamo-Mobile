@@ -23,13 +23,13 @@ export default function MajorCard({major} : Props) {
             }}
             onPress={onSelectedMajor}
         >
-          <View className="w-full border-2 border-primary rounded-lg overflow-hidden">
+          <View className="w-full border-2 border-primaryLight rounded-lg overflow-hidden shadow shadow-black/10 elevation-2">
             <Image
-                className="w-full h-40" 
+                className="w-full h-44" 
                 source={{ uri: major.imgUrl }}
                 resizeMode="cover"
             />
-            <View className="px-1 py-2">
+            <View className="mb-2 ml-2 mr-2 px-1 py-2">
                 <Text className="font-bbold text-primary text-bm">{major.code}</Text>
                 <Text className="font-bregular text-primary text-bm text-wrap">{major.name}</Text>
             </View>

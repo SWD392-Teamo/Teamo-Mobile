@@ -1,38 +1,51 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spinner from "@/components/Spinner";
 import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
-import ProfileSkills from "@/components/profile/ProfileSkills";
 import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
-import { useProfileStore } from "@/hooks/useProfileStore";
 import { getProfile } from "@/actions/profileAction";
 import CustomButton from "@/components/CustomButton";
+import { router, useFocusEffect } from "expo-router";
+import EditSkillGuide from "@/components/profile/EditSkillGuide";
 
 export default function EditProfileSkills() {
   const [isLoading, setLoading] = useState(true);
 
   const {currentUser} = useGlobalContext();
 
-  const studentSkills = useProfileStore(
-    useShallow((state) => (
-      state.profile?.studentSkills
-    ))
-  )
+  const studentSkills = useStudentSkillStore(state => state.studentSkills);
+  const setStudentSkills = useStudentSkillStore(state => state.setStudentSkills);
+        
+  const fetchStudentSkills = useCallback(async () => {
+      if (currentUser) {
+        setLoading(true);
+        try {
+          const profile = await getProfile(currentUser.id);
+          setStudentSkills(profile.studentSkills);
+        } catch (error) {
+          console.error("Error fetching student skills:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    }, [currentUser, setStudentSkills]);
     
-  const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills)
+    useEffect(() => {
+      fetchStudentSkills();
+    }, [fetchStudentSkills]);
     
-  useEffect(() => {
-    if (currentUser) {
-      getProfile(currentUser.id).then((profile) => {
-        setStudentSkills(profile.studentSkills)
-        setLoading(false)
-      })
-    }
-  }, [getProfile])
+    useFocusEffect(
+      useCallback(() => {
+        fetchStudentSkills();
+      }, [fetchStudentSkills])
+    );
+
+  async function onAddSkillForm() {
+    router.push('/AddSkillForm');
+  }
 
   return (
     <SafeAreaView>
@@ -50,13 +63,20 @@ export default function EditProfileSkills() {
               <Text className="m-2 mr-5 text-bl text-secondary font-bsemibold">Skills</Text>
           </View>
           <View className='flex flex-row flex-wrap m-5 mt-1'>
-            <ProfileSkills skills={studentSkills}/>
+            <View className="w-full">
+              {studentSkills?.map((studentSkill) => (
+                <EditSkillGuide 
+                  key={studentSkill.id}
+                  studentSkill={studentSkill}
+                />
+              ))}
+            </View>
           </View>
           <View className="items-center m-5">
             <View className='max-w-[500px]'>
               <CustomButton
                 title='Add skill'
-                handlePress={() => ({})}
+                handlePress={() => onAddSkillForm()}
                 variant='active'
                 containerStyles='small'
               />

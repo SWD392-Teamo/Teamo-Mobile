@@ -69,21 +69,21 @@ export default function EditLinkForm() {
             <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Update link</Text>
           </View>
 
-            <View className="m-5">
+            <View className="m-5 mt-1">
                 {selectedLink ? (
-                    <>
-                    <InputField 
+                  <>
+                  <InputField 
                     title='Name' 
                     name='name' 
                     control={control}
                     placeholder={selectedLink.name}
                     showlabel='true'
                     rules={{
-                        pattern: {
-                            value: /^[a-zA-Z0-9\s\-_()]+$/,
-                            message: 'Invalid link name.'
-                        }
-                  }}/>
+                      pattern: {
+                        value: /^[a-zA-Z0-9\s\-_()]+$/,
+                        message: 'Invalid link name.'
+                      }}}
+                  />
                   <InputField 
                     title='URL' 
                     name='url' 
@@ -91,36 +91,37 @@ export default function EditLinkForm() {
                     placeholder={selectedLink.url}
                     showlabel='true'
                     rules={{
-                        pattern: {
-                            value: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w@:%_\+.~#?&//=]*)?$/i,
-                            message: 'Invalid URL.'
-                        }
-                    }}/>
-                    </>
+                      pattern: {
+                        value: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w@:%_\+.~#?&//=]*)?$/i,
+                        message: 'Invalid URL.'
+                    }}}
+                  />
+
+                  <View className="flex flex-row items-center justify-center px-4 m-5 gap-4">
+                    <View className='w-[120px]'>
+                      <CustomButton
+                        title='Save'
+                        handlePress={handleSubmit(onSave)}
+                        isLoading={isSubmitting}
+                        isNotValid={!isValid}
+                        variant='active'
+                        containerStyles='small'
+                      />
+                    </View>
+                    <View className='w-[120px]'>
+                      <CustomButton
+                        title='Remove'
+                        handlePress={onRemove}
+                        variant='delete'
+                        containerStyles='small'
+                      />
+                    </View>
+                  </View>
+                  </>
                 ) : (
                     <Text className="text-gray-600 text-center font-bmedium">No link selected</Text>
                 )}
             </View>
-          <View className="flex flex-row items-center justify-center w-full px-4 my-3 gap-4">
-            <View className='w-[120px]'>
-              <CustomButton
-                title='Save'
-                handlePress={handleSubmit(onSave)}
-                isLoading={isSubmitting}
-                isNotValid={!isValid}
-                variant='active'
-                containerStyles='small'
-              />
-            </View>
-            <View className='w-[120px]'>
-              <CustomButton
-                title='Remove'
-                handlePress={onRemove}
-                variant='delete'
-                containerStyles='small'
-              />
-            </View>
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

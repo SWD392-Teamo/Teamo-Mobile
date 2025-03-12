@@ -9,7 +9,7 @@ import CustomButton from "@/components/CustomButton";
 import { router, useFocusEffect } from "expo-router";
 import { getProfile } from "@/actions/profileAction";
 import { useLinkStore } from "@/hooks/useLinkStore";
-import EditLinkGuide from "@/components/EditLinkGuide";
+import EditLinkGuide from "@/components/profile/EditLinkGuide";
 
 export default function EditProfileLinks() {
   const [isLoading, setLoading] = useState(true);
