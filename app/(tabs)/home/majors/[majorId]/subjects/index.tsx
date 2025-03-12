@@ -11,9 +11,10 @@ import { getSubjects } from '@/actions/subjectAction';
 import SubjectHeader from './SubjectHeader';
 import SubjectCard from './SubjectCard';
 import loadMore from '@/utils/loadMore';
+import { useLoading } from '@/providers/LoadingProvider';
 
 export default function SubjectsListing() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -65,12 +66,12 @@ export default function SubjectsListing() {
     if(selectedMajor) {
       setPage(1);
       setHasMore(true);
-      setLoading(true);
+      showLoading();
 
       getSubjects(getUrl(1)).then((response) => {
         setData(response);
         setHasMore(response.data.length < response.count)
-        setLoading(false);
+        hideLoading();
       });
     }
   }, [search, selectedMajor, getSubjects]);
@@ -113,10 +114,6 @@ export default function SubjectsListing() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView
         onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
           if (isCloseToBottom(nativeEvent)) {

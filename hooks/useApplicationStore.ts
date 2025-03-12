@@ -11,6 +11,7 @@ type Actions = {
     setData: (data: PagedResult<Application>) => void
     setSelectedApplication: (application: Application) => void
     appendData: (newApplications: Application[]) => void
+    resetData: () => void
 }
 
 const initialState: State = {
@@ -38,5 +39,13 @@ export const useApplicationStore = create<State & Actions>((set) => ({
         set((state) => ({
             applications: [...state.applications,...newApplications]
         }))
-    }
+    },
+
+    resetData: () => {
+        set(() => ({
+           applications: [],
+           totalCount: 0,
+           selectedApplication: null
+        }))
+     }
 }))

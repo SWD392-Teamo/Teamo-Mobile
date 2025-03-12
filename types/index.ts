@@ -40,6 +40,7 @@ export type Application = {
     studentName: string
     studentEmail: string
     imgUrl: string
+    documentUrl: string
     requestTime: Date
     requestContent: string
     groupPositionName: string
@@ -58,6 +59,7 @@ export type Subject = {
     id: number
     code: string
     name: string
+    description: string
     imgUrl: string
     fields: Field[]
 }
@@ -68,6 +70,16 @@ export type Field = {
     description: string
 }
 
+export type GroupMember = {
+    groupId: number;
+    studentId: number;
+    studentName: string;
+    studentEmail: string;
+    imgUrl: string;
+    positions: string[];
+    role: string;
+}
+    
 export type Skill = {
     id: number
     name: string
@@ -92,16 +104,6 @@ export type Group = {
     totalMembers: number
     totalPositions: number
     totalApplications: number
-}
-
-export type GroupMember = {
-    groupId: number
-    studentId: number
-    studentName: string
-    studentEmail: string
-    imgUrl: string
-    positions: string[]
-    role: string
 }
 
 export type GroupPosition = {

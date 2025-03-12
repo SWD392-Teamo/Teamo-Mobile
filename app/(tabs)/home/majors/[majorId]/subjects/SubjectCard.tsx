@@ -13,7 +13,7 @@ export default function SubjectCard({subject} : Props) {
 
     function onSelectedSubject() {
         setSelectedSubject(subject)
-        router.push('/');
+        router.push('/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups');
     }
 
     return (

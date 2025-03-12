@@ -21,7 +21,9 @@ import home from "../assets/icons/home.png";
 import eye from "../assets/icons/eye.png";
 import eyeHide from "../assets/icons/eyeHide.png";
 import google from "../assets/icons/google.png";
-
+import star from "../assets/icons/star.png";
+import bolt from "../assets/icons/bolt.png";
+import download from "../assets/icons/download.png";
 
 export default {
   application,
@@ -46,5 +48,8 @@ export default {
   home,
   eye,
   eyeHide,
-  google
+  google,
+  star,
+  bolt,
+  download
 };

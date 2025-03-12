@@ -49,7 +49,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="groups/index"
+          name="groups"
           options={{
             title: 'Your Groups',
             tabBarIcon: ({ color, focused }) => <TabIcon

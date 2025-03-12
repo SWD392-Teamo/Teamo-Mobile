@@ -1,23 +1,23 @@
-import CustomButton from '@/components/CustomButton'
-import Spinner from '@/components/Spinner';
+import CustomButton from '@/components/CustomButton';
 import { images } from '@/constants';
-import { colors } from '@/constants/colors';
 import { useGlobalContext } from '@/providers/AuthProvider';
-import { useRouter } from 'expo-router'
-import React, { useEffect } from 'react'
-import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { useLoading } from '@/providers/LoadingProvider';
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function OnBoarding() {
   const router = useRouter();
 
-  const { loading, isAuthenticated } = useGlobalContext();
+  const { showLoading, hideLoading } = useLoading();
+  const { isAuthenticated } = useGlobalContext();
 
   useEffect(() => {
-    if (!loading && isAuthenticated) {
+    if (isAuthenticated) {
       router.push('/home');
     }
-  }, [loading, isAuthenticated, router]);
+  }, [isAuthenticated, router]);
 
   // Shared values for animation
   const sloganOpacity = useSharedValue(0);
@@ -54,11 +54,6 @@ export default function OnBoarding() {
 
   return (
     <SafeAreaView className="bg-tertiary h-full p-4">
-
-      <Spinner 
-        isLoading={loading}
-        spinnerColor={colors.light.tint} />
-
       <ScrollView
         contentContainerStyle={{
           height: '100%',

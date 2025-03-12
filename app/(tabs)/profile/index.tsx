@@ -13,14 +13,14 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
 import NotFoundScreen from '@/app/+not-found'
-import ApplicationsListing from './ApplicationsListing'
+import ApplicationsListing from '@/components/applications/ApplicationsListing'
 import { uploadImage } from '@/actions/userActions'
 import { DocumentPickerResponse } from '@react-native-documents/picker'
 import convertDocument from '@/utils/DocumentConverter'
+import { useLoading } from '@/providers/LoadingProvider'
 
 export default function Profile() {
-  const [isLoading, setLoading] = useState(true);
-
+  const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
 
   // Get the user profile from the store
@@ -34,9 +34,10 @@ export default function Profile() {
 
   useEffect(() => {
     if (currentUser) {
+      showLoading();
       getProfile(currentUser.id).then((data) => {
         setData(data)
-        setLoading(false)
+        hideLoading();
       })
     }
   }, [getProfile])
@@ -67,14 +68,9 @@ export default function Profile() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
-
       <ScrollView>
-        <View className = 'w-full flex-1 justify-content-start'>  
-          <View className='flex flex-row mt-5 ms-5'>
+        <View className = 'w-full flex-1 justify-content-start px-5'>  
+          <View className='flex flex-row mt-5'>
             <ProfileImage imgUrl = {data?.imgUrl} onImageSelect={handleImageUpload}/>
             <ProfileNameCard
               id = {data?.id}
@@ -85,8 +81,8 @@ export default function Profile() {
 
           <Divider />
 
-          <View className='flex flex-row items-center justify-center w-full px-4 my-3 gap-4'>
-            <View className='flex-1 max-w-[160px]'> 
+          <View className='flex flex-row items-center justify-center w-full my-3 px-4 gap-4'>
+            <View className='flex-1'> 
               <CustomButton
                 title='Details'
                 handlePress={() => setActiveView('details')}
@@ -94,7 +90,7 @@ export default function Profile() {
                 containerStyles='small'
               />
             </View>
-            <View className='flex-1 max-w-[160px]'>
+            <View className='flex-1'>
               <CustomButton
                   title='Applications'
                   handlePress={() => setActiveView('applications')}
@@ -111,7 +107,7 @@ export default function Profile() {
                 profile={data}
               />
             ) : (activeView == 'applications') ? (
-              <ApplicationsListing />
+              <ApplicationsListing isForUser={true} />
             ) : (
               <NotFoundScreen />
             )
