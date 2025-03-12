@@ -13,6 +13,8 @@ type Actions = {
    setData: (data: PagedResult<Group>) => void
    setSelectedGroup: (group: Group) => void
    setSelectedGroupPosition: (position: GroupPosition) => void
+   appendData: (newSubjects: Group[]) => void
+   resetData: () => void
 }
 
 const initialState: State = {
@@ -34,5 +36,20 @@ export const useGroupStore = create<State & Actions>((set) => ({
       }))
    },
    setSelectedGroup: (group: Group) => set(() => ({ selectedGroup: group })),
-   setSelectedGroupPosition: (position: GroupPosition) => set(() => ({ selectedGroupPosition: position }))
+
+   setSelectedGroupPosition: (position: GroupPosition) => set(() => ({ selectedGroupPosition: position })),
+
+   appendData: (newGroups: Group[]) => {
+           set((state) => ({
+               groups: [...state.groups,...newGroups]
+           }))
+       },
+   resetData: () => {
+      set(() => ({
+         groups: [],
+         totalCount: 0,
+         pageCount: 0,
+         selectedGroupPosition: null
+      }))
+   }
 }))

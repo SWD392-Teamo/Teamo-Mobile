@@ -9,11 +9,11 @@ import { Group } from "@/types";
 import { defaultAvatar, defaultGroup } from "@/utils/defaultImage";
 import { Text, View } from "react-native";
 import { useShallow } from "zustand/shallow";
-import PositionCard from "./PositionCard";
 import { Link } from "expo-router";
 import Divider from "@/components/Divider";
+import PositionCard from "./PositionCard";
 
-const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
+const GroupCard: React.FC<{ group: Group, owned: boolean }> = ({ group, owned }) => {
   const { selectedMajor } = useMajorStore(
     useShallow((state) => ({
       selectedMajor: state.selectedMajor,
@@ -41,7 +41,7 @@ const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
   return (
     <View className="w-full border-2 border-primary p-5 rounded-lg flex flex-row items-start justify-between text-center transition">
       <Link href={{
-          pathname: '/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups/details/[id]',
+          pathname: owned ? '/(tabs)/groups/details/[id]' : '/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups/details/[id]',
           params: {majorId: selectedMajor?.id!, subjectId: selectedSubject?.id!, id: group.id}}}
           onPress={handleDetailsClick}
       >  
@@ -57,15 +57,17 @@ const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
                 <SmallGroupImage imgUrl={defaultGroup} />
               </View>
             )}
-            <Text className="text-left w-full font-bbold text-primary text-xl my-2">
-              {group?.name}
-            </Text>
+            <View className='flex flex-row flex-wrap'>
+              <Text className="text-left w-full font-bbold text-primary text-xl my-2">
+                {group?.name}
+              </Text>
+            </View>
           </View>
 
           <Divider />
 
           {/* Group title and status */}
-          <View className="flex flex-row gap-4 items-center">
+          <View className="flex flex-row flex-wrap gap-4 items-center">
             <Text className="text-lg font-bbold text-black">{group?.title}</Text>
             {group?.status && <GroupStatusBadge status={group?.status} />}
           </View>

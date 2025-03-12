@@ -14,7 +14,8 @@ import { useRouter } from 'expo-router';
 const GroupPositionCard: React.FC<{
   positions: GroupPosition[];
   members: GroupMember[];
-}> = ({ positions, members }) => {
+  owned: boolean;
+}> = ({ positions, members, owned }) => {
   const router = useRouter();
   const setSelectedGroupPosition = useGroupStore(state => state.setSelectedGroupPosition);
 
@@ -86,19 +87,21 @@ const GroupPositionCard: React.FC<{
                 </View>
               ))}
             </View>
-            <Pressable className="btn btn--primary justify-self-end">  
-                <CustomButton
-                    title='Easy Apply'
-                    handlePress={() => {
-                      setSelectedGroupPosition(position);
-                      router.push('/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups/details/[id]/apply');
-                    }}
-                    variant='primary'
-                    containerStyles='w-full mt-5'
-                    icon={icons.bolt}
-                    iconColor={colors.dark.icon}
-                />
-            </Pressable>
+            {!owned && 
+              <Pressable className="btn btn--primary justify-self-end">  
+                  <CustomButton
+                      title='Easy Apply'
+                      handlePress={() => {
+                        setSelectedGroupPosition(position);
+                        router.push('/(tabs)/home/majors/[majorId]/subjects/[subjectId]/groups/details/[id]/apply');
+                      }}
+                      variant='primary'
+                      containerStyles='w-full mt-5'
+                      icon={icons.bolt}
+                      iconColor={colors.dark.icon}
+                  />
+              </Pressable>
+            }
           </View>
         </View>
       ))}

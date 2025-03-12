@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native'
 import { useShallow } from 'zustand/shallow'
 import NotFoundScreen from '@/app/+not-found'
-import ApplicationsListing from './ApplicationsListing'
+import ApplicationsListing from '@/components/applications/ApplicationsListing'
 import { uploadImage } from '@/actions/userActions'
 import { DocumentPickerResponse } from '@react-native-documents/picker'
 import convertDocument from '@/utils/DocumentConverter'
@@ -105,7 +105,7 @@ export default function Profile() {
             (
               <ProfileDetails profile={data}/>
             ) : (activeView == 'applications') ? (
-              <ApplicationsListing />
+              <ApplicationsListing isForUser={true} />
             ) : (
               <NotFoundScreen />
             )

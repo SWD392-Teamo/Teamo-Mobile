@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, Image, SafeAreaView } from "react-native";
+import { View, Text, ScrollView, Image, SafeAreaView, Pressable } from "react-native";
 import BackButton from "@/components/BackButton";
 import DateConverter from "@/components/DateConvert";
 import GroupStatusBadge from "@/components/groups/GroupStatus";
@@ -10,26 +10,30 @@ import { useShallow } from "zustand/shallow";
 import GroupPositionCard from "@/components/groups/GroupPosition";
 import { defaultAvatar, defaultGroup } from "@/utils/defaultImage";
 import { icons } from "@/constants";
-import { useMajorStore } from "@/hooks/useMajorStore";
-import { useSubjectStore } from "@/hooks/useSubjectStore";
 import { GroupMember } from "@/types";
 import { colors } from "@/constants/colors";
 import Divider from "@/components/Divider";
+import CustomButton from "@/components/CustomButton";
+import { useRouter } from "expo-router";
+import { useGlobalContext } from "@/providers/AuthProvider";
 
 const GroupDetail: React.FC = () => {
+  const {currentUser} = useGlobalContext();
+  const router = useRouter()
   const { selectedGroup } = useGroupStore(
     useShallow((state) => ({
       selectedGroup: state.selectedGroup,
     }))
   );
 
-  // Get selected major and subject to route back to
-  const {selectedMajor} = useMajorStore();
-  const {selectedSubject} = useSubjectStore();
-
   // Get group members list and positions list
   const groupMembers = selectedGroup?.groupMembers;
   const groupPositions = selectedGroup?.groupPositions;
+
+  // Check if the current user is the leader
+  const isLeader = groupMembers?.some(
+    (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
+  );
 
   return (
     <SafeAreaView>
@@ -37,7 +41,7 @@ const GroupDetail: React.FC = () => {
         {/* Header */}
         <View className="m-2 ml-5">
             <View className="flex flex-row justify-content-start">
-              <BackButton url={`home/majors/${selectedMajor?.id}/subjects/${selectedSubject?.id}/groups`} />
+              <BackButton url={`groups`} />
               <Text className="ml-5 text-bsm font-blight">{selectedGroup?.name}</Text>
             </View >
         </View>
@@ -129,7 +133,7 @@ const GroupDetail: React.FC = () => {
               <GroupPositionCard
                 positions={groupPositions}
                 members={groupMembers}
-                owned={false}
+                owned={true}
               />
             )}
           </View>
@@ -173,6 +177,20 @@ const GroupDetail: React.FC = () => {
                 ))}
               </View>
             </View>
+            {isLeader && 
+                <Pressable className="btn btn--primary justify-self-end">  
+                    <CustomButton
+                        title='View Applications'
+                        handlePress={() => {
+                            router.push(`/(tabs)/groups/details/${selectedGroup?.id}/applications`);
+                        }}
+                        variant='primary'
+                        containerStyles='w-full mt-5'
+                        icon={icons.application}
+                        iconColor={colors.dark.icon}
+                    />
+                </Pressable>
+            }
           </View>
         </View>
       </ScrollView>

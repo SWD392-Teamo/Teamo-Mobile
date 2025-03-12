@@ -1,18 +1,24 @@
-import { getData } from "@/actions/groupAction";
+import { getGroups } from "@/actions/groupAction";
 import { useMajorStore } from "@/hooks/useMajorStore";
 import { useParamsStore } from "@/hooks/useParamsStore";
 import { useSubjectStore } from "@/hooks/useSubjectStore";
 import queryString from "query-string";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import GroupHeader from "./GroupHeader";
-import GroupCard from "./GroupCard";
+import GroupCard from "@/components/groups/GroupCard";
 import { useGroupStore } from "@/hooks/useGroupStore";
-import { SafeAreaView, ScrollView, ToastAndroid, View } from "react-native";
+import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { useLoading } from "@/providers/LoadingProvider";
+import loadMore from "@/utils/loadMore";
+import { colors } from "@/constants/colors";
+import { useFocusEffect } from "expo-router";
 
 export default function Listings() {
   const { showLoading, hideLoading } = useLoading();
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const { selectedSubject } = useSubjectStore(
     useShallow((state) => ({
@@ -36,52 +42,94 @@ export default function Listings() {
   );
 
   const data = useGroupStore(
-    useShallow((state) => ({
-      groups: state.groups,
-      totalCount: state.totalCount,
-      pageCount: state.pageCount,
-    }))
-  );
+    useShallow((state) => state.groups)
+  )
 
   const setData = useGroupStore((state) => state.setData);
-  const setParams = useParamsStore((state) => state.setParams);
+  const resetData = useGroupStore((state) => state.resetData);
+  const appendData = useGroupStore((state) => state.appendData);
+  
 
-  const url = queryString.stringifyUrl({
-    url: "",
-    query: {
-      ...params,
-      ...(search.trim() ? { search } : {}),
-    },
-  });
+  const getUrl = (pageNum:number) => {
+    return queryString.stringifyUrl({
+      url: "",
+      query: {
+        ...params,
+        ...(search.trim() ? { search } : {}),
+        pageIndex: pageNum
+      },
+    });
+  };
 
-  useEffect(() => {
-    showLoading();
-    getData(url)
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => {
-        ToastAndroid.show(error.status + " " + error.message, ToastAndroid.SHORT);
-      })
-      .finally(() => {
+  useFocusEffect(
+    useCallback(() => {
+      setPage(1);
+      setHasMore(true);
+      showLoading();
+  
+      getGroups(getUrl(1)).then((response) => {
+        setData(response);
+        setHasMore(response.data.length < response.count);
         hideLoading();
       });
-  }, [url, setData]);
+      
+      // Optional: Add cleanup if necessary, e.g., reset states when leaving the screen
+      return () => {
+        resetData(); // Clear groups if needed when navigating away
+      };
+    }, [search, getGroups])
+  );
+
+  const handleLoadMore = async () => {
+      if (loadingMore || !hasMore) return;
+        
+      setLoadingMore(true);
+        
+      const result = await loadMore(
+        page,
+        data,
+        getUrl,
+        getGroups, 
+        appendData
+      );
+        
+      setHasMore(result.hasMore);
+      setPage(result.newPage);
+      setLoadingMore(false);
+    };
+  
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
+      const paddingToBottom = 20;
+      return layoutMeasurement.height + contentOffset.y >= 
+        contentSize.height - paddingToBottom;
+    };
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView
+        onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+          if (isCloseToBottom(nativeEvent)) {
+            handleLoadMore();
+          }
+        }}
+        scrollEventThrottle={400}
+      >
         <View className="w-full flex justify-center">
           {selectedMajor && selectedSubject && (
             <GroupHeader subject={selectedSubject} major={selectedMajor} setSearch={setSearch} />
           )}
           <View className="w-full p-3">
-            {data.groups &&
-              data.groups
-                .map((group) => (
-                  <GroupCard key={group.id} group={group} />
-                ))}
+            {data &&
+              data.map((group) => (
+                <GroupCard key={group.id} group={group} owned={false} />
+              ))}
           </View>
+          {loadingMore && (
+            <View className="py-4 flex items-center justify-center">
+              <ActivityIndicator size="small" color={colors.light.tint} />
+              <Text className="text-center mt-2 text-gray-500">Loading group...</Text>
+            </View>
+          )}  
         </View>
       </ScrollView>
     </SafeAreaView>
