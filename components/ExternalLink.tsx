@@ -1,17 +1,18 @@
 import React from "react"
-import { Text, TouchableOpacity, StyleSheet, Platform } from "react-native"
+import { Text, TouchableOpacity, StyleSheet, Platform, Image, ColorValue } from "react-native"
 import * as WebBrowser from "expo-web-browser"
 
 type ExternalLinkProps = {
   url: string     
   title?: string  
+  icon?: any
 }
 
 /**
  * - On native: opens in an in-app browser (via expo-web-browser).
  * - On web: opens in a new tab by default.
  */
-export default function ExternalLink({ url, title }: ExternalLinkProps) {
+export default function ExternalLink({ url, title, icon }: ExternalLinkProps) {
   const handlePress = async () => {
     if (Platform.OS === "web") {
       // On web, open the link in a new tab
@@ -24,31 +25,17 @@ export default function ExternalLink({ url, title }: ExternalLinkProps) {
 
   return (
     <TouchableOpacity
-      style={styles.linkContainer}
+      className="flex flex-row flex-wrap m-1.5"
       onPress={handlePress}
     >
-      <Text style={styles.titleText} className="p-2">{title} </Text>
-      <Text style={styles.linkText}>{url}</Text>
+      {icon && (
+        <Image
+          className="w-5 h-5 mr-3" 
+          source={icon} 
+        />
+      )}
+      <Text className="mr-3 text-black font-bold font-bregular text-bsm">{title} </Text>
+      <Text className="text-bsm font-bregular text-gray-600 underline">{url}</Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  linkContainer: {
-    margin: 2,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  linkText: {
-    color: "#007AFF",
-    textDecorationLine: "underline",
-    fontSize: 15,
-    fontFamily: "BeVietnamePro-Regular"
-  },
-  titleText: {
-    color: "#1C1C1C",
-    fontSize: 15,
-    fontWeight: "bold",
-    fontFamily: "BeVietnamPro-Regular"
-  }
-})

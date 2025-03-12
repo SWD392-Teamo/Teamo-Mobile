@@ -14,7 +14,9 @@ module.exports = {
         secondary: '#1C1C1C',
         tertiary: '#FCFCFC',
         grey: '#606261',
-        darkgrey: '#3E424A'
+        darkgrey: '#3E424A',
+        softgrey: '#E0E0E0',
+        red: '#E63946'
       },
       fontFamily: {
         bthin: ["BeVietnamPro-Thin", "sans-serif"],
@@ -32,7 +34,8 @@ module.exports = {
         bxl: 30,
         bl: 25,
         bm: 20,
-        bsm: 15
+        bsm: 15,
+        bxsm: 12
       }
     },
   },

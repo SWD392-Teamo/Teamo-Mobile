@@ -5,6 +5,7 @@ import profile from "../assets/icons/profile.png";
 import edit from "../assets/icons/edit.png";
 import gear from "../assets/icons/gear.png";
 import group from "../assets/icons/group.png";
+import link from "../assets/icons/link.png";
 import login from "../assets/icons/login.png";
 import logout from "../assets/icons/logout.png";
 import major from "../assets/icons/major.png";
@@ -32,6 +33,7 @@ export default {
   edit,
   gear,
   group,
+  link,
   login,
   logout,
   major,

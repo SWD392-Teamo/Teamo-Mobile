@@ -48,8 +48,8 @@ export default function OnBoarding() {
 
   // Trigger animation on mount
   useEffect(() => {
-    sloganOpacity.set(1);
-    buttonTranslateY.set(0);
+    sloganOpacity.value = 1;
+    buttonTranslateY.value = 0;
   }, []);
 
   return (

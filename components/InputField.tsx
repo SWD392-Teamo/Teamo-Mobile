@@ -8,6 +8,7 @@ type Props = {
     showlabel?: string
     multiline: boolean
     rows?: number
+    placeholder?: string
 } & UseControllerProps
 
 export default function InputField(props: Props) {
@@ -32,7 +33,7 @@ export default function InputField(props: Props) {
                 editable
                 multiline={props.multiline}
                 numberOfLines={props.rows}
-                placeholder={props.title}
+                placeholder={props.placeholder ? props.placeholder : props.title}
                 secureTextEntry={props.title === "Password" && !showPassword}
                 className='flex-1 text-secondary font-bsemibold text-base'
                 style={{

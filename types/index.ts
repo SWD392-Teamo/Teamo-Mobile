@@ -51,6 +51,7 @@ export type Major = {
     id: number
     code: string
     name: string
+    imgUrl: string
     subjects: Subject[]
 }
 
@@ -59,6 +60,7 @@ export type Subject = {
     code: string
     name: string
     description: string
+    imgUrl: string
     fields: Field[]
 }
 
@@ -77,33 +79,39 @@ export type GroupMember = {
     positions: string[];
     role: string;
 }
-
-export type GroupPosition = {
-    id: number;
-    name: string;
-    count: number;
-    status: string;
+    
+export type Skill = {
+    id: number
+    name: string
+    type: string
 }
 
 export type Group = {
-    id: number;
-    name: string;
-    title: string;
-    semesterName: string;
-    description: string;
-    createdAt: string;
-    createdByUserName: string;
-    maxMember: number;
-    imgUrl: string;
-    groupMembers: GroupMember[];
-    status: string;
-    fieldName: string;
-    subjectCode: string;
-    totalMembers: number;
-    totalGroupPositions: number;
-    totalApplications: number;
-    groupPositions: GroupPosition[];
-    applications: Application[];
+    id: number
+    name: string
+    title: string
+    semesterName: string
+    createdAt: Date
+    createdByUserName: string
+    maxMember: number
+    status: string
+    fieldName: string
+    subjectCode: string
+    imgUrl: string
+    groupMembers: GroupMember[]
+    groupPositions: GroupPosition[]
+    applications: Application[]
+    totalMembers: number
+    totalPositions: number
+    totalApplications: number
+}
+
+export type GroupPosition = {
+    id: number
+    name: string
+    count: number
+    status: string
+    skills: Skill[]
 }
 
 // Generic type for loadMore function
