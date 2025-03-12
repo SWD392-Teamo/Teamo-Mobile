@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePathname } from "expo-router";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
+import { useLoading } from "./LoadingProvider";
 
 // useGlobalContext Hook
 export const useGlobalContext = () => {
@@ -20,7 +21,7 @@ type Props = {
 };
 
 export default function AuthProvider({ children }: Props) {
-  const [loading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const pathName = usePathname();
 
   // Put all auth state into a single object
@@ -39,6 +40,7 @@ export default function AuthProvider({ children }: Props) {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
+        showLoading()
         const res = await getCurrentUser();
         if (res) {
           // If the user exists then persist login
@@ -60,7 +62,7 @@ export default function AuthProvider({ children }: Props) {
         AsyncStorage.removeItem("authToken");
         reset(); // Ensure the user is logged out on error
       } finally {
-        setLoading(false);
+        hideLoading();
       }
     };
 
@@ -71,8 +73,7 @@ export default function AuthProvider({ children }: Props) {
     <AuthContext.Provider
       value={{
         isAuthenticated: auth.isAuthenticated,
-        currentUser: auth.currentUser,
-        loading,
+        currentUser: auth.currentUser
       }}
     >
       {children}

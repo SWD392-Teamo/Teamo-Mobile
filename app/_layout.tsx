@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import StackNavigator from "./StackNavigator";
 import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
+import { LoadingProvider } from "@/providers/LoadingProvider";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -42,9 +43,11 @@ export default function RootLayout() {
 
   return (
     <NotificationProvider>
-      <AuthProvider>
-        <StackNavigator />
-      </AuthProvider>
+      <LoadingProvider>
+        <AuthProvider>
+          <StackNavigator/>
+        </AuthProvider>
+      </LoadingProvider>
     </NotificationProvider>
   );
 }

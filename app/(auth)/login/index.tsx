@@ -9,13 +9,13 @@ import { useGlobalContext } from '@/providers/AuthProvider';
 export default function Login() {
   const router = useRouter();
   
-  const { loading, isAuthenticated } = useGlobalContext();
+  const { isAuthenticated } = useGlobalContext();
 
   useEffect(() => {
-    if (!loading && isAuthenticated) {
+    if (isAuthenticated) {
       router.push('/home');
     }
-  }, [loading, isAuthenticated, router]);
+  }, [isAuthenticated, router]);
 
   return (
     <SafeAreaView className="bg-tertiary h-full p-4 flex flex-row items-center">

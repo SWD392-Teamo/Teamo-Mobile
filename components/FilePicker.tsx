@@ -8,7 +8,7 @@ interface FilePickerProps {
     onFileSelect: (file: DocumentPickerResponse) => void;
     accept?: Array<string>;
     multiple?: boolean;
-    hasIcon?: boolean;
+    showLabel?: boolean;
     placeholder?: string;
     showFileName?: boolean;
 }
@@ -17,7 +17,7 @@ const FilePicker: React.FC<FilePickerProps> = ({
     onFileSelect,
     accept = ['*/*'],
     multiple = false,
-    hasIcon = false,
+    showLabel = false,
     placeholder = 'Choose file',
     showFileName = true
 }) => {
@@ -47,15 +47,23 @@ const FilePicker: React.FC<FilePickerProps> = ({
                 onPress={handleFilePick}
                 className="bg-secondary rounded-full p-3"
             >
-                {hasIcon ? (
+                {showLabel ? (
+                    <View className="flex flex-row gap-2">
+                        <Text className="text-tertiary">{placeholder}</Text>
+                            <Image
+                            source={icons.edit}
+                            resizeMode="contain"
+                            className="w-6 h-6"
+                            tintColor={colors.dark.icon}
+                        />
+                    </View>
+                ) : (
                     <Image
                         source={icons.edit}
                         resizeMode="contain"
                         className="w-6 h-6"
                         tintColor={colors.dark.icon}
                     />
-                ) : (
-                    <Text className="text-tertiary">{placeholder}</Text>
                 )}
             </Pressable>
 

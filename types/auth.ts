@@ -8,5 +8,4 @@ export type User = {
 export interface AuthContextType {
   isAuthenticated: boolean;
   currentUser: User | null;
-  loading: boolean;
 }

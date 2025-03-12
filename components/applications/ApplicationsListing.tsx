@@ -1,35 +1,40 @@
-import { deleteApplication, getSentApplications } from '@/actions/applicationAction';
-import Spinner from '@/components/Spinner';
+import { deleteApplication, getGroupApplications, getUserApplications, reviewApplication } from '@/actions/applicationAction';
+import CustomButton from '@/components/CustomButton';
 import { colors } from '@/constants/colors';
 import { useApplicationStore } from '@/hooks/useApplicationStore';
-import { useGlobalContext } from '@/providers/AuthProvider';
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native'
-import { useShallow } from 'zustand/shallow';
 import { useParamsStore } from '@/hooks/useParamsStore';
-import queryString from 'query-string';
+import { useGlobalContext } from '@/providers/AuthProvider';
+import { useLoading } from '@/providers/LoadingProvider';
 import loadMore from '@/utils/loadMore';
+import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { useShallow } from 'zustand/shallow';
 import ApplicationCard from './ApplicationCard';
-import CustomButton from '@/components/CustomButton';
+import { useGroupStore } from '@/hooks/useGroupStore';
 
-export default function ApplicationsListing() {
-  const [isLoading, setLoading] = useState(true);
+type Props = {
+  isForUser: boolean
+}
+
+export default function ApplicationsListing({isForUser}: Props) {
+  const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
-  const [status, setStatus] = useState<string>("");
   const [sort, setSort] = useState<string>("")
+  const [status, setStatus] = useState<string>("")
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const { setParams } = useParamsStore();
   const setData = useApplicationStore((state) => state.setData);
   const appendData = useApplicationStore((state) => state.appendData)
-  
-  const params = useParamsStore(
-    useShallow((state) => ({
-      sort: state.sort,
-      status: state.status
-    }))
+
+  const setParams = useParamsStore(state => state.setParams)
+
+  const { selectedGroup } = useGroupStore(
+      useShallow((state) => ({
+          selectedGroup: state.selectedGroup,
+      }))
   );
 
   const data = useApplicationStore(
@@ -41,7 +46,7 @@ export default function ApplicationsListing() {
       url: "",
       query: {
         studentId: currentUser?.id,
-        ...(status.trim() ? { status } : {}),
+        ...(status.trim() ? { status: status } : {}),
         ...(sort.trim() ? { sort } : {}),
         pageIndex: pageNum
       },
@@ -51,13 +56,40 @@ export default function ApplicationsListing() {
   async function initData() {
     setPage(1);
     setHasMore(true);
-    setLoading(true);
+    showLoading();
 
-    await getSentApplications(getUrl(1)).then((response) => {
+    if(isForUser) {
+      await getApplicationsForUser()
+    }
+    else {
+      await getApplicationsForGroup()
+    }
+  }
+
+  async function getApplicationsForUser() {
+    await getUserApplications(getUrl(1)).then((response) => {
       setData(response);
       setHasMore(response.data.length < response.count);
-      setLoading(false);
+      hideLoading();
     });
+  }
+
+  async function getApplicationsForGroup() {
+    await getGroupApplications(getUrl(1), selectedGroup?.id).then((response) => {
+      setData(response);
+      setHasMore(response.data.length < response.count);
+      hideLoading();
+    });
+  }
+
+  async function onApproveApplication(groupId: number, appId: number) {
+    await reviewApplication(groupId, appId, {status: 'Approved'});
+    await initData();
+  }
+
+  async function onRejectApplication(groupId: number, appId: number) {
+    await reviewApplication(groupId, appId, {status: 'Rejected'});
+    await initData();
   }
 
   async function onDeleteApplication(groupId: number, appId: number) {
@@ -71,7 +103,7 @@ export default function ApplicationsListing() {
     }
 
     fetchInitialData();
-  }, [sort, status, getSentApplications]);
+  }, [sort, status, getUserApplications, getGroupApplications]);
 
   if (!currentUser) {
     return (
@@ -89,14 +121,27 @@ export default function ApplicationsListing() {
     if (loadingMore || !hasMore) return;
         
     setLoadingMore(true);
-        
-    const result = await loadMore(
-      page,
-      data,
-      getUrl,
-      getSentApplications, 
-      appendData
-    );
+    
+    var result = null;
+
+    if(isForUser) {
+      result = await loadMore(
+        page,
+        data,
+        getUrl,
+        getUserApplications,
+        appendData
+      );
+    }
+    else {
+      result = await loadMore(
+        page,
+        data,
+        getUrl,
+        getUserApplications,
+        appendData
+      );
+    }
         
     setHasMore(result.hasMore);
     setPage(result.newPage);
@@ -111,10 +156,6 @@ export default function ApplicationsListing() {
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView
         onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
           if (isCloseToBottom(nativeEvent)) {
@@ -124,11 +165,14 @@ export default function ApplicationsListing() {
         scrollEventThrottle={400}
       >
         <View className = 'w-full flex justify-content-center'>
-          <View className='flex flex-row justify-start m-2'>
+          <View className='flex flex-row justify-start'>
             <View className='max-w-[150px]'> 
               <CustomButton
                 title='All'
-                handlePress={() => setStatus('')}
+                handlePress={() => {
+                  setParams({status: ''})
+                  setStatus('')
+                }}
                 variant={status == '' ? 'active' : 'inactive'}
                 containerStyles='small'
               />
@@ -136,7 +180,10 @@ export default function ApplicationsListing() {
             <View className='max-w-[150px]'>
               <CustomButton
                 title='Approved'
-                handlePress={() => setStatus('Approved')}
+                handlePress={() => {
+                  setParams({status: 'Approved'})
+                  setStatus('Approved')
+                }}
                 variant={status == 'Approved' ? 'active' : 'inactive'}
                 containerStyles='small'
               />
@@ -144,18 +191,24 @@ export default function ApplicationsListing() {
             <View className='max-w-[150px]'>
               <CustomButton
                 title='Rejected'
-                handlePress={() => setStatus('Rejected')}
+                handlePress={() => {
+                  setParams({status: 'Rejected'})
+                  setStatus('Rejected')
+                }}
                 variant={status == 'Rejected' ? 'active' : 'inactive'}
                 containerStyles='small'
               />
             </View>
           </View>
           <View className='m-3 mt-5'>
-            {data.map((application) => (
+            {data?.map((application) => (
               <ApplicationCard 
                 key={application.id}
                 application={application}
-                action={() => onDeleteApplication(application.groupId,application.id)}
+                approveAction={() => onApproveApplication(application.groupId,application.id)}
+                rejectAction={() => onRejectApplication(application.groupId,application.id)}
+                deleteAction={() => onDeleteApplication(application.groupId,application.id)}
+                isForUser={isForUser}
               />
             ))}
           </View>  

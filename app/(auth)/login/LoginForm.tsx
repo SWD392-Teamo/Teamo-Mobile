@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import InputField from '@/components/InputField';
-import { View } from 'react-native';
+import { ToastAndroid, View } from 'react-native';
 import CustomButton from '@/components/CustomButton';
 import { icons } from '@/constants';
 import { colors } from '@/constants/colors';
@@ -80,6 +80,12 @@ async function signInWithGoogle() {
 }
 
 async function authenticateUser(res: any) {
+    // Check for incorrect email or password
+    if (res?.error && res?.error.status == 401) {
+        ToastAndroid.show('Incorrect email or password', ToastAndroid.SHORT);
+        return;
+    }
+
     // Set authentication status to true
     setIsAuthenticated(true);
 
@@ -92,10 +98,6 @@ async function authenticateUser(res: any) {
 
     // Persist token using AsyncStorage
     await AsyncStorage.setItem("authToken", res.token);
-
-    if (res?.error) {
-        throw res.error;
-    }
 
     // Add device
     await addDevice(await getToken());
@@ -120,6 +122,7 @@ async function authenticateUser(res: any) {
             title='Email' 
             name='email' control={control}
             showlabel='true'
+            multiline={false}
             rules={{
                 required: 'Email is required',
                 pattern: {
@@ -132,6 +135,7 @@ async function authenticateUser(res: any) {
             title='Password' 
             name='password' 
             control={control}
+            multiline={false}
             showlabel='true'
             rules={{required: 'Password is required'}}/>
 

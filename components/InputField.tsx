@@ -6,6 +6,8 @@ import { icons } from "@/constants";
 type Props = {
     title: string
     showlabel?: string
+    multiline: boolean
+    rows?: number
     placeholder?: string
 } & UseControllerProps
 
@@ -17,19 +19,27 @@ export default function InputField(props: Props) {
     const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className='space-y-2'>
+    <View className='my-2'>
         {props.showlabel=='true' && (
-            <Text className="text-base text-grey font-bmedium mt-5">{props.title}</Text>
+            <Text className="text-base text-grey font-bmedium mt-5 mb-3">{props.title}</Text>
         )}
-        <View className='w-full h-16 px-4 bg-tertiary rounded-2xl border-2 border-darkgrey flex flex-row items-center'>
+        <View className='w-full px-4 bg-tertiary rounded-2xl border-2 border-darkgrey flex flex-row'
+            style={{ height: props.multiline ? props.rows! * 20 + 30 : 64 }}>
             <TextInput 
                 {...props}
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
+                editable
+                multiline={props.multiline}
+                numberOfLines={props.rows}
                 placeholder={props.placeholder ? props.placeholder : props.title}
                 secureTextEntry={props.title === "Password" && !showPassword}
                 className='flex-1 text-secondary font-bsemibold text-base'
+                style={{
+                    height: '100%',
+                    textAlignVertical: props.multiline ? 'top' : 'center',
+                }}
             />
 
             {props.title === "Password" && (
@@ -38,6 +48,10 @@ export default function InputField(props: Props) {
                         source={!showPassword ? icons.eye : icons.eyeHide}
                         className="w-6 h-6"
                         resizeMode="contain"
+                        style={{
+                            height: '100%',
+                            alignContent: 'center',
+                        }}
                     />
                 </TouchableOpacity>
             )}
