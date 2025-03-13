@@ -6,8 +6,8 @@ export async function getProfile(userId: number) : Promise<Profile> {
     return await fetchWrapper.get(`users/${userId}/profile`);
 }
 
-export async function updateProfileDescription({id, description, imgUrl }: Profile) : Promise<any> {
-    return await fetchWrapper.patch(`users/${id}/profile/descriptions`, {description, imgUrl});
+export async function updateProfileDescription(userId: number, data: FieldValues) : Promise<any> {
+    return await fetchWrapper.patch(`users/${userId}/profile/descriptions`, data);
 }
 
 export async function addProfileSkill(userId: number, data: FieldValues) : Promise<any> {

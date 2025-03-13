@@ -9,7 +9,7 @@ interface ProfileImageProps{
 
 const ProfileImage = ({imgUrl, onImageSelect} : ProfileImageProps) => {
     return(
-        <View className="relative">
+        <View className="relative self-start">
             <Image
                 style={{
                     width: 96,
