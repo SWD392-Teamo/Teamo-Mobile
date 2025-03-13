@@ -76,6 +76,7 @@ export default function EditLinkForm() {
                     title='Name' 
                     name='name' 
                     control={control}
+                    multiline={false}
                     placeholder={selectedLink.name}
                     showlabel='true'
                     rules={{
@@ -88,6 +89,7 @@ export default function EditLinkForm() {
                     title='URL' 
                     name='url' 
                     control={control}
+                    multiline={false}
                     placeholder={selectedLink.url}
                     showlabel='true'
                     rules={{
