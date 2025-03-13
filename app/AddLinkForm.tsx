@@ -58,6 +58,7 @@ export default function AddLinkForm() {
                 title='Name' 
                 name='name' 
                 control={control}
+                multiline={false}
                 showlabel='true'
                 rules={{
                     required: 'Link name is required.',
@@ -70,6 +71,7 @@ export default function AddLinkForm() {
                 title='URL' 
                 name='url' 
                 control={control}
+                multiline={false}
                 showlabel='true'
                 rules={{
                     required: 'URL is required.',
