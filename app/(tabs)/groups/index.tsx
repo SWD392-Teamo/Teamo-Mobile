@@ -13,6 +13,7 @@ import OwnedGroupHeader from "./OwnedGroupHeader";
 import loadMore from "@/utils/loadMore";
 import { colors } from "@/constants/colors";
 import { useFocusEffect } from "expo-router";
+import GuideCreateGroup from "@/components/groups/GuideCreateGroup";
 
 export default function Listings() {
   const { showLoading, hideLoading } = useLoading();
@@ -102,6 +103,7 @@ export default function Listings() {
         scrollEventThrottle={400}
       >
         <OwnedGroupHeader setSearch={setSearch} />
+        <GuideCreateGroup />
         <View className="w-full flex justify-center">
           <View className="w-full flex flex-col p-3 gap-6">
             {data &&

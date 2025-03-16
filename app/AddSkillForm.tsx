@@ -17,6 +17,7 @@ import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
 import { getSkills } from "@/actions/skillAction";
 import { Picker } from "@react-native-picker/picker";
 import SearchBar from "@/components/SearchBar";
+import SkillModalPicker from "@/components/SkillModalPicker";
 
 export default function AddSkillForm() {
   const [isLoading, setLoading] = useState(true);
@@ -91,28 +92,7 @@ export default function AddSkillForm() {
                 <View className="mt-3">
                   <Text className="text-primary font-bold font-bregular text-bsm mb-1">Skill</Text>
                   <View className="mb-3"> 
-                    <Controller
-                      control={control}
-                      name="skillId"
-                      rules={{ required: true }}
-                      render={({ field: { onChange, value } }) => (
-                        <View className="border-2 border-primaryLight rounded-md overflow-hidden">
-                          <Picker
-                            selectedValue={value}
-                            onValueChange={onChange}
-                            style={{ height: 55, width: '100%' }}
-                          >
-                            {skills.map((skill) => (
-                              <Picker.Item
-                                key={skill.id}
-                                label={skill.name+' | '+skill.type}
-                                value={skill.id}
-                              />
-                            ))}
-                          </Picker>
-                        </View>
-                      )}
-                    />
+                    <SkillModalPicker control={control} skills={skills} />
                   </View>
 
                   <Text className="text-primary font-bregular font-bold text-bsm mb-1">Level</Text>

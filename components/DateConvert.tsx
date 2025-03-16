@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Text } from "react-native";
 
-export default function DateConverter({ isoDate }: { isoDate: string }) {
+export default function DateConverter({ isoDate }: { isoDate: Date }) {
   const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {

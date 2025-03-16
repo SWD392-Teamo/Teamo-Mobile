@@ -19,7 +19,7 @@ export default function InputField(props: Props) {
     const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className='my-2'>
+    <View className='my-1'>
         {props.showlabel=='true' && (
             <Text className="text-base text-grey font-bmedium mt-5 mb-3">{props.title}</Text>
         )}

@@ -90,6 +90,7 @@ export type Group = {
     id: number
     name: string
     title: string
+    description: string
     semesterName: string
     createdAt: Date
     createdByUserName: string
@@ -112,6 +113,15 @@ export type GroupPosition = {
     count: number
     status: string
     skills: Skill[]
+}
+
+export type Semster = {
+    id: number
+    name: string
+    code: string
+    startDate: Date
+    endDate: Date
+    status: string
 }
 
 // Generic type for loadMore function
