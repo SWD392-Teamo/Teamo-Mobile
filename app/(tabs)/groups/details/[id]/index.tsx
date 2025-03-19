@@ -35,6 +35,14 @@ const GroupDetail: React.FC = () => {
     (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
   );
 
+  function onEditPositions() {
+    router.push('/');
+  }
+
+  function onEditMembers() {
+    router.push('/');
+  }
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -126,9 +134,22 @@ const GroupDetail: React.FC = () => {
 
           {/*position */}
           <View className="container">
-            <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
-              Position
-            </Text>
+            <View>
+              <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
+                Position
+              </Text>
+              {isLeader &&
+                <Pressable 
+                className="ml-auto"
+                onPress={onEditPositions}
+              >
+                <Image
+                  source={icons.edit}
+                  className="w-7 h-7"
+                />
+              </Pressable>
+              }
+            </View>
             {groupPositions && groupMembers && (
               <GroupPositionCard
                 positions={groupPositions}
@@ -140,9 +161,22 @@ const GroupDetail: React.FC = () => {
 
           <View className="w-full h-[1px] bg-gray-300 my-8"></View>
           <View className="container">
-            <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
-              Member
-            </Text>
+            <View>
+              <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
+                Member
+              </Text>
+              {isLeader &&
+                <Pressable 
+                className="ml-auto"
+                onPress={onEditMembers}
+              >
+                <Image
+                  source={icons.edit}
+                  className="w-7 h-7"
+                />
+              </Pressable>
+              }
+            </View>
             
             {/*Member */}
             <View className="text-left w-full font-bregular text-lg">

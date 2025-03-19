@@ -1,9 +1,7 @@
 import { getOwnedGroups } from "@/actions/groupAction";
-import { useMajorStore } from "@/hooks/useMajorStore";
 import { useParamsStore } from "@/hooks/useParamsStore";
-import { useSubjectStore } from "@/hooks/useSubjectStore";
 import queryString from "query-string";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import GroupCard from "@/components/groups/GroupCard";
 import { useGroupStore } from "@/hooks/useGroupStore";
@@ -13,7 +11,7 @@ import OwnedGroupHeader from "./OwnedGroupHeader";
 import loadMore from "@/utils/loadMore";
 import { colors } from "@/constants/colors";
 import { useFocusEffect } from "expo-router";
-import GuideCreateGroup from "@/components/groups/GuideCreateGroup";
+import GuideCreateGroup from "@/app/(tabs)/groups/GuideCreateGroup";
 
 export default function Listings() {
   const { showLoading, hideLoading } = useLoading();

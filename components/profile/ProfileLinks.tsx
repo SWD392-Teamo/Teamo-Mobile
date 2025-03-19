@@ -17,6 +17,7 @@ export default function ProfileLinks({links}: Props) {
             title={link.name}
             url={link.url}
             icon={icons.link}
+            hideUrl={true}
           />
         ))}
       </View>

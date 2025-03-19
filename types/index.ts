@@ -33,16 +33,23 @@ export type StudentSkill = {
     skillLevel: string
 }
 
+export type StudentSkillToAdd = {
+    skillId: number
+    level: string
+}
+
 export type Application = {
     id: number
     groupId:number
     groupName: string
+    studentId: number
     studentName: string
     studentEmail: string
     imgUrl: string
     documentUrl: string
     requestTime: Date
     requestContent: string
+    groupPositionId: number
     groupPositionName: string
     status: string
 }
@@ -71,13 +78,19 @@ export type Field = {
 }
 
 export type GroupMember = {
-    groupId: number;
-    studentId: number;
-    studentName: string;
-    studentEmail: string;
-    imgUrl: string;
-    positions: string[];
-    role: string;
+    groupId: number
+    studentId: number
+    studentName: string
+    studentEmail: string
+    imgUrl: string
+    positions: string[]
+    role: string
+}
+
+export type GroupMemberToAdd = {
+    studentId: number
+    role: string
+    groupPositionIds: number[]
 }
     
 export type Skill = {

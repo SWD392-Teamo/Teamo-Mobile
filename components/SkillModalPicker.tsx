@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,12 +14,25 @@ import { Skill } from "@/types";
 interface Props {
   control: any
   skills: Skill[]
+  initialValue?: number
+  onSelectSkill: (skillId: number) => void
+  name?: string
 }
 
-export default function SkillModalPicker({ control, skills }: Props) {
+export default function SkillModalPicker({ 
+  control, 
+  skills, 
+  initialValue = 0, 
+  onSelectSkill,
+  name = "skillId" 
+}: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSkills, setFilteredSkills] = useState(skills);
+
+  useEffect(() => {
+    setFilteredSkills(skills);
+  }, [skills]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -33,7 +46,8 @@ export default function SkillModalPicker({ control, skills }: Props) {
   return (
     <Controller
       control={control}
-      name="skillId"
+      name={name}
+      defaultValue={initialValue}
       rules={{ required: true }}
       render={({ field: { onChange, value } }) => {
         const selectedSkill = skills.find((skill) => skill.id === value);
@@ -76,6 +90,7 @@ export default function SkillModalPicker({ control, skills }: Props) {
                     <TouchableOpacity
                       onPress={() => {
                         onChange(item.id);
+                        onSelectSkill(item.id);
                         setModalVisible(false);
                       }}
                       className="p-4 border-b border-gray-300"

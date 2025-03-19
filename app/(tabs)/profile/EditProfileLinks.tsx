@@ -1,18 +1,17 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spinner from "@/components/Spinner";
-import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import { router, useFocusEffect } from "expo-router";
 import { getProfile } from "@/actions/profileAction";
 import { useLinkStore } from "@/hooks/useLinkStore";
-import EditLinkGuide from "@/components/profile/EditLinkGuide";
+import EditLinkGuide from "@/app/(tabs)/profile/EditLinkGuide";
+import { useLoading } from "@/providers/LoadingProvider";
 
 export default function EditProfileLinks() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
 
   const { currentUser } = useGlobalContext();
   
@@ -21,14 +20,14 @@ export default function EditProfileLinks() {
   
   const fetchLinks = useCallback(async () => {
     if (currentUser) {
-      setLoading(true);
+      showLoading();
       try {
-        const profile = await getProfile(currentUser.id);
+        const profile = await getProfile();
         setLinks(profile.links);
       } catch (error) {
         console.error("Error fetching links:", error);
       } finally {
-        setLoading(false);
+        hideLoading();
       }
     }
   }, [currentUser, setLinks]);
@@ -46,15 +45,11 @@ export default function EditProfileLinks() {
   );
 
   async function onAddLinkForm() {
-    router.push('/AddLinkForm');
+    router.push('/profile/AddLinkForm');
   }
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
           <View className="m-5 ml-5">
@@ -77,7 +72,7 @@ export default function EditProfileLinks() {
           <View className="items-center m-5">
             <View className='max-w-[500px]'>
               <CustomButton
-                title='Add new link'
+                title='Add links'
                 handlePress={() => onAddLinkForm()}
                 variant='active'
                 containerStyles='small'

@@ -12,23 +12,27 @@ interface ProfileNameCardProps {
 }
 
 
-const ProfileNameCard = ({name, description} : ProfileNameCardProps) => {
+const ProfileNameCard = ({id, name, description} : ProfileNameCardProps) => {
+    const { currentUser } = useGlobalContext();
+
     async function onEditDescription() {
-        router.push('/EditProfileDescription');
+        router.push('/profile/EditProfileDescription');
     }
     
     return(
         <View className='flex-1 ml-5'>
             <View className='flex flex-row items-center justify-between'>
                 <Text className="text-bl font-bbold text-black">{name}</Text>
-                <CustomButton
-                    title=""
-                    variant="default"
-                    icon={icons.edit}
-                    iconColor={colors.light.icon}
-                    handlePress={onEditDescription}
-                    containerStyles="h-8 w-8 justify-center items-center"
-                />
+                {currentUser?.id == id && (
+                    <CustomButton
+                        title=""
+                        variant="default"
+                        icon={icons.edit}
+                        iconColor={colors.light.icon}
+                        handlePress={onEditDescription}
+                        containerStyles="h-8 w-8 justify-center items-center"
+                    />
+                )}
             </View>
             <Text className="text-bsm font-bregular text-gray-800">{description}</Text>
         </View>

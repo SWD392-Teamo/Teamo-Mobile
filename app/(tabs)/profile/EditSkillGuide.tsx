@@ -14,8 +14,8 @@ export default function EditSkillGuide({ studentSkill }: Props) {
   const setSelectedStudentSkill = useStudentSkillStore(state => state.setSelectedStudentSkill);
     
   const handlePress = () => {
-    setSelectedStudentSkill(studentSkill)
-    router.push('/EditSkillForm');
+    setSelectedStudentSkill(studentSkill);
+    router.push('/profile/EditSkillForm');
   };
 
   return (

@@ -6,13 +6,14 @@ type ExternalLinkProps = {
   url: string     
   title?: string  
   icon?: any
+  hideUrl: boolean
 }
 
 /**
  * - On native: opens in an in-app browser (via expo-web-browser).
  * - On web: opens in a new tab by default.
  */
-export default function ExternalLink({ url, title, icon }: ExternalLinkProps) {
+export default function ExternalLink({ url, title, icon, hideUrl }: ExternalLinkProps) {
   const handlePress = async () => {
     if (Platform.OS === "web") {
       // On web, open the link in a new tab
@@ -35,7 +36,9 @@ export default function ExternalLink({ url, title, icon }: ExternalLinkProps) {
         />
       )}
       <Text className="mr-3 text-black font-bold font-bregular text-bsm">{title} </Text>
-      <Text className="text-bsm font-bregular text-gray-600 underline">{url}</Text>
-    </TouchableOpacity>
+      {!hideUrl &&
+        <Text className="text-bsm font-bregular text-gray-600 underline">{url}</Text>
+      }
+      </TouchableOpacity>
   );
 }
