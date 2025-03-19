@@ -9,6 +9,11 @@ type Props = {
     multiline: boolean
     rows?: number
     placeholder?: string
+    customStyles?: {
+        container?: string
+        label?: string
+        input?: string
+    }
 } & UseControllerProps
 
 export default function InputField(props: Props) {
@@ -21,9 +26,9 @@ export default function InputField(props: Props) {
   return (
     <View className='my-1'>
         {props.showlabel=='true' && (
-            <Text className="text-base text-grey font-bmedium mt-5 mb-3">{props.title}</Text>
+            <Text className="text-base text-grey font-bmedium mt-5 mb-2">{props.title}</Text>
         )}
-        <View className='w-full px-4 bg-tertiary rounded-2xl border-2 border-darkgrey flex flex-row'
+        <View className={`w-full px-4 bg-tertiary rounded-2xl border-2 flex flex-row ${props.customStyles?.container || 'border-darkgrey'}`}
             style={{ height: props.multiline ? props.rows! * 20 + 30 : 64 }}>
             <TextInput 
                 {...props}
@@ -35,7 +40,7 @@ export default function InputField(props: Props) {
                 numberOfLines={props.rows}
                 placeholder={props.placeholder ? props.placeholder : props.title}
                 secureTextEntry={props.title === "Password" && !showPassword}
-                className='flex-1 text-secondary font-bsemibold text-base'
+                className={`flex-1 font-bsemibold text-base ${props.customStyles?.input || 'text-secondary'}`}
                 style={{
                     height: '100%',
                     textAlignVertical: props.multiline ? 'top' : 'center',

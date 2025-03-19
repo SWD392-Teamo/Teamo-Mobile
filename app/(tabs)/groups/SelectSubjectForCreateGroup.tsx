@@ -72,7 +72,7 @@ export default function SelectSubjectForCreateGroup() {
   }, [search]);
 
   function onSelectedSubject() {
-    router.push('/CreateGroupForm');
+    router.push('/groups/CreateGroupForm');
   };
 
   return (

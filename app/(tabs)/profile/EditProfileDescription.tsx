@@ -30,8 +30,8 @@ export default function EditProfileDescription() {
 
   async function onSave(data: FieldValues) {
     if(currentUser) {
-      await updateProfileDescription(currentUser.id, data);
-      const updatedProfile = await getProfile(currentUser.id);
+      await updateProfileDescription(data);
+      const updatedProfile = await getProfile();
       setProfile(updatedProfile);
     }
     router.push('/(tabs)/profile');

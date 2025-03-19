@@ -1,8 +1,6 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spinner from "@/components/Spinner";
-import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
@@ -12,9 +10,11 @@ import { FieldValues, useForm } from "react-hook-form";
 import { router } from "expo-router";
 import { useLinkStore } from "@/hooks/useLinkStore";
 import { useShallow } from "zustand/shallow";
+import { useLoading } from "@/providers/LoadingProvider";
+import LinkInput from "./LinkInput";
 
 export default function EditLinkForm() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const setLinks = useLinkStore((state) => state.setLinks) 
 
   const {currentUser} = useGlobalContext();
@@ -32,38 +32,34 @@ export default function EditLinkForm() {
 
   async function onSave(data: FieldValues) {
     if(currentUser && selectedLink) {
-      await updateProfileLink(currentUser.id, selectedLink.id, data)
-      const updatedProfile = await getProfile(currentUser.id)
-      setLinks(updatedProfile.links)
+      await updateProfileLink(selectedLink.id, data);
+      const updatedProfile = await getProfile();
+      setLinks(updatedProfile.links);
     }
-    router.push('/EditProfileLinks')
+    router.push('/profile/EditProfileLinks');
   }
 
   async function onRemove() {
     if(currentUser && selectedLink) {
-      await removeProfileLink(currentUser.id,selectedLink.id)
-      const updatedProfile = await getProfile(currentUser.id)
-      setLinks(updatedProfile.links)
+      await removeProfileLink(selectedLink.id);
+      const updatedProfile = await getProfile();
+      setLinks(updatedProfile.links);
     }
-    router.push('/EditProfileLinks')
+    router.push('/profile/EditProfileLinks');
   }
 
   useEffect(() => {    
-    setLoading(false);
+    hideLoading();
   });
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
             
           <View className="m-5 ml-5">
             <View className="flex flex-row justify-content-start mt-2">
-              <BackButton url="../EditProfileLinks"/>
+              <BackButton url="profile/EditProfileLinks"/>
               <Text className="ml-5 text-bsm font-blight">Links</Text>
             </View >
             <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Update link</Text>
@@ -74,29 +70,39 @@ export default function EditLinkForm() {
                   <>
                   <InputField 
                     title='Name' 
-                    name='name' 
+                    name='name'
                     control={control}
                     multiline={false}
-                    placeholder={selectedLink.name}
                     showlabel='true'
+                    placeholder={selectedLink.name}
+                    customStyles={{
+                      container: "border-2 border-primaryLight rounded-md",
+                      label: "text-secondary"
+                    }}
                     rules={{
                       pattern: {
                         value: /^[a-zA-Z0-9\s\-_()]+$/,
-                        message: 'Invalid link name.'
-                      }}}
-                  />
+                        message: "Invalid link name.",
+                      }
+                    }}
+                  />    
                   <InputField 
                     title='URL' 
                     name='url' 
                     control={control}
                     multiline={false}
-                    placeholder={selectedLink.url}
                     showlabel='true'
+                    placeholder={selectedLink.url}
+                    customStyles={{
+                      container: "border-2 border-primaryLight rounded-md",
+                      label: "text-secondary"
+                    }}
                     rules={{
                       pattern: {
                         value: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w@:%_\+.~#?&//=]*)?$/i,
                         message: 'Invalid URL.'
-                    }}}
+                      }
+                    }}
                   />
 
                   <View className="flex flex-row items-center justify-center px-4 m-5 gap-4">

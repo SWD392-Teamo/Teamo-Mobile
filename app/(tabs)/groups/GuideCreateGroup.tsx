@@ -7,7 +7,7 @@ export default function GuideCreateGroup() {
     const router = useRouter()
 
     function onGuideCreategroup() {
-        router.push('/SelectSubjectForCreateGroup');
+        router.push('/groups/SelectSubjectForCreateGroup');
     }
 
     return (

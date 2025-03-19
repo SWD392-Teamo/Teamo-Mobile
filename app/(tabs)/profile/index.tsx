@@ -1,12 +1,10 @@
-import { getProfile } from '@/actions/profileAction'
+import { getProfile, uploadImage } from '@/actions/profileAction'
 import ProfileDetails from '@/components/profile/ProfileDetails'
 import ProfileImage from '@/components/profile/ProfileImage'
 import ProfileNameCard from '@/components/profile/ProfileNameCard'
 import CustomButton from '@/components/CustomButton'
 import Divider from '@/components/Divider'
 import LogoutButton from '@/components/LogoutButton'
-import Spinner from '@/components/Spinner'
-import { colors } from '@/constants/colors'
 import { useProfileStore } from '@/hooks/useProfileStore'
 import { useGlobalContext } from '@/providers/AuthProvider'
 import React, { useEffect, useState } from 'react'
@@ -14,7 +12,6 @@ import { SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native
 import { useShallow } from 'zustand/shallow'
 import NotFoundScreen from '@/app/+not-found'
 import ApplicationsListing from '@/components/applications/ApplicationsListing'
-import { uploadImage } from '@/actions/userActions'
 import { DocumentPickerResponse } from '@react-native-documents/picker'
 import convertDocument from '@/utils/DocumentConverter'
 import { useLoading } from '@/providers/LoadingProvider'
@@ -35,7 +32,7 @@ export default function Profile() {
   useEffect(() => {
     if (currentUser) {
       showLoading();
-      getProfile(currentUser.id).then((data) => {
+      getProfile().then((data) => {
         setData(data)
         hideLoading();
       })
@@ -53,12 +50,12 @@ export default function Profile() {
   
     const userId = currentUser?.id!;
   
-    const res = await uploadImage(userId, formData);
+    const res = await uploadImage(formData);
   
     if (res.statusCode == 200) {
       ToastAndroid.show("Image uploaded successfully!", ToastAndroid.SHORT);
       // Refresh profile data to show new image
-      getProfile(userId).then(setData);
+      getProfile().then(setData);
     } else {
       ToastAndroid.show("Image upload failed!", ToastAndroid.SHORT);
     }
@@ -71,7 +68,11 @@ export default function Profile() {
       <ScrollView>
         <View className = 'w-full flex-1 justify-content-start px-5'>  
           <View className='flex flex-row mt-5'>
-            <ProfileImage imgUrl = {data?.imgUrl} onImageSelect={handleImageUpload}/>
+            <ProfileImage 
+              id = {data?.id} 
+              imgUrl = {data?.imgUrl} 
+              onImageSelect={handleImageUpload}
+            />
             <ProfileNameCard
               id = {data?.id}
               name = {data?.firstName + ' ' + data?.lastName}

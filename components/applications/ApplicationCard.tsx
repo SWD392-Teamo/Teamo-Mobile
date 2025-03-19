@@ -1,12 +1,10 @@
 import CustomButton from "@/components/CustomButton";
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
-import { useParamsStore } from "@/hooks/useParamsStore";
 import { Application } from "@/types";
 import dateTimeFormatter from "@/utils/dateTimeFormatter";
 import { downloadFileAndroid } from "@/utils/FileDownloader";
 import { Text, View } from "react-native";
-import { useShallow } from "zustand/shallow";
 
 interface Props{
   application: Application
@@ -26,14 +24,7 @@ export default function ApplicationCard({application, approveAction, rejectActio
     downloadFileAndroid(documentUrl, fileName, mimeType);
   };
 
-  const params = useParamsStore(
-    useShallow((state) => ({
-      status: state.status
-    }))
-  );
-
   return (
-
     <View
       className="flex flex-row items-center justify-between w-full p-3 bg-primary rounded-lg mb-3"
     >
@@ -71,7 +62,7 @@ export default function ApplicationCard({application, approveAction, rejectActio
         </View>
         
 
-        {(!isForUser && params.status !== 'Approved' && params.status !== 'Rejected') && 
+        {(!isForUser && application.status === 'Requested') && 
           <View className="flex flex-row gap-2 mt-3">
             <CustomButton
               title="Approve"

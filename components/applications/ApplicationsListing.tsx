@@ -12,6 +12,8 @@ import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaVie
 import { useShallow } from 'zustand/shallow';
 import ApplicationCard from './ApplicationCard';
 import { useGroupStore } from '@/hooks/useGroupStore';
+import { Application, GroupMemberToAdd } from '@/types';
+import { addMemberToGroup } from '@/actions/groupAction';
 
 type Props = {
   isForUser: boolean
@@ -82,8 +84,14 @@ export default function ApplicationsListing({isForUser}: Props) {
     });
   }
 
-  async function onApproveApplication(groupId: number, appId: number) {
+  async function onApproveApplication(groupId: number, appId: number, application: Application) {
     await reviewApplication(groupId, appId, {status: 'Approved'});
+    var newMember: GroupMemberToAdd = {
+      studentId: application.studentId,
+      role: 'Member',
+      groupPositionIds: [application.groupPositionId]
+    };
+    await addMemberToGroup(groupId, newMember);
     await initData();
   }
 
@@ -168,12 +176,12 @@ export default function ApplicationsListing({isForUser}: Props) {
           <View className='flex flex-row justify-start'>
             <View className='max-w-[150px]'> 
               <CustomButton
-                title='All'
+                title='Requested'
                 handlePress={() => {
-                  setParams({status: ''})
-                  setStatus('')
+                  setParams({status: 'Requested'})
+                  setStatus('Requested')
                 }}
-                variant={status == '' ? 'active' : 'inactive'}
+                variant={status == 'Requested' ? 'active' : 'inactive'}
                 containerStyles='small'
               />
             </View>
@@ -205,7 +213,7 @@ export default function ApplicationsListing({isForUser}: Props) {
               <ApplicationCard 
                 key={application.id}
                 application={application}
-                approveAction={() => onApproveApplication(application.groupId,application.id)}
+                approveAction={() => onApproveApplication(application.groupId,application.id,application)}
                 rejectAction={() => onRejectApplication(application.groupId,application.id)}
                 deleteAction={() => onDeleteApplication(application.groupId,application.id)}
                 isForUser={isForUser}

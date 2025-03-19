@@ -19,11 +19,11 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
     const {currentUser} = useGlobalContext()
 
     async function onEditSkills() {
-        router.push('/EditProfileSkills')
+        router.push('/profile/EditProfileSkills')
     }
 
     async function onEditLinks() {
-        router.push('/EditProfileLinks')
+        router.push('/profile/EditProfileLinks')
     }
 
     return(

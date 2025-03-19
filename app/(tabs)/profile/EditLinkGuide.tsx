@@ -13,8 +13,8 @@ export default function EditLinkGuide({ link }: Props) {
   const setSelectedLink = useLinkStore(state => state.setSelectedLink);
     
   const handlePress = () => {
-    setSelectedLink(link)
-    router.push('/EditLinkForm');
+    setSelectedLink(link);
+    router.push('/profile/EditLinkForm');
   };
 
   return (

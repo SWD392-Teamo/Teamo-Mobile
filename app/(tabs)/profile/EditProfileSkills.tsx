@@ -1,18 +1,17 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spinner from "@/components/Spinner";
-import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
 import { getProfile } from "@/actions/profileAction";
 import CustomButton from "@/components/CustomButton";
 import { router, useFocusEffect } from "expo-router";
-import EditSkillGuide from "@/components/profile/EditSkillGuide";
+import EditSkillGuide from "@/app/(tabs)/profile/EditSkillGuide";
+import { useLoading } from "@/providers/LoadingProvider";
 
 export default function EditProfileSkills() {
-  const [isLoading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
 
   const {currentUser} = useGlobalContext();
 
@@ -21,14 +20,14 @@ export default function EditProfileSkills() {
         
   const fetchStudentSkills = useCallback(async () => {
       if (currentUser) {
-        setLoading(true);
+        showLoading();
         try {
-          const profile = await getProfile(currentUser.id);
+          const profile = await getProfile();
           setStudentSkills(profile.studentSkills);
         } catch (error) {
           console.error("Error fetching student skills:", error);
         } finally {
-          setLoading(false);
+          hideLoading();
         }
       }
     }, [currentUser, setStudentSkills]);
@@ -44,15 +43,11 @@ export default function EditProfileSkills() {
     );
 
   async function onAddSkillForm() {
-    router.push('/AddSkillForm');
+    router.push('/profile/AddSkillForm');
   }
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
           <View className="m-5 ml-5">
@@ -75,7 +70,7 @@ export default function EditProfileSkills() {
           <View className="items-center m-5">
             <View className='max-w-[500px]'>
               <CustomButton
-                title='Add skill'
+                title='Add skills'
                 handlePress={() => onAddSkillForm()}
                 variant='active'
                 containerStyles='small'

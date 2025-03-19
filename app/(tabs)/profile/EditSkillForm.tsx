@@ -12,10 +12,11 @@ import { router } from "expo-router";
 import { useShallow } from "zustand/shallow";
 import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
 import { Picker } from '@react-native-picker/picker';
+import { useLoading } from "@/providers/LoadingProvider";
 
 export default function EditSkillForm() {
-  const [isLoading, setLoading] = useState(true);
-  const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills) 
+  const { showLoading, hideLoading } = useLoading();
+  const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills); 
 
   const {currentUser} = useGlobalContext();
 
@@ -31,46 +32,43 @@ export default function EditSkillForm() {
     });
 
     useEffect(() => {
+      showLoading();
         if (selectedStudentSkill) {
           setValue('level', selectedStudentSkill.skillLevel);
         }
-        setLoading(false);
+        hideLoading();
       }, [selectedStudentSkill, setValue]);
 
   async function onSave(data: FieldValues) {
     if(currentUser && selectedStudentSkill) {
-      await updateProfileSkill(currentUser.id, selectedStudentSkill.id, data)
-      const updatedProfile = await getProfile(currentUser.id)
-      setStudentSkills(updatedProfile.studentSkills)
+      await updateProfileSkill(selectedStudentSkill.id, data);
+      const updatedProfile = await getProfile();
+      setStudentSkills(updatedProfile.studentSkills);
     }
-    router.push('/EditProfileSkills')
+    router.push('/profile/EditProfileSkills');
   }
 
   async function onDelete() {
     if(currentUser && selectedStudentSkill) {
-      await deleteProfileSkill(currentUser.id, selectedStudentSkill.id)
-      const updatedProfile = await getProfile(currentUser.id)
-      setStudentSkills(updatedProfile.studentSkills)
+      await deleteProfileSkill(selectedStudentSkill.id);
+      const updatedProfile = await getProfile();
+      setStudentSkills(updatedProfile.studentSkills);
     }
-    router.push('/EditProfileSkills')
+    router.push('/profile/EditProfileSkills');
   }
 
   useEffect(() => {    
-    setLoading(false);
+    hideLoading();
   });
 
   return (
     <SafeAreaView>
-      <Spinner 
-        isLoading={isLoading}
-        spinnerColor={colors.light.tint} 
-      />
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
             
           <View className="m-5 ml-5">
             <View className="flex flex-row justify-content-start mt-2">
-              <BackButton url="../EditProfileSkills"/>
+              <BackButton url="profile/EditProfileSkills"/>
               <Text className="ml-5 text-bsm font-blight">Skills</Text>
             </View >
             <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Update skill</Text>
