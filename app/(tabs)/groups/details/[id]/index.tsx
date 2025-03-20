@@ -35,6 +35,10 @@ const GroupDetail: React.FC = () => {
     (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
   );
 
+  function onEditGroup() {
+    router.push('/');
+  }
+
   function onEditPositions() {
     router.push('/');
   }
@@ -83,14 +87,42 @@ const GroupDetail: React.FC = () => {
                 <DateConverter isoDate={selectedGroup?.createdAt} />
               )}
             </Text>
+
+            {isLeader && 
+              <Pressable className="btn btn--primary justify-self-end">  
+                <CustomButton
+                  title='View Applications'
+                  handlePress={() => {
+                    router.push(`/(tabs)/groups/details/${selectedGroup?.id}/applications`);
+                  }}
+                  variant='primary'
+                  containerStyles='w-full mt-5'
+                  icon={icons.application}
+                  iconColor={colors.dark.icon}
+                />
+              </Pressable>
+            }
           </View>
 
           <Divider />
 
           {/* Information */}
-          <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
-                Information
-          </Text>
+          <View className="flex flex-row justify-between items-center w-full m-5">
+            <Text className="font-bsemibold text-2xl text-grey">
+                  Information
+            </Text>
+            {isLeader &&
+              <Pressable 
+                className="mr-3"
+                onPress={onEditGroup}
+              >
+                <Image
+                  source={icons.edit}
+                  className="w-7 h-7"
+                />
+              </Pressable>
+            }
+          </View>
 
           <View className="w-full flex flex-col items-start">
             {/* Semester name */}
@@ -134,14 +166,15 @@ const GroupDetail: React.FC = () => {
 
           {/*position */}
           <View className="container">
-            <View>
-              <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
+            <View className="flex flex-row justify-between items-center w-full m-5">
+              <Text className="text-left w-full font-bsemibold text-2xl text-grey">
                 Position
               </Text>
               {isLeader &&
                 <Pressable 
-                className="ml-auto"
+                className="mr-5"
                 onPress={onEditPositions}
+                style={{ position: "absolute", right: 10, top: 0 }}
               >
                 <Image
                   source={icons.edit}
@@ -161,14 +194,15 @@ const GroupDetail: React.FC = () => {
 
           <View className="w-full h-[1px] bg-gray-300 my-8"></View>
           <View className="container">
-            <View>
-              <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
+            <View className="flex flex-row justify-between items-center w-full m-5">
+              <Text className="text-left w-full font-bsemibold text-2xl text-grey">
                 Member
               </Text>
               {isLeader &&
                 <Pressable 
-                className="ml-auto"
+                className="mr-5"
                 onPress={onEditMembers}
+                style={{ position: "absolute", right: 10, top: 0 }}
               >
                 <Image
                   source={icons.edit}
@@ -211,20 +245,6 @@ const GroupDetail: React.FC = () => {
                 ))}
               </View>
             </View>
-            {isLeader && 
-                <Pressable className="btn btn--primary justify-self-end">  
-                    <CustomButton
-                        title='View Applications'
-                        handlePress={() => {
-                            router.push(`/(tabs)/groups/details/${selectedGroup?.id}/applications`);
-                        }}
-                        variant='primary'
-                        containerStyles='w-full mt-5'
-                        icon={icons.application}
-                        iconColor={colors.dark.icon}
-                    />
-                </Pressable>
-            }
           </View>
         </View>
       </ScrollView>
