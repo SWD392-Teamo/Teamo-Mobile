@@ -6,7 +6,7 @@ import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import { Controller, FieldValues, useForm } from "react-hook-form";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useShallow } from "zustand/shallow";
 import queryString from "query-string";
 import { useLoading } from "@/providers/LoadingProvider";
@@ -46,6 +46,10 @@ export default function EditGroupForm() {
       await updateGroup(selectedGroup.id, data);
       const updatedGroup = await getGroupById(selectedGroup.id);
       setSelectedGroup(updatedGroup);
+      router.push({
+        pathname: "/(tabs)/groups/details/[id]",
+        params: { id: selectedGroup.id },
+      });
     }
   }
 
@@ -183,22 +187,14 @@ export default function EditGroupForm() {
 
                   <View className="flex flex-row items-center justify-center px-4 m-5 gap-4">
                     <View className='w-[120px]'>
-                      <Link 
-                        href={{
-                          pathname: '/(tabs)/groups/details/[id]', 
-                          params: {id: selectedGroup.id}
-                        }}
-                        onPress={onSave}
-                      >
-                        <CustomButton
-                            title='Save'
-                            handlePress={handleSubmit(onSave)}
-                            isLoading={isSubmitting}
-                            isNotValid={!isValid}
-                            variant='active'
-                            containerStyles='small'
-                        />
-                      </Link>
+                      <CustomButton
+                        title='Save'
+                        handlePress={handleSubmit(onSave)}
+                        isLoading={isSubmitting}
+                        isNotValid={!isValid}
+                        variant='active'
+                        containerStyles='small'
+                      />
                     </View>
                     <View className='w-[120px]'>
                       <CustomButton

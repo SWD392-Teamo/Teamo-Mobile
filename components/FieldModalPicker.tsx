@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
  import {
    View,
    Text,
@@ -22,6 +22,10 @@ import { useState } from "react";
    const [searchQuery, setSearchQuery] = useState("");
    const [filteredFields, setFilteredFields] = useState(fields);
  
+   useEffect(() => {
+    setFilteredFields(fields);
+  }, [fields]);
+   
    const handleSearch = (query: string) => {
      setSearchQuery(query);
      setFilteredFields(

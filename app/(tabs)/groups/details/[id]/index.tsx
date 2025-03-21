@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, Image, SafeAreaView, Pressable } from "react-native";
+import { View, Text, ScrollView, Image, SafeAreaView, Pressable, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import DateConverter from "@/components/DateConvert";
 import GroupStatusBadge from "@/components/groups/GroupStatus";
@@ -16,10 +16,14 @@ import Divider from "@/components/Divider";
 import CustomButton from "@/components/CustomButton";
 import { Link, useRouter } from "expo-router";
 import { useGlobalContext } from "@/providers/AuthProvider";
+import { deleteGroup, getGroupById, uploadGroupImage } from "@/actions/groupAction";
+import { DocumentPickerResponse } from "@react-native-documents/picker";
+import convertDocument from "@/utils/DocumentConverter";
 
 const GroupDetail: React.FC = () => {
   const {currentUser} = useGlobalContext();
-  const router = useRouter()
+  const router = useRouter();
+  const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroup } = useGroupStore(
     useShallow((state) => ({
       selectedGroup: state.selectedGroup,
@@ -35,7 +39,34 @@ const GroupDetail: React.FC = () => {
     (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
   );
 
-  function onEditGroup() {}
+  async function onDelete() {
+    if(currentUser && selectedGroup) {
+      await deleteGroup(selectedGroup.id);
+    }
+    router.push('/groups');
+  }
+
+  async function handleImageUpload(image: DocumentPickerResponse) {
+    const formData = new FormData();
+    
+    // Convert to File
+    const imageToUpload = convertDocument(image);
+  
+    // Create formdata payload with image
+    formData.append('image', imageToUpload);
+    
+    const groupId = selectedGroup?.id!;
+    
+    const res = await uploadGroupImage(groupId, formData);
+    
+    if (res.statusCode == 200) {
+      ToastAndroid.show("Image uploaded successfully!", ToastAndroid.SHORT);
+      // Refresh to show new image
+      getGroupById(groupId).then(setSelectedGroup);
+    } else {
+      ToastAndroid.show("Image upload failed!", ToastAndroid.SHORT);
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -52,9 +83,17 @@ const GroupDetail: React.FC = () => {
         <View className="rounded-lg flex flex-col items-center px-3 transition flex-1 mb-16">
           <View className="flex flex-col items-center mt-2 w-15 h-15 gap-4 my-3">
             {selectedGroup?.imgUrl ? (
-              <MedGroupImage imgUrl={selectedGroup?.imgUrl} />
+              <MedGroupImage 
+                imgUrl={selectedGroup?.imgUrl}
+                isLeader={isLeader}
+                onImageSelect={handleImageUpload} 
+              />
             ) : (
-              <MedGroupImage imgUrl={defaultGroup} />
+              <MedGroupImage 
+                imgUrl={defaultGroup}
+                isLeader={isLeader}
+                onImageSelect={handleImageUpload} 
+              />
             )}
             <Text className="text-center w-full font-bbold text-primary text-2xl my-2">
               {selectedGroup?.name}
@@ -101,13 +140,13 @@ const GroupDetail: React.FC = () => {
             <Text className="font-bsemibold text-2xl text-grey">
                   Information
             </Text>
-            {selectedGroup && isLeader &&
+            {selectedGroup && selectedGroup.status!=="Archived" && isLeader &&
               <Link 
                 href={{
                   pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
                   params: {id: selectedGroup.id}
                 }}
-                  onPress={onEditGroup}
+                onPress={() => {}}
               >
                 <Image
                   source={icons.edit}
@@ -158,26 +197,26 @@ const GroupDetail: React.FC = () => {
           <Divider />
 
           {/*position */}
-          <View className="container">
-            <View className="flex flex-row justify-between items-center w-full m-5">
-              <Text className="text-left w-full font-bsemibold text-2xl text-grey">
-                Position
-              </Text>
-              {selectedGroup && isLeader &&
-                <Link 
+          <View className="flex flex-row justify-between items-center w-full m-5">
+            <Text className="font-bsemibold text-2xl text-grey">
+              Positions
+            </Text>
+            {selectedGroup && selectedGroup.status!=="Archived" && isLeader &&
+              <Link 
                 href={{
-                  pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
+                  pathname: '/(tabs)/groups/details/[id]/EditPositionsForm', 
                   params: {id: selectedGroup.id}
                 }}
-                  onPress={onEditGroup}
-                >
-                  <Image
-                    source={icons.edit}
-                    className="w-7 h-7"
-                  />
-                </Link>
-              }
-            </View>
+                onPress={() => {}}
+              >
+                <Image
+                  source={icons.edit}
+                  className="w-7 h-7"
+                />
+              </Link>
+            }
+          </View>
+          <View className="container">
             {groupPositions && groupMembers && (
               <GroupPositionCard
                 positions={groupPositions}
@@ -187,29 +226,29 @@ const GroupDetail: React.FC = () => {
             )}
           </View>
 
-          <View className="w-full h-[1px] bg-gray-300 my-8"></View>
-          <View className="container">
-            <View className="flex flex-row justify-between items-center w-full m-5">
-              <Text className="text-left w-full font-bsemibold text-2xl text-grey">
-                Member
-              </Text>
-              {selectedGroup && isLeader &&
-                <Link 
+          <Divider />
+
+          {/*Member */}
+          <View className="flex flex-row justify-between items-center w-full m-5">
+            <Text className="font-bsemibold text-2xl text-grey">
+              Members
+            </Text>
+            {selectedGroup && selectedGroup.status!=="Archived" && isLeader &&
+              <Link 
                 href={{
-                  pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
+                  pathname: '/(tabs)/groups/details/[id]/EditMembersForm', 
                   params: {id: selectedGroup.id}
                 }}
-                  onPress={onEditGroup}
-                >
-                  <Image
-                    source={icons.edit}
-                    className="w-7 h-7"
-                  />
+                onPress={() => {}}
+              >
+                <Image
+                  source={icons.edit}
+                  className="w-7 h-7"
+                />
               </Link>
-              }
-            </View>
-            
-            {/*Member */}
+            }
+          </View>
+          <View className="container">
             <View className="text-left w-full font-bregular text-lg">
               <View className="grid grid-cols-2 gap-4 mt-4">
                 {selectedGroup?.groupMembers.map((member: GroupMember, index: number) => (
@@ -244,6 +283,17 @@ const GroupDetail: React.FC = () => {
             </View>
           </View>
         </View>
+
+        {selectedGroup && selectedGroup.status==="Archived" && isLeader &&
+          <View className='m-5'>
+            <CustomButton
+              title='Delete'
+              handlePress={onDelete}
+              variant='delete'
+              containerStyles='default'
+            />
+          </View>
+        }
       </ScrollView>
     </SafeAreaView>
   );
