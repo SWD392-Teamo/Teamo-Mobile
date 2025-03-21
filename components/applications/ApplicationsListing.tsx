@@ -13,7 +13,7 @@ import { useShallow } from 'zustand/shallow';
 import ApplicationCard from './ApplicationCard';
 import { useGroupStore } from '@/hooks/useGroupStore';
 import { Application, GroupMemberToAdd } from '@/types';
-import { addMemberToGroup } from '@/actions/groupAction';
+import { addMemberToGroup, getGroupById } from '@/actions/groupAction';
 
 type Props = {
   isForUser: boolean
@@ -27,6 +27,7 @@ export default function ApplicationsListing({isForUser}: Props) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
 
   const setData = useApplicationStore((state) => state.setData);
   const appendData = useApplicationStore((state) => state.appendData)
@@ -43,11 +44,22 @@ export default function ApplicationsListing({isForUser}: Props) {
       useShallow((state) => state.applications)
   );
 
-  const getUrl = (pageNum:number) => {
+  const getUrlForUser = (pageNum:number) => {
     return queryString.stringifyUrl({
       url: "",
       query: {
         studentId: currentUser?.id,
+        ...(status.trim() ? { status: status } : {}),
+        ...(sort.trim() ? { sort } : {}),
+        pageIndex: pageNum
+      },
+    });
+  };
+
+  const getUrlForGroup = (pageNum:number) => {
+    return queryString.stringifyUrl({
+      url: "",
+      query: {
         ...(status.trim() ? { status: status } : {}),
         ...(sort.trim() ? { sort } : {}),
         pageIndex: pageNum
@@ -69,7 +81,7 @@ export default function ApplicationsListing({isForUser}: Props) {
   }
 
   async function getApplicationsForUser() {
-    await getUserApplications(getUrl(1)).then((response) => {
+    await getUserApplications(getUrlForUser(1)).then((response) => {
       setData(response);
       setHasMore(response.data.length < response.count);
       hideLoading();
@@ -77,7 +89,7 @@ export default function ApplicationsListing({isForUser}: Props) {
   }
 
   async function getApplicationsForGroup() {
-    await getGroupApplications(getUrl(1), selectedGroup?.id).then((response) => {
+    await getGroupApplications(getUrlForGroup(1), selectedGroup?.id).then((response) => {
       setData(response);
       setHasMore(response.data.length < response.count);
       hideLoading();
@@ -92,6 +104,8 @@ export default function ApplicationsListing({isForUser}: Props) {
       groupPositionIds: [application.groupPositionId]
     };
     await addMemberToGroup(groupId, newMember);
+    const updatedGroup = await getGroupById(groupId);
+    setSelectedGroup(updatedGroup);
     await initData();
   }
 
@@ -136,7 +150,7 @@ export default function ApplicationsListing({isForUser}: Props) {
       result = await loadMore(
         page,
         data,
-        getUrl,
+        getUrlForUser,
         getUserApplications,
         appendData
       );
@@ -145,7 +159,7 @@ export default function ApplicationsListing({isForUser}: Props) {
       result = await loadMore(
         page,
         data,
-        getUrl,
+        getUrlForGroup,
         getUserApplications,
         appendData
       );

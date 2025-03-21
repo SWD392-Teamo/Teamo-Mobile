@@ -12,6 +12,7 @@ import { useShallow } from "zustand/shallow";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useGroupStore } from "@/hooks/useGroupStore";
 import { deleteGroup, getGroupById } from "@/actions/groupAction";
+import NumberPicker from "@/components/NumberPicker";
 
 export default function EditGroupForm() {
   const { showLoading, hideLoading } = useLoading();
@@ -53,13 +54,15 @@ export default function EditGroupForm() {
       <ScrollView>
         <View className='w-full flex justify-content-center'>  
             
-          <View className="m-5 ml-5">
-            <View className="flex flex-row justify-content-start mt-2">
-              <BackButton url="(tabs)/groups"/>
-              <Text className="ml-5 text-bsm font-blight">Links</Text>
-            </View >
-            <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Update link</Text>
-          </View>
+          {selectedGroup &&
+            <View className="m-5 ml-5">
+              <View className="flex flex-row justify-content-start mt-2">
+                <BackButton url={`(tabs)/groups/details/${selectedGroup.id}`}/>
+                <Text className="ml-5 text-bsm font-blight">{selectedGroup.name}</Text>
+              </View >
+              <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Update group</Text>
+            </View>
+          }
 
             <View className="m-5 mt-1">
                 {selectedGroup ? (
@@ -119,23 +122,13 @@ export default function EditGroupForm() {
                       }
                     }}
                   />
-                  <InputField 
-                    title='Max Member' 
-                    name='maxMember' 
+                  <NumberPicker 
                     control={control}
-                    multiline={false}
-                    showlabel='true'
-                    placeholder={selectedGroup.maxMember.toString()}
-                    customStyles={{
-                      container: "border-2 border-primaryLight rounded-md",
-                      label: "text-secondary"
-                    }}
-                    rules={{
-                      pattern: {
-                        value: /[^0-9]/g,
-                        message: 'Input a number 1-100.'
-                      }
-                    }}
+                    name="maxMeber"
+                    title="Max Member"
+                    showlabel={true}
+                    requiredInput={false}
+                    defaultValue={selectedGroup.maxMember}
                   />
 
                   <View className="flex flex-row items-center justify-center px-4 m-5 gap-4">
@@ -159,7 +152,7 @@ export default function EditGroupForm() {
                     </View>
                     <View className='w-[120px]'>
                       <CustomButton
-                        title='Delete Group'
+                        title='Delete'
                         handlePress={onDelete}
                         variant='delete'
                         containerStyles='small'
