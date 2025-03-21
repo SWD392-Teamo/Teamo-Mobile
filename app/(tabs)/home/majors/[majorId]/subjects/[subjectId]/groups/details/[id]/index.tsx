@@ -46,9 +46,17 @@ const GroupDetail: React.FC = () => {
         <View className="rounded-lg flex flex-col items-center px-3 transition flex-1 mb-16">
           <View className="flex flex-col items-center mt-2 w-15 h-15 gap-4 my-3">
             {selectedGroup?.imgUrl ? (
-              <MedGroupImage imgUrl={selectedGroup?.imgUrl} />
+              <MedGroupImage 
+                imgUrl={selectedGroup?.imgUrl}
+                isLeader={false}
+                onImageSelect={() => {}} 
+              />
             ) : (
-              <MedGroupImage imgUrl={defaultGroup} />
+              <MedGroupImage 
+                imgUrl={defaultGroup} 
+                isLeader={false}
+                onImageSelect={() => {}}
+              />
             )}
             <Text className="text-center w-full font-bbold text-primary text-2xl my-2">
               {selectedGroup?.name}
