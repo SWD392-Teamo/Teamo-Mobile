@@ -5,7 +5,7 @@ import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
-import { FieldValues, useForm } from "react-hook-form";
+import { Controller, FieldValues, useForm } from "react-hook-form";
 import { Link, router } from "expo-router";
 import { useShallow } from "zustand/shallow";
 import queryString from "query-string";
@@ -15,6 +15,8 @@ import { deleteGroup, getGroupById, updateGroup } from "@/actions/groupAction";
 import NumberPicker from "@/components/NumberPicker";
 import { useFieldStore } from "@/hooks/useFieldStore";
 import { getFields } from "@/actions/fieldAction";
+import { Picker } from "@react-native-picker/picker";
+import FieldModalPicker from "@/components/FieldModalPicker";
 
 export default function EditGroupForm() {
   const { showLoading, hideLoading } = useLoading();
@@ -26,9 +28,9 @@ export default function EditGroupForm() {
   );
 
   const setFields = useFieldStore((state) => state.setFields);
-  const { selectedField } = useFieldStore(
+  const {fields} = useFieldStore(
     useShallow((state) => ({
-      selectedField: state.selectedField
+      fields: state.fields
     }))
   )
 
@@ -154,6 +156,29 @@ export default function EditGroupForm() {
                     showlabel={true}
                     requiredInput={false}
                     defaultValue={selectedGroup.maxMember}
+                  />
+
+                  <Text className="text-base text-grey font-bmedium mt-5 mb-2">Field</Text>
+                  <FieldModalPicker control={control} fields={fields} requiredInput={false}/>
+
+                  <Text className="text-base text-grey font-bmedium mt-5 mb-2">Status</Text>
+                  <Controller
+                    control={control}
+                    name="status"
+                    defaultValue={selectedGroup.status}
+                    render={({ field: { onChange, value } }) => (
+                      <View className="border-2 border-primaryLight rounded-md overflow-hidden">
+                        <Picker
+                          selectedValue={value}
+                          onValueChange={onChange}
+                          style={{ height: 55, width: '100%' }}
+                        >
+                          <Picker.Item label="Recruiting" value="Recruiting" />
+                          <Picker.Item label="Full" value="Full" />
+                          <Picker.Item label="Archive" value="Archived" />
+                        </Picker>
+                      </View>
+                    )}
                   />
 
                   <View className="flex flex-row items-center justify-center px-4 m-5 gap-4">
