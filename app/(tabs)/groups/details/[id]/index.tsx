@@ -14,7 +14,7 @@ import { GroupMember } from "@/types";
 import { colors } from "@/constants/colors";
 import Divider from "@/components/Divider";
 import CustomButton from "@/components/CustomButton";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useGlobalContext } from "@/providers/AuthProvider";
 
 const GroupDetail: React.FC = () => {
@@ -35,17 +35,7 @@ const GroupDetail: React.FC = () => {
     (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
   );
 
-  function onEditGroup() {
-    router.push('/');
-  }
-
-  function onEditPositions() {
-    router.push('/');
-  }
-
-  function onEditMembers() {
-    router.push('/');
-  }
+  function onEditGroup() {}
 
   return (
     <SafeAreaView>
@@ -111,16 +101,19 @@ const GroupDetail: React.FC = () => {
             <Text className="font-bsemibold text-2xl text-grey">
                   Information
             </Text>
-            {isLeader &&
-              <Pressable 
-                className="mr-3"
-                onPress={onEditGroup}
+            {selectedGroup && isLeader &&
+              <Link 
+                href={{
+                  pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
+                  params: {id: selectedGroup.id}
+                }}
+                  onPress={onEditGroup}
               >
                 <Image
                   source={icons.edit}
                   className="w-7 h-7"
                 />
-              </Pressable>
+              </Link>
             }
           </View>
 
@@ -170,17 +163,19 @@ const GroupDetail: React.FC = () => {
               <Text className="text-left w-full font-bsemibold text-2xl text-grey">
                 Position
               </Text>
-              {isLeader &&
-                <Pressable 
-                className="mr-5"
-                onPress={onEditPositions}
-                style={{ position: "absolute", right: 10, top: 0 }}
-              >
-                <Image
-                  source={icons.edit}
-                  className="w-7 h-7"
-                />
-              </Pressable>
+              {selectedGroup && isLeader &&
+                <Link 
+                href={{
+                  pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
+                  params: {id: selectedGroup.id}
+                }}
+                  onPress={onEditGroup}
+                >
+                  <Image
+                    source={icons.edit}
+                    className="w-7 h-7"
+                  />
+                </Link>
               }
             </View>
             {groupPositions && groupMembers && (
@@ -198,17 +193,19 @@ const GroupDetail: React.FC = () => {
               <Text className="text-left w-full font-bsemibold text-2xl text-grey">
                 Member
               </Text>
-              {isLeader &&
-                <Pressable 
-                className="mr-5"
-                onPress={onEditMembers}
-                style={{ position: "absolute", right: 10, top: 0 }}
-              >
-                <Image
-                  source={icons.edit}
-                  className="w-7 h-7"
-                />
-              </Pressable>
+              {selectedGroup && isLeader &&
+                <Link 
+                href={{
+                  pathname: '/(tabs)/groups/details/[id]/EditGroupForm', 
+                  params: {id: selectedGroup.id}
+                }}
+                  onPress={onEditGroup}
+                >
+                  <Image
+                    source={icons.edit}
+                    className="w-7 h-7"
+                  />
+              </Link>
               }
             </View>
             
