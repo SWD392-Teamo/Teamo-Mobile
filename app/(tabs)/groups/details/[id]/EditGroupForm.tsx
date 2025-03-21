@@ -4,15 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
-import { getProfile, removeProfileLink, updateProfileLink } from "@/actions/profileAction";
 import InputField from "@/components/InputField";
 import { FieldValues, useForm } from "react-hook-form";
 import { Link, router } from "expo-router";
 import { useShallow } from "zustand/shallow";
+import queryString from "query-string";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useGroupStore } from "@/hooks/useGroupStore";
-import { deleteGroup, getGroupById } from "@/actions/groupAction";
+import { deleteGroup, getGroupById, updateGroup } from "@/actions/groupAction";
 import NumberPicker from "@/components/NumberPicker";
+import { useFieldStore } from "@/hooks/useFieldStore";
+import { getFields } from "@/actions/fieldAction";
 
 export default function EditGroupForm() {
   const { showLoading, hideLoading } = useLoading();
@@ -23,6 +25,13 @@ export default function EditGroupForm() {
     }))
   );
 
+  const setFields = useFieldStore((state) => state.setFields);
+  const { selectedField } = useFieldStore(
+    useShallow((state) => ({
+      selectedField: state.selectedField
+    }))
+  )
+
   const { currentUser } = useGlobalContext();
 
   const {control, handleSubmit,
@@ -32,7 +41,7 @@ export default function EditGroupForm() {
 
   async function onSave(data: FieldValues) {
     if(currentUser && selectedGroup) {
-      await updateProfileLink(selectedGroup.id, data);
+      await updateGroup(selectedGroup.id, data);
       const updatedGroup = await getGroupById(selectedGroup.id);
       setSelectedGroup(updatedGroup);
     }
@@ -44,10 +53,26 @@ export default function EditGroupForm() {
     }
     router.push('/groups');
   }
-
-  useEffect(() => {    
-    hideLoading();
-  });
+    
+    const getFieldsUrl = () => {
+      return queryString.stringifyUrl({
+        url: "",
+          query: {
+            ...(selectedGroup?.subjectId? {subjectId: selectedGroup.subjectId} : {}),
+        },
+      });
+    };
+      
+    //Get list of fields for user to choose
+    useEffect(() => {
+      if(currentUser) {
+            showLoading();
+            getFields(getFieldsUrl()).then((response) => {
+              setFields(response);
+              hideLoading();
+            });
+          }
+    }, [currentUser, getFields]);
 
   return (
     <SafeAreaView>
