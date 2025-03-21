@@ -111,6 +111,7 @@ export type Group = {
     status: string
     fieldName: string
     subjectCode: string
+    subjectId: number
     imgUrl: string
     groupMembers: GroupMember[]
     groupPositions: GroupPosition[]

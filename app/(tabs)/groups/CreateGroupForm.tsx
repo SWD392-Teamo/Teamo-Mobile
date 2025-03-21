@@ -15,20 +15,26 @@ import { useParamsStore } from "@/hooks/useParamsStore";
 import { Field, Semster } from "@/types";
 import { getFields } from "@/actions/fieldAction";
 import { getCurrentSemester } from "@/actions/semesterAction";
+import { useFieldStore } from "@/hooks/useFieldStore";
 
 export default function CreateGroupForm() {
   const {showLoading, hideLoading} = useLoading();
   const {currentUser} = useGlobalContext();
-  const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState<string>("");
   const [currentSemester, setCurrentSemester] = useState<Semster>();
-  const [allFields, setAllFields] = useState<Field[]>([]);
 
   const { selectedSubject } = useSubjectStore(
     useShallow((state) => ({
-        selectedSubject: state.selectedSubject
+      selectedSubject: state.selectedSubject
     }))
   );
+
+  const setFields = useFieldStore((state) => state.setFields);
+  const { selectedField } = useFieldStore(
+    useShallow((state) => ({
+      selectedField: state.selectedField
+    }))
+  )
 
   const {control, handleSubmit,
     formState: {isSubmitting, isValid}} = useForm({
@@ -50,45 +56,27 @@ export default function CreateGroupForm() {
     }))
   );
   
-  const getFieldsUrl = (pageNum:number) => {
+  const getFieldsUrl = () => {
     return queryString.stringifyUrl({
       url: "",
         query: {
           ...params,
           ...(selectedSubject? {subjectId: selectedSubject.id} : {}),
           ...(search.trim() ? { search } : {}),
-          pageIndex: pageNum
       },
     });
   };
     
   //Get list of fields for user to choose
   useEffect(() => {
-    let allData: any[] = [];
-    let currentPage = 1;
-  
-    const fetchAllFields = async () => {
-      showLoading();
-      setHasMore(true);
-        allData = [];
-  
-        while (true) {
-          const response = await getFields(getFieldsUrl(currentPage));
-  
-          if (response.data.length === 0) break;
-  
-          allData = [...allData, ...response.data];
-          currentPage++;
-  
-          if (allData.length >= response.count) break;
+    if(currentUser) {
+          showLoading();
+          getFields(getFieldsUrl()).then((response) => {
+            setFields(response);
+            hideLoading();
+          });
         }
-  
-      setAllFields(allData);
-      hideLoading();
-    };
-  
-      fetchAllFields();
-  }, [search]);
+  }, [currentUser, search, getFields]);
 
 
   //Get current semester
@@ -149,7 +137,7 @@ export default function CreateGroupForm() {
                     name='description' 
                     control={control}
                     multiline={true}
-                    rows={5}
+                    rows={15}
                     placeholder='Describe your group and/or your group project.'
                     showlabel='true'
                     rules={{
