@@ -100,7 +100,6 @@ export default function ApplicationsListing({isForUser}: Props) {
     await reviewApplication(groupId, appId, {status: 'Approved'});
     var newMember: GroupMemberToAdd = {
       studentId: application.studentId,
-      role: 'Member',
       groupPositionIds: [application.groupPositionId]
     };
     await addMemberToGroup(groupId, newMember);

@@ -35,5 +35,5 @@ export async function updateProfileLink(linkId: number, data: FieldValues) : Pro
 }
 
 export async function uploadImage(formData: FormData) : Promise<any> {
-    return await fetchWrapper.post(`profile/image`, formData);
+    return await fetchWrapper.post(`profile/images`, formData);
 }

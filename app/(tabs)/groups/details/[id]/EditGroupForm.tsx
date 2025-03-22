@@ -65,6 +65,7 @@ export default function EditGroupForm() {
         url: "",
           query: {
             ...(selectedGroup?.subjectId? {subjectId: selectedGroup.subjectId} : {}),
+            ...{isPaginated: false}
         },
       });
     };

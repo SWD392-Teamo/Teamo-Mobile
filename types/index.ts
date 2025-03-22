@@ -89,7 +89,6 @@ export type GroupMember = {
 
 export type GroupMemberToAdd = {
     studentId: number
-    role: string
     groupPositionIds: number[]
 }
     

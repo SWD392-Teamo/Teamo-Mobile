@@ -23,9 +23,17 @@ export async function updateGroup(groupId: number, data: FieldValues) : Promise<
 }
 
 export async function uploadGroupImage(groupId: number, formData: FormData) : Promise<any> {
-    return await fetchWrapper.post(`groups/${groupId}/image`, formData);
+    return await fetchWrapper.post(`groups/${groupId}/images`, formData);
 } 
 
 export async function addMemberToGroup(groupId: number, newMember: GroupMemberToAdd) : Promise<any> {
     return await fetchWrapper.post(`groups/${groupId}/members`, newMember)
+}
+
+export async function removeMemberFromGroup(groupId: number, studentId: number): Promise<any> {
+    return await fetchWrapper.del(`groups/${groupId}/members/${studentId}`)
+}
+
+export async function updateMember(groupId: number, studentId: number, data: FieldValues): Promise<any> {
+    return await fetchWrapper.patch(`groups/${groupId}/members/${studentId}`, data)
 }

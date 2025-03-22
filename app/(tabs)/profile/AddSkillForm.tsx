@@ -69,6 +69,7 @@ export default function AddSkillForm() {
       query: {
         ...params,
         ...(currentUser? {studentId: currentUser.id} : {}),
+        ...{isPaginated: false}
       },
     });
   };
@@ -120,6 +121,7 @@ export default function AddSkillForm() {
                   control={control}
                   name={`level-${index}`}
                   defaultValue={skill.level}
+                  rules={{ required: true }}
                   render={({ field: { value } }) => (
                     <View className="border-2 border-primaryLight rounded-md overflow-hidden">
                       <Picker

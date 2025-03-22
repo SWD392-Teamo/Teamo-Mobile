@@ -8,7 +8,7 @@ import { useLoading } from "@/providers/LoadingProvider";
 import { useGroupStore } from "@/hooks/useGroupStore";
 
 
-export default function EditMembersForm() {
+export default function EditGroupPositions() {
   const { showLoading, hideLoading } = useLoading();
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroup } = useGroupStore(
@@ -30,7 +30,7 @@ export default function EditMembersForm() {
                 <BackButton url={`(tabs)/groups/details/${selectedGroup.id}`}/>
                 <Text className="ml-5 text-bsm font-blight">{selectedGroup.name}</Text>
               </View >
-              <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Members</Text>
+              <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Positions</Text>
             </View>
           }
 
