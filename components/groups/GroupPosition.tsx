@@ -87,6 +87,16 @@ const GroupPositionCard: React.FC<{
                 </View>
               ))}
             </View>
+            <View className='flex flex-row flex-wrap mt-3 justify-center'>
+              {position.skills.map((skill) => (
+                <View
+                  className='m-2 p-3 border-2 border-primaryLight rounded-[30px]' 
+                  key={skill.id}
+                >
+                  <Text className='text-bsm font-bbold text-primary'>{skill.name}</Text>
+                </View>
+              ))}
+            </View>
             {!owned && 
               <Pressable className="btn btn--primary justify-self-end">  
                   <CustomButton

@@ -63,6 +63,7 @@ export default function CreateGroupForm() {
           ...params,
           ...(selectedSubject? {subjectId: selectedSubject.id} : {}),
           ...(search.trim() ? { search } : {}),
+          ...{isPaginated: false}
       },
     });
   };

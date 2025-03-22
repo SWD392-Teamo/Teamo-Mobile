@@ -142,7 +142,8 @@ const GroupDetail: React.FC = () => {
             )}
           </View>
 
-          <View className="w-full h-[1px] bg-gray-300 my-8"></View>
+          <Divider />
+          
           <View className="container">
             <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
               Member

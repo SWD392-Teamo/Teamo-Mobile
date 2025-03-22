@@ -204,7 +204,7 @@ const GroupDetail: React.FC = () => {
             {selectedGroup && selectedGroup.status!=="Archived" && isLeader &&
               <Link 
                 href={{
-                  pathname: '/(tabs)/groups/details/[id]/EditPositionsForm', 
+                  pathname: '/(tabs)/groups/details/[id]/EditGroupPositions', 
                   params: {id: selectedGroup.id}
                 }}
                 onPress={() => {}}
@@ -236,7 +236,7 @@ const GroupDetail: React.FC = () => {
             {selectedGroup && selectedGroup.status!=="Archived" && isLeader &&
               <Link 
                 href={{
-                  pathname: '/(tabs)/groups/details/[id]/EditMembersForm', 
+                  pathname: '/(tabs)/groups/details/[id]/EditGroupMembers', 
                   params: {id: selectedGroup.id}
                 }}
                 onPress={() => {}}
@@ -266,11 +266,11 @@ const GroupDetail: React.FC = () => {
                           <Text className="font-bbold">{member.studentName}</Text>
                           {member?.role === "Leader" && (
                             <Image
-                                  source={icons.star}
-                                  resizeMode="contain"
-                                  className="w-6 h-6"
-                                  tintColor={colors.light.yellowIcon}
-                              />
+                              source={icons.star}
+                              resizeMode="contain"
+                              className="w-6 h-6"
+                              tintColor={colors.light.yellowIcon}
+                            />
                           )}
                         </View>
                         <Text className="text-primary text-sm text-center">{member.role}</Text>
