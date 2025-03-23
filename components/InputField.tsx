@@ -62,7 +62,7 @@ export default function InputField(props: Props) {
             )}
         </View>
         {fieldState.error?.message && (
-            <Text className='text-red-500 mt-2'>{fieldState.error?.message}</Text>
+            <Text className='text-red mt-2'>{fieldState.error?.message}</Text>
         )}
     </View>
   )

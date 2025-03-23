@@ -186,8 +186,8 @@ export default function ApplicationsListing({isForUser}: Props) {
         scrollEventThrottle={400}
       >
         <View className = 'w-full flex justify-content-center'>
-          <View className='flex flex-row justify-start'>
-            <View className='max-w-[150px]'> 
+          <View className='flex flex-row justify-center'>
+            <View className='max-w-[130px]'> 
               <CustomButton
                 title='Requested'
                 handlePress={() => {
@@ -198,7 +198,7 @@ export default function ApplicationsListing({isForUser}: Props) {
                 containerStyles='small'
               />
             </View>
-            <View className='max-w-[150px]'>
+            <View className='max-w-[130px]'>
               <CustomButton
                 title='Approved'
                 handlePress={() => {
@@ -209,7 +209,7 @@ export default function ApplicationsListing({isForUser}: Props) {
                 containerStyles='small'
               />
             </View>
-            <View className='max-w-[150px]'>
+            <View className='max-w-[130px]'>
               <CustomButton
                 title='Rejected'
                 handlePress={() => {

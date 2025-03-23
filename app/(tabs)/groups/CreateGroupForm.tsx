@@ -12,7 +12,7 @@ import { useLoading } from "@/providers/LoadingProvider";
 import { useSubjectStore } from "@/hooks/useSubjectStore";
 import { router } from "expo-router";
 import { useParamsStore } from "@/hooks/useParamsStore";
-import { Field, Semster } from "@/types";
+import { Field, Semester } from "@/types";
 import { getFields } from "@/actions/fieldAction";
 import { getCurrentSemester } from "@/actions/semesterAction";
 import { useFieldStore } from "@/hooks/useFieldStore";
@@ -21,7 +21,7 @@ export default function CreateGroupForm() {
   const {showLoading, hideLoading} = useLoading();
   const {currentUser} = useGlobalContext();
   const [search, setSearch] = useState<string>("");
-  const [currentSemester, setCurrentSemester] = useState<Semster>();
+  const [currentSemester, setCurrentSemester] = useState<Semester>();
 
   const { selectedSubject } = useSubjectStore(
     useShallow((state) => ({

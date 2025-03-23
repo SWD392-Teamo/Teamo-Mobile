@@ -39,6 +39,10 @@ const GroupDetail: React.FC = () => {
     (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Leader"
   );
 
+  const isMember = groupMembers?.some(
+    (member: GroupMember) => member.studentId === currentUser?.id && member.role === "Member"
+  );
+
   async function onDelete() {
     if(currentUser && selectedGroup) {
       await deleteGroup(selectedGroup.id);
@@ -125,6 +129,21 @@ const GroupDetail: React.FC = () => {
                     router.push(`/(tabs)/groups/details/${selectedGroup?.id}/applications`);
                   }}
                   variant='primary'
+                  containerStyles='w-full mt-5'
+                  icon={icons.application}
+                  iconColor={colors.dark.icon}
+                />
+              </Pressable>
+            }
+
+            {(isLeader || isMember) &&
+              <Pressable className="btn btn--primary justify-self-end">  
+                <CustomButton
+                  title='View Posts'
+                  handlePress={() => {
+                    router.push(`/(tabs)/groups/details/${selectedGroup?.id}/posts`);
+                  }}
+                  variant='secondary'
                   containerStyles='w-full mt-5'
                   icon={icons.application}
                   iconColor={colors.dark.icon}

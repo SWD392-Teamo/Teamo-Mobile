@@ -26,6 +26,7 @@ import star from "../assets/icons/star.png";
 import bolt from "../assets/icons/bolt.png";
 import download from "../assets/icons/download.png";
 import plusCircle from "../assets/icons/plus-circle.png";
+import plus from "../assets/icons/plus.png";
 
 export default {
   application,
@@ -55,5 +56,6 @@ export default {
   star,
   bolt,
   download,
-  plusCircle
+  plusCircle,
+  plus
 };

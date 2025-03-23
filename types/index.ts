@@ -128,13 +128,26 @@ export type GroupPosition = {
     skills: Skill[]
 }
 
-export type Semster = {
+export type Semester = {
     id: number
     name: string
     code: string
     startDate: Date
     endDate: Date
     status: string
+}
+
+export type Post = {
+  id: number;
+  groupId: number;
+  studentId: number;
+  groupMemberName: string;
+  groupMemberImgUrl: string;
+  content: string;
+  status: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  documentUrl?: string;
 }
 
 // Generic type for loadMore function

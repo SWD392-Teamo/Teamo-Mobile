@@ -15,7 +15,7 @@ type Actions = {
    setSelectedGroup: (group: Group) => void
    setSelectedGroupPosition: (position: GroupPosition) => void
    setSelectedGroupMember: (member: GroupMember) => void
-   appendData: (newSubjects: Group[]) => void
+   appendData: (newGroups: Group[]) => void
    resetData: () => void
 }
 

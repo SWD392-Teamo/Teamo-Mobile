@@ -21,12 +21,6 @@ export default function Listings() {
 
   const [search, setSearch] = useState<string>("");
 
-  const params = useParamsStore(
-    useShallow((state) => ({
-      search: state.search,
-    }))
-  );
-
   const data = useGroupStore(
     useShallow((state) => state.groups)
   )
@@ -39,7 +33,6 @@ export default function Listings() {
     return queryString.stringifyUrl({
       url: "",
       query: {
-        ...params,
         ...(search.trim() ? { search } : {}),
         pageIndex: pageNum
       },
