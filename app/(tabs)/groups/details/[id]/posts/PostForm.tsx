@@ -1,4 +1,4 @@
-import { createPost, updatePost } from '@/actions/postAction';
+import { createPost, deletePost, updatePost } from '@/actions/postAction';
 import BackButton from '@/components/BackButton';
 import CustomButton from '@/components/CustomButton';
 import FilePicker from '@/components/FilePicker';
@@ -10,7 +10,7 @@ import { Post } from '@/types';
 import convertDocument from '@/utils/DocumentConverter';
 import { Ionicons } from '@expo/vector-icons';
 import { DocumentPickerResponse } from '@react-native-documents/picker';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { Image, SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native';
@@ -28,10 +28,9 @@ export default function PostForm({post}: PostProps) {
 
     const { selectedGroup } = useGroupStore(
         useShallow((state) => ({
-          selectedGroup: state.selectedGroup,
+            selectedGroup: state.selectedGroup,
         }))
-      );
-    
+    );
 
     // Next navigation
     const router = useRouter();
@@ -65,6 +64,8 @@ export default function PostForm({post}: PostProps) {
             const formData = new FormData();
 
             formData.append('content', data.content);
+            console.log(data.content)
+
             if (selectedDocument) {
                 formData.append('document', selectedDocument);
             }
@@ -80,11 +81,27 @@ export default function PostForm({post}: PostProps) {
 
             if (res.error == undefined) {
                 ToastAndroid.show((hasPost ? "Update" : "Create") + ' post succeeded', ToastAndroid.SHORT)
-
+                router.push(`/groups/details/${selectedGroup?.id}/posts`);
             }
             else if (res.error.message.statusCode == 400){
                 ToastAndroid.show(res.error.message.message, ToastAndroid.SHORT)
             }
+        } catch (error: any) {
+            ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT)
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // On delete logic
+    async function onDelete() {
+        try {
+            showLoading();
+            if (post && selectedGroup) {
+                await deletePost(selectedGroup?.id, post?.id)
+            }
+            ToastAndroid.show('Delete post succeeded', ToastAndroid.SHORT)
+            router.push(`/groups/details/${selectedGroup?.id}/posts`);
         } catch (error: any) {
             ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT)
         } finally {
@@ -98,7 +115,7 @@ export default function PostForm({post}: PostProps) {
             <View className='w-full flex justify-content-center'>  
                 <View className="m-5 ml-5">
                     <View className="flex flex-row justify-content-start mt-2">
-                        <BackButton url="/groups/details/[id]/posts/PostForm"/>
+                        <BackButton url={`/groups/details/${selectedGroup?.id}/posts`}/>
                         <Text className="ml-5 text-bsm font-blight">Posts</Text>
                     </View >
                     <Text className="m-2 mr-5 text-bm text-secondary font-bsemibold">Upload Post</Text>
@@ -157,11 +174,19 @@ export default function PostForm({post}: PostProps) {
                             spinnerColor={colors.light.tint}
                         />
                     </View>
+                    {hasPost &&
+                        <View className='mt-5'>
+                            <CustomButton
+                                title='Delete'
+                                handlePress={onDelete}
+                                variant='secondary'
+                                containerStyles='w-full mt-7'
+                            />
+                        </View>
+                    }
                 </View>
             </View>
         </ScrollView>
     </SafeAreaView>
-
-    
   )
 }

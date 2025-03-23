@@ -29,7 +29,7 @@ export default function GroupsPost() {
             </View >
             <CustomButton
                 title="Upload Post"
-                handlePress={() => router.push('/groups/details/[id]/posts/PostForm')}
+                handlePress={() => router.push(`/groups/details/${selectedGroup?.id}/posts/create`)}
                 icon={icons.plus}
                 iconColor={colors.dark.icon}
                 variant="secondary"

@@ -9,6 +9,10 @@ export async function getPostsInNewsFeed(query: string): Promise<PagedResult<Pos
     return await fetchWrapper.get(`posts${query}`)
 }
 
+export async function getPostById(groupId: number, postId: number): Promise<Post> {
+    return await fetchWrapper.get(`groups/${groupId}/posts/${postId}`)
+}
+
 export async function createPost(groupId: number, data: FormData): Promise<any> {
     return await fetchWrapper.post(`groups/${groupId}/posts`, data)
 }
