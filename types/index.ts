@@ -122,6 +122,17 @@ export type Group = {
     totalApplications: number
 }
 
+export type GroupToCreate = {
+    name: string
+    title: string
+    description: string
+    semesterId: number,
+    maxMember: number,
+    fieldId: number,
+    subjectId: number,
+    groupPositions: GroupPositionToAdd[]
+}
+
 export type GroupPosition = {
     id: number
     name: string
@@ -130,7 +141,13 @@ export type GroupPosition = {
     skills: Skill[]
 }
 
-export type Semster = {
+export type GroupPositionToAdd = {
+    name: string
+    count: number
+    skillIds: number[]
+}
+
+export type Semester = {
     id: number
     name: string
     code: string

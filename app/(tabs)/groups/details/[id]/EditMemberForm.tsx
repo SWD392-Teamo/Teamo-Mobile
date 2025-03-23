@@ -18,9 +18,11 @@ import MultiSelectCheckbox from "@/components/MultiSelectCheckbox";
 import ConfirmModal from "@/components/ConfirmModal";
 import { getGroupById, removeMemberFromGroup, updateMember } from "@/actions/groupAction";
 import { router } from "expo-router";
+import { useGlobalContext } from "@/providers/AuthProvider";
 
 
 export default function EditMemberForm() {
+  const { currentUser } = useGlobalContext();
   const { showLoading, hideLoading } = useLoading();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
@@ -35,7 +37,7 @@ export default function EditMemberForm() {
     }))
   );
 
-  const {handleSubmit, control, watch,
+  const {handleSubmit, control, watch, reset,
     formState: {isSubmitting, isValid}} = useForm({
       mode: 'onTouched'
   });
@@ -67,8 +69,13 @@ export default function EditMemberForm() {
   }
 
   useEffect(() => {
-    hideLoading();
-  }, []);
+    if (selectedGroupMember) {
+      reset({
+        role: selectedGroupMember.role,
+        groupPositionIds: selectedGroupMember.positionIds || []
+      });
+    }
+  }, [selectedGroupMember, reset]);
 
   return (
     <SafeAreaView>
@@ -160,14 +167,16 @@ export default function EditMemberForm() {
                             containerStyles='small'
                         />
                     </View>
-                    <View className='w-[120px]'>
+                    {currentUser && selectedGroupMember.studentId !== currentUser?.id &&
+                      <View className='w-[120px]'>
                         <CustomButton
                             title='Remove'
                             handlePress={() => setConfirmModalVisible(true)}
                             variant='delete'
                             containerStyles='small'
                         />
-                    </View>
+                      </View>
+                    } 
                 </View>
                 </>
               ) : (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, Image, SafeAreaView, Pressable, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import DateConverter from "@/components/DateConvert";
@@ -19,9 +19,11 @@ import { useGlobalContext } from "@/providers/AuthProvider";
 import { deleteGroup, getGroupById, uploadGroupImage } from "@/actions/groupAction";
 import { DocumentPickerResponse } from "@react-native-documents/picker";
 import convertDocument from "@/utils/DocumentConverter";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const GroupDetail: React.FC = () => {
   const {currentUser} = useGlobalContext();
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const router = useRouter();
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroup } = useGroupStore(
@@ -294,13 +296,23 @@ const GroupDetail: React.FC = () => {
           <View className='m-5'>
             <CustomButton
               title='Delete'
-              handlePress={onDelete}
+              handlePress={() => setConfirmModalVisible(true)}
               variant='delete'
               containerStyles='default'
             />
           </View>
         }
       </ScrollView>
+      <ConfirmModal
+        isVisible={confirmModalVisible}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete ${selectedGroup?.name || 'this group'} ?`}
+        onConfirm={() => {
+          setConfirmModalVisible(false);
+          onDelete();
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      />
     </SafeAreaView>
   );
 };
