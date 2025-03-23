@@ -87,7 +87,7 @@ export default function CreateGroupForm() {
         setCurrentSemester(response);
         hideLoading();
     })
-  }); 
+  }, [getCurrentSemester]); 
 
   return (
     <SafeAreaView>
