@@ -12,10 +12,12 @@ import { colors } from "@/constants/colors";
 import { useEffect, useState } from "react";
 import LeaderAvatar from "@/components/UserAvatar";
 import CustomButton from "@/components/CustomButton";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FieldValues, useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import MultiSelectCheckbox from "@/components/MultiSelectCheckbox";
 import ConfirmModal from "@/components/ConfirmModal";
+import { getGroupById, removeMemberFromGroup, updateMember } from "@/actions/groupAction";
+import { router } from "expo-router";
 
 
 export default function EditMemberForm() {
@@ -40,12 +42,28 @@ export default function EditMemberForm() {
 
   const groupPositionIds = watch('groupPositionIds', []);
 
-  async function onSave() {
-    console.log(groupPositionIds);
+  async function onSave(data: FieldValues) {
+    if(selectedGroup && selectedGroupMember) {
+      await updateMember(selectedGroup.id, selectedGroupMember.studentId, data);
+      const updatedGroup = await getGroupById(selectedGroup.id);
+      setSelectedGroup(updatedGroup);
+      router.push({
+        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+        params: { id: selectedGroup.id }
+      });
+    }
   }
 
   async function onRemove() {
-    
+    if(selectedGroup && selectedGroupMember) {
+      await removeMemberFromGroup(selectedGroup.id, selectedGroupMember.studentId);
+      const updatedGroup = await getGroupById(selectedGroup.id);
+      setSelectedGroup(updatedGroup);
+      router.push({
+        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+        params: { id: selectedGroup.id }
+      });
+    }
   }
 
   useEffect(() => {
@@ -114,7 +132,7 @@ export default function EditMemberForm() {
                       <View className="flex flex-1 m-3">
                         <Controller
                           control={control}
-                          defaultValue={[]}
+                          defaultValue={selectedGroupMember.positionIds}
                           name="groupPositionIds"
                           render={({ field: { onChange, value } }) => (
                             <MultiSelectCheckbox
@@ -122,7 +140,7 @@ export default function EditMemberForm() {
                               options={selectedGroup.groupPositions || []}
                               selectedValues={value}
                               onSelectionChange={onChange}
-                              placeholder="Select positions"
+                              placeholder="Update positions"
                             />
                           )}
                         />

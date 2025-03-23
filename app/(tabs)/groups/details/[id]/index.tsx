@@ -276,7 +276,13 @@ const GroupDetail: React.FC = () => {
                         <Text className="text-primary text-sm text-center">{member.role}</Text>
                       </View>
                     </View>
-                    <Text className="mt-2 text-grey font-bregular text-center">{member.positions}</Text>
+                    <View className="flex flex-row flex-wrap items-center justify-center mt-2 gap-2">
+                    {member.positions.map((position) => (
+                      <Text 
+                        key={position}
+                        className="mt-1 px-2 py-1 bg-gray-200 rounded-lg text-grey font-bregular text-sm">{position}</Text>
+                    ))}
+                    </View>
                   </View>
                 ))}
               </View>

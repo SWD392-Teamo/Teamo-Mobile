@@ -78,11 +78,13 @@ export type Field = {
 }
 
 export type GroupMember = {
+    id: number
     groupId: number
     studentId: number
     studentName: string
     studentEmail: string
     imgUrl: string
+    positionIds: number[]
     positions: string[]
     role: string
 }
