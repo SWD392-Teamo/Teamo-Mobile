@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
@@ -60,26 +60,24 @@ export default function EditGroupForm() {
     router.push('/groups');
   }
     
-    const getFieldsUrl = () => {
-      return queryString.stringifyUrl({
-        url: "",
-          query: {
-            ...(selectedGroup?.subjectId? {subjectId: selectedGroup.subjectId} : {}),
-            ...{isPaginated: false}
-        },
-      });
-    };
+  const getFieldsUrl = useCallback(() => {
+    return queryString.stringifyUrl({
+      url: "",
+      query: {
+        ...(selectedGroup?.subjectId ? { subjectId: selectedGroup.subjectId } : {}),
+        ...{ isPaginated: false }
+      },
+    });
+  }, [selectedGroup]);
       
     //Get list of fields for user to choose
     useEffect(() => {
-      if(currentUser) {
-            showLoading();
-            getFields(getFieldsUrl()).then((response) => {
-              setFields(response);
-              hideLoading();
-            });
-          }
-    }, [currentUser, getFields]);
+      showLoading();
+      getFields(getFieldsUrl()).then((response) => {
+        setFields(response);
+        hideLoading();
+      });
+    }, [getFieldsUrl, setFields]);
 
   return (
     <SafeAreaView>
@@ -112,7 +110,7 @@ export default function EditGroupForm() {
                     }}
                     rules={{
                       pattern: {
-                        value: /^[a-zA-Z0-9\s\-_()]+$/,
+                        value: /^[\w\s\W]+$/,
                         message: "Invalid group name.",
                       }
                     }}
@@ -130,7 +128,7 @@ export default function EditGroupForm() {
                     }}
                     rules={{
                       pattern: {
-                        value: /^[a-zA-Z0-9\s\-_()]+$/,
+                        value: /^[\w\s\W]+$/,
                         message: 'Invalid title.'
                       }
                     }}
@@ -149,8 +147,8 @@ export default function EditGroupForm() {
                     }}
                     rules={{
                       pattern: {
-                        value: /^[a-zA-Z0-9\s\-_()]+$/,
-                        message: 'Invalid text.'
+                        value: /^[\w\s\W]+$/,
+                        message: 'Invalid description.'
                       }
                     }}
                   />

@@ -10,14 +10,12 @@ import { useGroupStore } from "@/hooks/useGroupStore";
 
 export default function EditGroupPositions() {
   const { showLoading, hideLoading } = useLoading();
-  const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
+  const setSelectedGroupPosition = useGroupStore((state) => state.setSelectedGroupPosition);
   const { selectedGroup } = useGroupStore(
     useShallow((state) => ({
         selectedGroup: state.selectedGroup
     }))
   );
-
-  const { currentUser } = useGlobalContext();
 
   return (
     <SafeAreaView>

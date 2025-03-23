@@ -12,8 +12,8 @@ type MultiSelectCheckboxProps = {
 
 const MultiSelectCheckbox = ({
   label,
-  options,
-  selectedValues,
+  options = [],
+  selectedValues = [],
   onSelectionChange,
   placeholder = 'Select options...',
 }: MultiSelectCheckboxProps) => {
