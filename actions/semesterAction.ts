@@ -1,7 +1,7 @@
 import { fetchWrapper } from "@/lib/fetchWrapper";
 import { PagedResult, Semester } from "@/types";
 
-export async function getSemsters(query: string) : Promise<PagedResult<Semester>> {
+export async function getSemesters(query: string) : Promise<PagedResult<Semester>> {
     return await fetchWrapper.get(`semesters${query}`);
 }
 

@@ -78,11 +78,13 @@ export type Field = {
 }
 
 export type GroupMember = {
+    id: number
     groupId: number
     studentId: number
     studentName: string
     studentEmail: string
     imgUrl: string
+    positionIds: number[]
     positions: string[]
     role: string
 }
@@ -120,12 +122,29 @@ export type Group = {
     totalApplications: number
 }
 
+export type GroupToCreate = {
+    name: string
+    title: string
+    description: string
+    semesterId: number,
+    maxMember: number,
+    fieldId: number,
+    subjectId: number,
+    groupPositions: GroupPositionToAdd[]
+}
+
 export type GroupPosition = {
     id: number
     name: string
     count: number
     status: string
     skills: Skill[]
+}
+
+export type GroupPositionToAdd = {
+    name: string
+    count: number
+    skillIds: number[]
 }
 
 export type Semester = {

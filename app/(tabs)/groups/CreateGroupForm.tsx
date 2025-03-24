@@ -2,25 +2,32 @@ import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, useFieldArray, useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useSubjectStore } from "@/hooks/useSubjectStore";
 import { router } from "expo-router";
 import { useParamsStore } from "@/hooks/useParamsStore";
-import { Field, Semester } from "@/types";
+import { GroupPositionToAdd, GroupToCreate, Semester } from "@/types";
 import { getFields } from "@/actions/fieldAction";
 import { getCurrentSemester } from "@/actions/semesterAction";
 import { useFieldStore } from "@/hooks/useFieldStore";
+import NumberPicker from "@/components/NumberPicker";
+import FieldModalPicker from "@/components/FieldModalPicker";
+import { AntDesign } from "@expo/vector-icons";
+import PositionForGroupCreate from "./PositionForGroupCreate";
+import { useSkillStore } from "@/hooks/useSkillStore";
+import { getSkills } from "@/actions/skillAction";
 
 export default function CreateGroupForm() {
   const {showLoading, hideLoading} = useLoading();
-  const {currentUser} = useGlobalContext();
-  const [search, setSearch] = useState<string>("");
+  const [addedPositions, setAddedPositions] = useState<GroupPositionToAdd[]>([
+    {name: "", count: 0, skillIds: []}
+  ])
   const [currentSemester, setCurrentSemester] = useState<Semester>();
 
   const { selectedSubject } = useSubjectStore(
@@ -30,9 +37,16 @@ export default function CreateGroupForm() {
   );
 
   const setFields = useFieldStore((state) => state.setFields);
-  const { selectedField } = useFieldStore(
+  const { fieldOptions } = useFieldStore(
     useShallow((state) => ({
-      selectedField: state.selectedField
+      fieldOptions: state.fields
+    }))
+  )
+
+  const setSkillOptions = useSkillStore((state) => state.setData);
+  const { skillOptions } = useSkillStore(
+    useShallow((state) => ({
+      skillOptions: state.skills
     }))
   )
 
@@ -42,52 +56,66 @@ export default function CreateGroupForm() {
     });
 
   async function onCreate(data: FieldValues) {
-
+    if(selectedSubject && currentSemester) {
+      var newGroup: GroupToCreate = {
+        name: data.name,
+        title: data.title,
+        description: data.description,
+        semesterId: currentSemester.id,
+        maxMember: data.maxMember,
+        fieldId: data.fieldId,
+        subjectId: selectedSubject.id,
+        groupPositions: data.groupPositions
+      }
+      console.log(newGroup);
+    }
   }
 
   async function onCancel() {
     router.push('/(tabs)/groups');
   }
-
-  //Search params for getting fields
-  const params = useParamsStore(
-    useShallow((state) => ({
-        search: state.search
-    }))
-  );
   
   const getFieldsUrl = () => {
     return queryString.stringifyUrl({
       url: "",
         query: {
-          ...params,
           ...(selectedSubject? {subjectId: selectedSubject.id} : {}),
-          ...(search.trim() ? { search } : {}),
           ...{isPaginated: false}
       },
     });
   };
+
+  const getSkillsUrl = () => {
+    return queryString.stringifyUrl({
+      url: "",
+      query: {
+        ...{isPaginated: false}
+      },
+    });
+  };
     
-  //Get list of fields for user to choose
   useEffect(() => {
-    if(currentUser) {
-          showLoading();
-          getFields(getFieldsUrl()).then((response) => {
-            setFields(response);
-            hideLoading();
-          });
-        }
-  }, [currentUser, search, getFields]);
-
-
-  //Get current semester
-  useEffect(() => {
-    showLoading();
-    getCurrentSemester().then((response) => {
-        setCurrentSemester(response);
+    async function fetchData() {
+      showLoading();
+      try {
+        const [fieldsResponse, skillsResponse, semesterResponse] = await Promise.all([
+          getFields(getFieldsUrl()),
+          getSkills(getSkillsUrl()),
+          getCurrentSemester()
+        ]);
+        
+        setFields(fieldsResponse);
+        setSkillOptions(skillsResponse);
+        setCurrentSemester(semesterResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
         hideLoading();
-    })
-  }); 
+      }
+    }
+  
+    fetchData();
+  }, [getFields, getSkills, getCurrentSemester, setFields, setSkillOptions, setCurrentSemester]); 
 
   return (
     <SafeAreaView>
@@ -112,6 +140,10 @@ export default function CreateGroupForm() {
                     multiline={false}
                     placeholder='Group name'
                     showlabel='true'
+                    customStyles={{
+                      container: "border-2 border-primaryLight rounded-md",
+                      label: "text-secondary"
+                    }}
                     rules={{
                       required: 'Name is required.',
                       pattern: {
@@ -126,6 +158,10 @@ export default function CreateGroupForm() {
                     multiline={false}
                     placeholder='Group title or project title'
                     showlabel='true'
+                    customStyles={{
+                      container: "border-2 border-primaryLight rounded-md",
+                      label: "text-secondary"
+                    }}
                     rules={{
                       required: 'Title is required',
                       pattern: {
@@ -141,12 +177,59 @@ export default function CreateGroupForm() {
                     rows={15}
                     placeholder='Describe your group and/or your group project.'
                     showlabel='true'
+                    customStyles={{
+                      container: "border-2 border-primaryLight rounded-md",
+                      label: "text-secondary"
+                    }}
                     rules={{
                       pattern: {
                         value: /^[\w\s\W]+$/,
-                        message: 'Invalid group description.'
+                        message: 'Invalid description.'
                     }}}
                   />
+                  <NumberPicker 
+                    control={control}
+                    name="maxMeber"
+                    title="Max Member"
+                    showlabel={true}
+                    requiredInput={true}
+                    defaultValue={1}
+                  />
+                  <Text className="text-base text-grey font-bmedium mt-5 mb-2">Field</Text>
+                  <FieldModalPicker control={control} fields={fieldOptions || []} requiredInput={true}/>
+
+                  <Text className="text-base text-grey font-bmedium mt-5 mb-2">Positions</Text>
+                  <View className="w-full">
+                  {addedPositions.map((position, index) => (
+                    <View
+                      key={index}
+                      className="w-full bg-white border-2 border-primaryLight p-4 my-2 rounded-lg shadow shadow-primaryLight/10 elevation-2"
+                    >
+                      <PositionForGroupCreate
+                        control={control}
+                        skills={skillOptions || []}
+                        index={index}
+                      />
+
+                      {/* Remove Position Button */}
+                      <TouchableOpacity
+                        onPress={() => setAddedPositions(addedPositions.filter((_, i) => i !== index))}
+                        className="mt-3 bg-softgrey p-2 rounded-md"
+                      >
+                        <Text className="text-red text-center">Remove</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+
+                    {/* Add Position Button */}
+                    <TouchableOpacity
+                      onPress={() => setAddedPositions([...addedPositions, { name: "", count: 0, skillIds: [] }])}
+                      className="bg-tertiary p-3 rounded-md flex flex-row justify-center items-center mt-3 border-2 border-primaryLight"
+                    >
+                      <AntDesign name="plus" size={20} color="#4CA4CD" />
+                      <Text className="text-primary text-center">Add Position</Text>
+                    </TouchableOpacity>
+                  </View>
 
                   <View className="flex flex-row items-center justify-center px-4 m-5 gap-3">
                     <View className='w-[120px]'>

@@ -12,13 +12,17 @@ import { colors } from "@/constants/colors";
 import { useEffect, useState } from "react";
 import LeaderAvatar from "@/components/UserAvatar";
 import CustomButton from "@/components/CustomButton";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FieldValues, useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import MultiSelectCheckbox from "@/components/MultiSelectCheckbox";
 import ConfirmModal from "@/components/ConfirmModal";
+import { getGroupById, removeMemberFromGroup, updateMember } from "@/actions/groupAction";
+import { router } from "expo-router";
+import { useGlobalContext } from "@/providers/AuthProvider";
 
 
 export default function EditMemberForm() {
+  const { currentUser } = useGlobalContext();
   const { showLoading, hideLoading } = useLoading();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
@@ -33,24 +37,45 @@ export default function EditMemberForm() {
     }))
   );
 
-  const {handleSubmit, control, watch,
+  const {handleSubmit, control, watch, reset,
     formState: {isSubmitting, isValid}} = useForm({
       mode: 'onTouched'
   });
 
   const groupPositionIds = watch('groupPositionIds', []);
 
-  async function onSave() {
-    console.log(groupPositionIds);
+  async function onSave(data: FieldValues) {
+    if(selectedGroup && selectedGroupMember) {
+      await updateMember(selectedGroup.id, selectedGroupMember.studentId, data);
+      const updatedGroup = await getGroupById(selectedGroup.id);
+      setSelectedGroup(updatedGroup);
+      router.push({
+        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+        params: { id: selectedGroup.id }
+      });
+    }
   }
 
   async function onRemove() {
-    
+    if(selectedGroup && selectedGroupMember) {
+      await removeMemberFromGroup(selectedGroup.id, selectedGroupMember.studentId);
+      const updatedGroup = await getGroupById(selectedGroup.id);
+      setSelectedGroup(updatedGroup);
+      router.push({
+        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+        params: { id: selectedGroup.id }
+      });
+    }
   }
 
   useEffect(() => {
-    hideLoading();
-  }, []);
+    if (selectedGroupMember) {
+      reset({
+        role: selectedGroupMember.role,
+        groupPositionIds: selectedGroupMember.positionIds || []
+      });
+    }
+  }, [selectedGroupMember, reset]);
 
   return (
     <SafeAreaView>
@@ -114,7 +139,7 @@ export default function EditMemberForm() {
                       <View className="flex flex-1 m-3">
                         <Controller
                           control={control}
-                          defaultValue={[]}
+                          defaultValue={selectedGroupMember.positionIds}
                           name="groupPositionIds"
                           render={({ field: { onChange, value } }) => (
                             <MultiSelectCheckbox
@@ -122,7 +147,7 @@ export default function EditMemberForm() {
                               options={selectedGroup.groupPositions || []}
                               selectedValues={value}
                               onSelectionChange={onChange}
-                              placeholder="Select positions"
+                              placeholder="Update positions"
                             />
                           )}
                         />
@@ -142,14 +167,16 @@ export default function EditMemberForm() {
                             containerStyles='small'
                         />
                     </View>
-                    <View className='w-[120px]'>
+                    {currentUser && selectedGroupMember.studentId !== currentUser?.id &&
+                      <View className='w-[120px]'>
                         <CustomButton
                             title='Remove'
                             handlePress={() => setConfirmModalVisible(true)}
                             variant='delete'
                             containerStyles='small'
                         />
-                    </View>
+                      </View>
+                    } 
                 </View>
                 </>
               ) : (
