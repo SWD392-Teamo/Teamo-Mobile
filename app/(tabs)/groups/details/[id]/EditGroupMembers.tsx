@@ -1,9 +1,7 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text, Image } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useShallow } from "zustand/shallow";
-import queryString from "query-string";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useGroupStore } from "@/hooks/useGroupStore";
 import { GroupMember } from "@/types";

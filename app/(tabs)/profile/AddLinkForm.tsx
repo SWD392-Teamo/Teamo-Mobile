@@ -35,8 +35,10 @@ export default function AddLinkForm() {
 
   async function onSave(data: any) {
     if(currentUser && data.links.length > 0) {
+      showLoading();
       await addProfileLinks(data.links);
       const updatedProfile = await getProfile();
+      hideLoading();
       setLinks(updatedProfile.links);
     }
     router.push('/profile/EditProfileLinks');

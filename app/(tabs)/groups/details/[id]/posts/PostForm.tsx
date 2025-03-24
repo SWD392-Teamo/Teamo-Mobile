@@ -1,5 +1,6 @@
 import { createPost, deletePost, updatePost } from '@/actions/postAction';
 import BackButton from '@/components/BackButton';
+import ConfirmModal from '@/components/ConfirmModal';
 import CustomButton from '@/components/CustomButton';
 import FilePicker from '@/components/FilePicker';
 import InputField from '@/components/InputField';
@@ -22,6 +23,7 @@ type PostProps = {
 
 export default function PostForm({post}: PostProps) {
     const{ showLoading, hideLoading } = useLoading();
+    const[confirmModalVisible, setConfirmModalVisible] = useState(false);
     const [hasPost, setHasPost] = useState<boolean>(false);
     const [isLoading, setLoading] = useState(false);
     const [selectedDocument, setSelectedDocument] = useState<File>();
@@ -178,7 +180,7 @@ export default function PostForm({post}: PostProps) {
                         <View className='mt-5'>
                             <CustomButton
                                 title='Delete'
-                                handlePress={onDelete}
+                                handlePress={() => setConfirmModalVisible(true)}
                                 variant='secondary'
                                 containerStyles='w-full mt-7'
                             />
@@ -187,6 +189,17 @@ export default function PostForm({post}: PostProps) {
                 </View>
             </View>
         </ScrollView>
+        {/*Confirm modal for post deletion */}
+        <ConfirmModal
+            isVisible={confirmModalVisible}
+            title="Confirm Removal"
+            message={`Are you sure you want to delete this post ?`}
+            onConfirm={() => {
+                setConfirmModalVisible(false);
+                onDelete();
+            }}
+            onCancel={() => setConfirmModalVisible(false)}
+      />
     </SafeAreaView>
   )
 }

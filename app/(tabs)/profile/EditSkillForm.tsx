@@ -1,8 +1,6 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spinner from "@/components/Spinner";
-import { colors } from "@/constants/colors";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
@@ -13,9 +11,11 @@ import { useShallow } from "zustand/shallow";
 import { useStudentSkillStore } from "@/hooks/useStudentSkillStore";
 import { Picker } from '@react-native-picker/picker';
 import { useLoading } from "@/providers/LoadingProvider";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function EditSkillForm() {
   const { showLoading, hideLoading } = useLoading();
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills); 
 
   const {currentUser} = useGlobalContext();
@@ -41,8 +41,10 @@ export default function EditSkillForm() {
 
   async function onSave(data: FieldValues) {
     if(currentUser && selectedStudentSkill) {
+      showLoading();
       await updateProfileSkill(selectedStudentSkill.id, data);
       const updatedProfile = await getProfile();
+      hideLoading();
       setStudentSkills(updatedProfile.studentSkills);
     }
     router.push('/profile/EditProfileSkills');
@@ -50,8 +52,10 @@ export default function EditSkillForm() {
 
   async function onDelete() {
     if(currentUser && selectedStudentSkill) {
+      showLoading();
       await deleteProfileSkill(selectedStudentSkill.id);
       const updatedProfile = await getProfile();
+      hideLoading();
       setStudentSkills(updatedProfile.studentSkills);
     }
     router.push('/profile/EditProfileSkills');
@@ -85,13 +89,13 @@ export default function EditSkillForm() {
                             control={control}
                             name="level"
                             rules={{ required: true }}
-                            defaultValue={selectedStudentSkill.skillLevel}
                             render={({ field: { onChange, value } }) => (
                               <View className="border-2 border-primaryLight rounded-md overflow-hidden">
                                 <Picker
                                   selectedValue={value}
                                   onValueChange={onChange}
                                   style={{ height: 55, width: '100%' }}
+                                  mode="dropdown"
                                 >
                                   <Picker.Item label="Beginner" value="Beginner" />
                                   <Picker.Item label="PreIntermediate" value="PreIntermediate" />
@@ -118,7 +122,7 @@ export default function EditSkillForm() {
                         <View className='w-[120px]'>
                             <CustomButton
                                 title='Delete'
-                                handlePress={onDelete}
+                                handlePress={() => setConfirmModalVisible(true)}
                                 variant='delete'
                                 containerStyles='small'
                             />
@@ -131,6 +135,17 @@ export default function EditSkillForm() {
             </View>
         </View>
       </ScrollView>
+      {/* Confirmation Modal for Remove action */}
+      <ConfirmModal
+        isVisible={confirmModalVisible}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete ${selectedStudentSkill?.skillName || 'this skill'} ?`}
+        onConfirm={() => {
+          setConfirmModalVisible(false);
+          onDelete();
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      />
     </SafeAreaView>
   )
 }

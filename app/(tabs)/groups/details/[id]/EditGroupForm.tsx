@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
@@ -17,9 +17,11 @@ import { useFieldStore } from "@/hooks/useFieldStore";
 import { getFields } from "@/actions/fieldAction";
 import { Picker } from "@react-native-picker/picker";
 import FieldModalPicker from "@/components/FieldModalPicker";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function EditGroupForm() {
   const { showLoading, hideLoading } = useLoading();
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroup } = useGroupStore(
     useShallow((state) => ({
@@ -36,15 +38,29 @@ export default function EditGroupForm() {
 
   const { currentUser } = useGlobalContext();
 
-  const {control, handleSubmit,
+  const {control, handleSubmit, reset,
     formState: {isSubmitting, isValid}} = useForm({
         mode: 'onTouched'
     });
 
+  useEffect(() => {
+    if (selectedGroup) {
+      reset({
+        name: selectedGroup.name,
+        title: selectedGroup.title,
+        description: selectedGroup.description,
+        maxMember: selectedGroup.maxMember,
+        status: selectedGroup.status
+      });
+    }
+  }, [selectedGroup, reset]);
+
   async function onSave(data: FieldValues) {
     if(currentUser && selectedGroup) {
+      showLoading();
       await updateGroup(selectedGroup.id, data);
       const updatedGroup = await getGroupById(selectedGroup.id);
+      hideLoading();
       setSelectedGroup(updatedGroup);
       router.push({
         pathname: "/(tabs)/groups/details/[id]",
@@ -55,7 +71,9 @@ export default function EditGroupForm() {
 
   async function onDelete() {
     if(currentUser && selectedGroup) {
+      showLoading();
       await deleteGroup(selectedGroup.id);
+      hideLoading();
     }
     router.push('/groups');
   }
@@ -103,7 +121,6 @@ export default function EditGroupForm() {
                     control={control}
                     multiline={false}
                     showlabel='true'
-                    placeholder={selectedGroup.name}
                     customStyles={{
                       container: "border-2 border-primaryLight rounded-md",
                       label: "text-secondary"
@@ -121,7 +138,6 @@ export default function EditGroupForm() {
                     control={control}
                     multiline={false}
                     showlabel='true'
-                    placeholder={selectedGroup.title}
                     customStyles={{
                       container: "border-2 border-primaryLight rounded-md",
                       label: "text-secondary"
@@ -140,7 +156,6 @@ export default function EditGroupForm() {
                     multiline={true}
                     rows={15}
                     showlabel='true'
-                    placeholder={selectedGroup.description}
                     customStyles={{
                       container: "border-2 border-primaryLight rounded-md",
                       label: "text-secondary"
@@ -154,7 +169,7 @@ export default function EditGroupForm() {
                   />
                   <NumberPicker 
                     control={control}
-                    name="maxMeber"
+                    name="maxMember"
                     title="Max Member"
                     showlabel={true}
                     requiredInput={false}
@@ -168,13 +183,13 @@ export default function EditGroupForm() {
                   <Controller
                     control={control}
                     name="status"
-                    defaultValue={selectedGroup.status}
                     render={({ field: { onChange, value } }) => (
                       <View className="border-2 border-primaryLight rounded-md overflow-hidden">
                         <Picker
                           selectedValue={value}
                           onValueChange={onChange}
                           style={{ height: 55, width: '100%' }}
+                          mode="dropdown"
                         >
                           <Picker.Item label="Recruiting" value="Recruiting" />
                           <Picker.Item label="Full" value="Full" />
@@ -198,7 +213,7 @@ export default function EditGroupForm() {
                     <View className='w-[120px]'>
                       <CustomButton
                         title='Delete'
-                        handlePress={onDelete}
+                        handlePress={() => setConfirmModalVisible(true)}
                         variant='delete'
                         containerStyles='small'
                       />
@@ -211,6 +226,17 @@ export default function EditGroupForm() {
             </View>
         </View>
       </ScrollView>
+      {/* Confirmation Modal for Remove action */}
+      <ConfirmModal
+        isVisible={confirmModalVisible}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete ${selectedGroup?.name || 'this group'} ?`}
+        onConfirm={() => {
+          setConfirmModalVisible(false);
+          onDelete();
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      />
     </SafeAreaView>
   )
 }

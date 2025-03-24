@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
@@ -31,11 +31,6 @@ export default function EditProfileLinks() {
       }
     }
   }, [currentUser, setLinks]);
-  
-  // Fetch links when component mounts
-  useEffect(() => {
-    fetchLinks();
-  }, [fetchLinks]);
   
   // Refresh links when screen comes into focus
   useFocusEffect(

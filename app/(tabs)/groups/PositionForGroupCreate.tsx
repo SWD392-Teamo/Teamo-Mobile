@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from 'react';
 import InputField from '@/components/InputField';
-import { GroupPosition, Link, Skill } from "@/types";
+import { Skill } from "@/types";
 import NumberPicker from "@/components/NumberPicker";
 import { Controller } from "react-hook-form";
 import MultiSelectCheckbox from "@/components/MultiSelectCheckbox";

@@ -14,7 +14,6 @@ import InputField from "@/components/InputField";
 
 export default function EditProfileDescription() {
   const {showLoading, hideLoading} = useLoading();
-  const [des, setDes] = useState("");
   const { currentUser } = useGlobalContext();
 
   const profile = useProfileStore(
@@ -23,27 +22,29 @@ export default function EditProfileDescription() {
 
   const setProfile = useProfileStore((state) => state.setData);
 
-  const {control, handleSubmit,
+  const {control, handleSubmit, reset,
       formState: {isSubmitting, isValid}} = useForm({
           mode: 'onTouched'
       });
 
   async function onSave(data: FieldValues) {
     if(currentUser) {
+      showLoading();
       await updateProfileDescription(data);
       const updatedProfile = await getProfile();
+      hideLoading();
       setProfile(updatedProfile);
     }
     router.push('/(tabs)/profile');
   }
 
-  useEffect(() => {    
-    if(currentUser && profile) {
-        showLoading();
-        setDes(profile.description);
-        hideLoading();
+  useEffect(() => {
+    if (profile) {
+      reset({
+        description: profile.description,
+      });
     }
-  }, [setDes]);
+  }, [profile, reset]);
 
   return (
     <SafeAreaView>
@@ -65,7 +66,6 @@ export default function EditProfileDescription() {
                 control={control}
                 multiline={true}
                 rows={5}
-                placeholder={des}
                 showlabel='false'
               />
             </View>

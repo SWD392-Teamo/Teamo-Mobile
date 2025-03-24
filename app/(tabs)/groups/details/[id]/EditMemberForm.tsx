@@ -2,10 +2,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text, Image } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useShallow } from "zustand/shallow";
-import queryString from "query-string";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useGroupStore } from "@/hooks/useGroupStore";
-import { GroupMember } from "@/types";
 import { defaultAvatar } from "@/utils/defaultImage";
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
@@ -22,8 +20,8 @@ import { useGlobalContext } from "@/providers/AuthProvider";
 
 
 export default function EditMemberForm() {
+  const {showLoading, hideLoading} = useLoading();
   const { currentUser } = useGlobalContext();
-  const { showLoading, hideLoading } = useLoading();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroupMember } = useGroupStore(
@@ -46,8 +44,10 @@ export default function EditMemberForm() {
 
   async function onSave(data: FieldValues) {
     if(selectedGroup && selectedGroupMember) {
+      showLoading();
       await updateMember(selectedGroup.id, selectedGroupMember.studentId, data);
       const updatedGroup = await getGroupById(selectedGroup.id);
+      hideLoading();
       setSelectedGroup(updatedGroup);
       router.push({
         pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
@@ -58,8 +58,10 @@ export default function EditMemberForm() {
 
   async function onRemove() {
     if(selectedGroup && selectedGroupMember) {
+      showLoading();
       await removeMemberFromGroup(selectedGroup.id, selectedGroupMember.studentId);
       const updatedGroup = await getGroupById(selectedGroup.id);
+      hideLoading();
       setSelectedGroup(updatedGroup);
       router.push({
         pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
@@ -125,6 +127,7 @@ export default function EditMemberForm() {
                               selectedValue={value}
                               onValueChange={onChange}
                               style={{ height: 55, width: '100%' }}
+                              mode="dropdown"
                             >
                               <Picker.Item label="Member" value="Member" />
                               <Picker.Item label="Leader" value="Leader" />
