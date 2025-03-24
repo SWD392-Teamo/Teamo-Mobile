@@ -5,7 +5,7 @@ export async function getPostsInGroup(query: string, groupId?: number): Promise<
     return await fetchWrapper.get(`groups/${groupId}/posts${query}`)
 }
 
-export async function getPostsInNewsFeed(query: string): Promise<PagedResult<Post>> {
+export async function getTopPosts(query: string): Promise<PagedResult<Post>> {
     return await fetchWrapper.get(`posts${query}`)
 }
 

@@ -70,10 +70,16 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
           </View>
           
           {/* Display post group info (if needed) */}
-          <View className="bg-gray-100 rounded-lg p-2 flex flex-row items-center mt-2">
-            <Ionicons name="people" size={16} color="#666" />
-            <Text className="text-sm text-gray-700 ml-2">Group: {post?.groupName}</Text>
-          </View>
+          <Link className="bg-gray-100 rounded-lg p-2 mt-2"
+            href={{
+              pathname: '/(tabs)/groups/details/[id]', 
+              params: {id: post.groupId}
+            }}>
+              <View className="flex flex-row items-center">
+                <Ionicons name="people" size={16} color="#666" />
+                <Text className="text-sm text-gray-700 ml-2">Group: {post?.groupName}</Text>
+              </View>
+          </Link>
         </View>
 
         {/* Image content - only shown if documentUrl is an image */}
@@ -105,28 +111,7 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
                   containerStyles="w-full mt-1"
               />
               </View>
-          )}
-
-        {/* Divider between content and actions */}
-        <Divider />
-
-        {/* Action buttons */}
-        <View className="flex flex-row justify-between pb-1">
-          <Pressable className="flex flex-row items-center">
-            <Ionicons name="heart-outline" size={20} color="gray" />
-            <Text className="ml-2 text-gray-600">Like</Text>
-          </Pressable>
-          
-          <Pressable className="flex flex-row items-center">
-            <Ionicons name="chatbubble-outline" size={20} color="gray" />
-            <Text className="ml-2 text-gray-600">Comment</Text>
-          </Pressable>
-          
-          <Pressable className="flex flex-row items-center">
-            <Ionicons name="share-outline" size={20} color="gray" />
-            <Text className="ml-2 text-gray-600">Share</Text>
-          </Pressable>
-        </View>
+          )}  
       </View>
     </View>
   );
