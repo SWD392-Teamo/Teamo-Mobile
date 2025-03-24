@@ -55,9 +55,10 @@ export default function AddSkillForm() {
         alert("Please select at least one skill");
         return;
       }
-
+      showLoading();
       await addProfileSkills(validSkills);
       const updatedProfile = await getProfile();
+      hideLoading();
       setStudentSkills(updatedProfile.studentSkills);
     }
     router.push('/profile/EditProfileSkills');
@@ -132,6 +133,7 @@ export default function AddSkillForm() {
                           setSelectedSkills(updatedSkills);
                         }}
                         style={{ height: 55, width: "100%" }}
+                        mode="dropdown"
                       >
                         <Picker.Item label="Beginner" value="Beginner" />
                         <Picker.Item label="PreIntermediate" value="PreIntermediate" />

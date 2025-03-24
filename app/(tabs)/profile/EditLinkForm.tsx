@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
@@ -11,10 +11,11 @@ import { router } from "expo-router";
 import { useLinkStore } from "@/hooks/useLinkStore";
 import { useShallow } from "zustand/shallow";
 import { useLoading } from "@/providers/LoadingProvider";
-import LinkInput from "./LinkInput";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function EditLinkForm() {
   const { showLoading, hideLoading } = useLoading();
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setLinks = useLinkStore((state) => state.setLinks) 
 
   const {currentUser} = useGlobalContext();
@@ -25,15 +26,17 @@ export default function EditLinkForm() {
     }))
   );
 
-  const {control, handleSubmit,
+  const {control, handleSubmit, reset,
     formState: {isSubmitting, isValid}} = useForm({
         mode: 'onTouched'
     });
 
   async function onSave(data: FieldValues) {
     if(currentUser && selectedLink) {
+      showLoading();
       await updateProfileLink(selectedLink.id, data);
       const updatedProfile = await getProfile();
+      hideLoading();
       setLinks(updatedProfile.links);
     }
     router.push('/profile/EditProfileLinks');
@@ -41,16 +44,23 @@ export default function EditLinkForm() {
 
   async function onRemove() {
     if(currentUser && selectedLink) {
+      showLoading();
       await removeProfileLink(selectedLink.id);
       const updatedProfile = await getProfile();
+      hideLoading();
       setLinks(updatedProfile.links);
     }
     router.push('/profile/EditProfileLinks');
   }
 
-  useEffect(() => {    
-    hideLoading();
-  });
+  useEffect(() => {
+    if (selectedLink) {
+      reset({
+        name: selectedLink.name,
+        url: selectedLink.url
+      });
+    }
+  }, [selectedLink, reset]);
 
   return (
     <SafeAreaView>
@@ -74,7 +84,6 @@ export default function EditLinkForm() {
                     control={control}
                     multiline={false}
                     showlabel='true'
-                    placeholder={selectedLink.name}
                     customStyles={{
                       container: "border-2 border-primaryLight rounded-md",
                       label: "text-secondary"
@@ -92,7 +101,6 @@ export default function EditLinkForm() {
                     control={control}
                     multiline={false}
                     showlabel='true'
-                    placeholder={selectedLink.url}
                     customStyles={{
                       container: "border-2 border-primaryLight rounded-md",
                       label: "text-secondary"
@@ -119,7 +127,7 @@ export default function EditLinkForm() {
                     <View className='w-[120px]'>
                       <CustomButton
                         title='Remove'
-                        handlePress={onRemove}
+                        handlePress={() => setConfirmModalVisible(true)}
                         variant='delete'
                         containerStyles='small'
                       />
@@ -132,6 +140,17 @@ export default function EditLinkForm() {
             </View>
         </View>
       </ScrollView>
+      {/* Confirmation Modal for Remove action */}
+      <ConfirmModal
+        isVisible={confirmModalVisible}
+        title="Confirm Removal"
+        message={`Are you sure you want to remove ${selectedLink?.name || 'this link'} ?`}
+        onConfirm={() => {
+          setConfirmModalVisible(false);
+          onRemove();
+        }}
+        onCancel={() => setConfirmModalVisible(false)}
+      />
     </SafeAreaView>
   )
 }

@@ -55,7 +55,7 @@ export default function NumberPicker(props: Props) {
               <TextInput
                 className="text-center flex-1 py-2"
                 keyboardType="numeric"
-                value={value?.toString()}
+                value={value !== undefined ? value.toString() : defaultValue.toString()}
                 onChangeText={(text) => {
                   const numericValue = text.replace(/[^0-9]/g, ""); // Remove non-numeric characters
                   const newValue = numericValue ? Math.min(100, Math.max(1, Number(numericValue))) : 1;

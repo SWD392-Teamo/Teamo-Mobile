@@ -5,7 +5,6 @@ import { Link } from "@/types";
 
 type Props = {
   control: any;
-  selectedLink?: Link;
   index?: number;
 }
 
@@ -20,7 +19,6 @@ export default function LinkInput(props: Props) {
         control={props.control}
         multiline={false}
         showlabel='true'
-        placeholder={props.selectedLink?.name}
         customStyles={{
           container: "border-2 border-primaryLight rounded-md",
           label: "text-secondary"
@@ -40,7 +38,6 @@ export default function LinkInput(props: Props) {
         control={props.control}
         multiline={false}
         showlabel='true'
-        placeholder={props.selectedLink?.url}
         customStyles={{
           container: "border-2 border-primaryLight rounded-md",
           label: "text-secondary"

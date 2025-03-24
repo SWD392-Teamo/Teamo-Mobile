@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
 import BackButton from "@/components/BackButton";
@@ -31,10 +31,6 @@ export default function EditProfileSkills() {
         }
       }
     }, [currentUser, setStudentSkills]);
-    
-    useEffect(() => {
-      fetchStudentSkills();
-    }, [fetchStudentSkills]);
     
     useFocusEffect(
       useCallback(() => {
