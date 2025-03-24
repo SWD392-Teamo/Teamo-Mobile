@@ -141,6 +141,7 @@ export type Post = {
   id: number;
   groupId: number;
   studentId: number;
+  groupName: string;
   groupMemberName: string;
   groupMemberImgUrl: string;
   content: string;

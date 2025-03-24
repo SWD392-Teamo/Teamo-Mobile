@@ -72,7 +72,7 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
           {/* Display post group info (if needed) */}
           <View className="bg-gray-100 rounded-lg p-2 flex flex-row items-center mt-2">
             <Ionicons name="people" size={16} color="#666" />
-            <Text className="text-sm text-gray-700 ml-2">Group #{post?.groupId}</Text>
+            <Text className="text-sm text-gray-700 ml-2">Group: {post?.groupName}</Text>
           </View>
         </View>
 
