@@ -118,7 +118,7 @@ export default function Listings() {
           {selectedMajor && selectedSubject && (
             <GroupHeader subject={selectedSubject} major={selectedMajor} setSearch={setSearch} />
           )}
-          <View className="w-full p-3">
+          <View className="w-full flex flex-col p-3 gap-6">
             {data &&
               data.map((group) => (
                 <GroupCard key={group.id} group={group} owned={false} />

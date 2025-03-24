@@ -6,8 +6,7 @@ import loadMore from '@/utils/loadMore';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import queryString from 'query-string';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useShallow } from 'zustand/shallow';
 import PostCard from './PostCard';
 
@@ -47,9 +46,8 @@ export default function PostsListing() {
           hideLoading();
         });
         
-        // Optional: Add cleanup if necessary, e.g., reset states when leaving the screen
         return () => {
-          resetData(); // Clear groups if needed when navigating away
+          resetData();
         };
       }, [getPostsInGroup])
     );
@@ -57,7 +55,6 @@ export default function PostsListing() {
   
     const handleLoadMore = async () => {
         if (loadingMore || !hasMore) return;
-          
         setLoadingMore(true);
           
         const result = await loadMore(
@@ -65,45 +62,45 @@ export default function PostsListing() {
           data,
           getUrl,
           getPostsInGroup, 
-          appendData
+          appendData,
+          Number(id)
         );
-          
+
         setHasMore(result.hasMore);
         setPage(result.newPage);
         setLoadingMore(false);
       };
     
       const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
-        const paddingToBottom = 40;
+        const paddingToBottom = 20;
         return layoutMeasurement.height + contentOffset.y >= 
           contentSize.height - paddingToBottom;
       };
-  
+
     return (
-      <SafeAreaView>
-        <ScrollView
-          onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-            if (isCloseToBottom(nativeEvent)) {
-              handleLoadMore();
-            }
-          }}
-          scrollEventThrottle={400}
-        >
-          <View className="w-full flex justify-center">
-            <View className="w-full flex flex-col p-3 gap-8">
-              {data &&
-                data.map((post) => (
-                  <PostCard key={post.id} post={post} />
-                ))}
-            </View>
-            {loadingMore && (
-              <View className="py-4 flex items-center justify-center">
-                <ActivityIndicator size="small" color={colors.light.tint} />
-                <Text className="text-center mt-2 text-gray-500">Loading post...</Text>
-              </View>
-            )}
+      <ScrollView
+        onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+          if (isCloseToBottom(nativeEvent)) {
+            handleLoadMore();
+          }
+        }}
+        scrollEventThrottle={400}
+        className='mb-28'
+      >
+        <View className="w-full flex justify-center">
+          <View className="w-full flex flex-col p-3 gap-8">
+            {data &&
+              data.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
           </View>
-        </ScrollView>
-      </SafeAreaView>
+          {loadingMore && (
+            <View className="py-4 flex items-center justify-center">
+              <ActivityIndicator size="small" color={colors.light.tint} />
+              <Text className="text-center mt-2 text-gray-500">Loading post...</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     );
   }
