@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useShallow } from "zustand/shallow";
 import queryString from "query-string";
@@ -40,16 +40,27 @@ export default function AddPositionForm() {
   const skillIds = watch('skillIds', []);
 
   async function onSave(data: FieldValues) {
-    if(selectedGroup) {
+    try{
       showLoading();
-      await addGroupPosition(selectedGroup.id, data);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup) {
+        const res = await addGroupPosition(selectedGroup.id, data);
+        if(res.error == undefined) {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show('Added position successfully.', ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
+            params: { id: selectedGroup.id }
+          });
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
-        params: { id: selectedGroup.id }
-      });
     }
   }
 
@@ -108,6 +119,7 @@ export default function AddPositionForm() {
                     }}
                     rules={{
                       required: "Position name is required.",
+                      validate: (value) => value.trim() !== "" || "Invalid position name.",
                       pattern: {
                         value: /^[a-zA-Z\s]+$/,
                         message: "Invalid position name."

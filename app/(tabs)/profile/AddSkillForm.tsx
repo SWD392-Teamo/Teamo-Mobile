@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/constants/colors";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import { addProfileSkills, getProfile } from "@/actions/profileAction";
@@ -47,21 +47,31 @@ export default function AddSkillForm() {
     });
 
   async function onSave() {
-    if(currentUser && selectedSkills.length > 0) {
-      const validSkills = selectedSkills.filter(skill => skill.skillId !== 0);
-    
-      if (validSkills.length === 0) {
-        // Handle case where no valid skills were selected
-        alert("Please select at least one skill");
-        return;
-      }
-      showLoading();
-      await addProfileSkills(validSkills);
-      const updatedProfile = await getProfile();
+    try {
+      if(selectedSkills.length > 0) {
+        const validSkills = selectedSkills.filter(skill => skill.skillId !== 0);
+      
+        if (validSkills.length === 0) {
+          // Handle case where no valid skills were selected
+          alert("Please select at least one skill");
+          return;
+        }
+        showLoading();
+        const res = await addProfileSkills(validSkills);
+        if(res.error == undefined) {
+          hideLoading();
+          ToastAndroid.show('Added skills successfully.', ToastAndroid.SHORT);
+          setStudentSkills(res.studentSkills);
+          router.push('/profile/EditProfileSkills');
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }     
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setStudentSkills(updatedProfile.studentSkills);
     }
-    router.push('/profile/EditProfileSkills');
   }
 
   const getUrl = () => {

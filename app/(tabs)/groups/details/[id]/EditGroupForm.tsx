@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
@@ -36,8 +36,6 @@ export default function EditGroupForm() {
     }))
   )
 
-  const { currentUser } = useGlobalContext();
-
   const {control, handleSubmit, reset,
     formState: {isSubmitting, isValid}} = useForm({
         mode: 'onTouched'
@@ -56,26 +54,47 @@ export default function EditGroupForm() {
   }, [selectedGroup, reset]);
 
   async function onSave(data: FieldValues) {
-    if(currentUser && selectedGroup) {
+    try {
       showLoading();
-      await updateGroup(selectedGroup.id, data);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup) {
+        const res = await updateGroup(selectedGroup.id, data);
+        if(res.error == undefined) {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show('Updated group successfully', ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]",
+            params: { id: selectedGroup.id },
+          });
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]",
-        params: { id: selectedGroup.id },
-      });
     }
   }
 
   async function onDelete() {
-    if(currentUser && selectedGroup) {
+    try {
       showLoading();
-      await deleteGroup(selectedGroup.id);
+      if(selectedGroup) {
+        const res = await deleteGroup(selectedGroup.id);
+        if(res.statusCode == 200) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+          router.push('/groups');
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
     }
-    router.push('/groups');
   }
     
   const getFieldsUrl = useCallback(() => {
@@ -126,6 +145,7 @@ export default function EditGroupForm() {
                       label: "text-secondary"
                     }}
                     rules={{
+                      validate: (value) => value.trim() !== "" || "Invalid group name.",
                       pattern: {
                         value: /^[\w\s\W]+$/,
                         message: "Invalid group name.",
@@ -143,6 +163,7 @@ export default function EditGroupForm() {
                       label: "text-secondary"
                     }}
                     rules={{
+                      validate: (value) => value.trim() !== "" || "Invalid title.",
                       pattern: {
                         value: /^[\w\s\W]+$/,
                         message: 'Invalid title.'

@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text, Image } from "react-native";
+import { ScrollView, View, Text, Image, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useShallow } from "zustand/shallow";
 import { useLoading } from "@/providers/LoadingProvider";
@@ -43,30 +43,52 @@ export default function EditMemberForm() {
   const groupPositionIds = watch('groupPositionIds', []);
 
   async function onSave(data: FieldValues) {
-    if(selectedGroup && selectedGroupMember) {
+    try {
       showLoading();
-      await updateMember(selectedGroup.id, selectedGroupMember.studentId, data);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup && selectedGroupMember) {
+        const res = await updateMember(selectedGroup.id, selectedGroupMember.studentId, data);
+        if(res.error == undefined) {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show('Updated member successfully', ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+            params: { id: selectedGroup.id }
+          });
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
-        params: { id: selectedGroup.id }
-      });
     }
   }
 
   async function onRemove() {
-    if(selectedGroup && selectedGroupMember) {
+    try {
       showLoading();
-      await removeMemberFromGroup(selectedGroup.id, selectedGroupMember.studentId);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup && selectedGroupMember) {
+        const res = await removeMemberFromGroup(selectedGroup.id, selectedGroupMember.studentId);
+        if(res.statusCode == 200) {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show('Removed member successfully', ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
+            params: { id: selectedGroup.id }
+          });
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]/EditGroupMembers",
-        params: { id: selectedGroup.id }
-      });
     }
   }
 

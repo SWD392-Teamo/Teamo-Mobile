@@ -125,12 +125,12 @@ export type Group = {
 export type GroupToCreate = {
     name: string
     title: string
-    description: string
+    description: string | undefined
     semesterId: number,
     maxMember: number,
     fieldId: number,
     subjectId: number,
-    groupPositions: GroupPositionToAdd[]
+    groupPositions: GroupPositionToAdd[] | undefined
 }
 
 export type GroupPosition = {

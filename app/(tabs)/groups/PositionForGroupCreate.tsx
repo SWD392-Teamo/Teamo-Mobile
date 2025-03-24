@@ -29,6 +29,7 @@ export default function PositionForGroupCreate(props: Props) {
         }}
         rules={{
           required: "Position name is required.",
+          validate: (value) => value.trim() !== "" || "Invalid position name.",
           pattern: {
             value: /^[a-zA-Z\s]+$/,
             message: "Invalid position name.",

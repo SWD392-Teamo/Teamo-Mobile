@@ -1,7 +1,6 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
@@ -14,7 +13,6 @@ import InputField from "@/components/InputField";
 
 export default function EditProfileDescription() {
   const {showLoading, hideLoading} = useLoading();
-  const { currentUser } = useGlobalContext();
 
   const profile = useProfileStore(
     useShallow((state) => state.profile)
@@ -28,14 +26,23 @@ export default function EditProfileDescription() {
       });
 
   async function onSave(data: FieldValues) {
-    if(currentUser) {
+    try {
       showLoading();
-      await updateProfileDescription(data);
-      const updatedProfile = await getProfile();
+      const res = await updateProfileDescription(data);   
+      if(res.error == undefined) {
+        const updatedProfile = await getProfile();
+        hideLoading();
+        ToastAndroid.show('Updated profile description successfully.', ToastAndroid.SHORT);
+        setProfile(updatedProfile);
+        router.push('/(tabs)/profile');
+      } else if(res.statusCode) {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setProfile(updatedProfile);
     }
-    router.push('/(tabs)/profile');
   }
 
   useEffect(() => {

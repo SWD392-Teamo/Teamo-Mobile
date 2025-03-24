@@ -1,4 +1,3 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
@@ -12,25 +11,21 @@ import { useLoading } from "@/providers/LoadingProvider";
 
 export default function EditProfileLinks() {
   const { showLoading, hideLoading } = useLoading();
-
-  const { currentUser } = useGlobalContext();
   
   const links = useLinkStore(state => state.links);
   const setLinks = useLinkStore(state => state.setLinks);
   
   const fetchLinks = useCallback(async () => {
-    if (currentUser) {
-      showLoading();
-      try {
-        const profile = await getProfile();
-        setLinks(profile.links);
-      } catch (error) {
-        console.error("Error fetching links:", error);
-      } finally {
-        hideLoading();
-      }
+    showLoading();
+    try {
+      const profile = await getProfile();
+      setLinks(profile.links);
+    } catch (error) {
+      console.error("Error fetching links:", error);
+    } finally {
+      hideLoading();
     }
-  }, [currentUser, setLinks]);
+  }, [setLinks]);
   
   // Refresh links when screen comes into focus
   useFocusEffect(

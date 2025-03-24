@@ -20,8 +20,10 @@ import { deleteGroup, getGroupById, uploadGroupImage } from "@/actions/groupActi
 import { DocumentPickerResponse } from "@react-native-documents/picker";
 import convertDocument from "@/utils/DocumentConverter";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useLoading } from "@/providers/LoadingProvider";
 
 const GroupDetail: React.FC = () => {
+  const {showLoading, hideLoading} = useLoading();
   const {currentUser} = useGlobalContext();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const router = useRouter();
@@ -46,10 +48,22 @@ const GroupDetail: React.FC = () => {
   );
 
   async function onDelete() {
-    if(currentUser && selectedGroup) {
-      await deleteGroup(selectedGroup.id);
+    try {
+      showLoading();
+      if(selectedGroup) {
+        const res = await deleteGroup(selectedGroup.id);
+        if(res.statusCode == 200) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+          router.push('/groups');
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }       
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
+      hideLoading();
     }
-    router.push('/groups');
   }
 
   async function handleImageUpload(image: DocumentPickerResponse) {
@@ -92,12 +106,14 @@ const GroupDetail: React.FC = () => {
               <MedGroupImage 
                 imgUrl={selectedGroup?.imgUrl}
                 isLeader={isLeader}
+                isArchived={selectedGroup.status === 'Archived' ? true : false}
                 onImageSelect={handleImageUpload} 
               />
             ) : (
               <MedGroupImage 
                 imgUrl={defaultGroup}
                 isLeader={isLeader}
+                isArchived={selectedGroup?.status === 'Archived' ? true : false}
                 onImageSelect={handleImageUpload} 
               />
             )}

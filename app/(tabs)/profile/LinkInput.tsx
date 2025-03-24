@@ -25,6 +25,7 @@ export default function LinkInput(props: Props) {
         }}
         rules={{
           required: "Link name is required.",
+          validate: (value) => value.trim() !== "" || "Invalid link name.",
           pattern: {
             value: /^[a-zA-Z0-9\s\-_()]+$/,
             message: "Invalid link name.",
@@ -44,6 +45,7 @@ export default function LinkInput(props: Props) {
         }}
         rules={{
           required: 'URL is required',
+          validate: (value) => value.trim() !== "" || "Invalid URL.",
           pattern: {
             value: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w@:%_\+.~#?&//=]*)?$/i,
             message: 'Invalid URL.'

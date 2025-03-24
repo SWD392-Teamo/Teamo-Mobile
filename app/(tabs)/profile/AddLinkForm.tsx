@@ -1,11 +1,10 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/constants/colors";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
-import { addProfileLinks, getProfile } from "@/actions/profileAction";
+import { addProfileLinks } from "@/actions/profileAction";
 import { useFieldArray, useForm } from "react-hook-form";
 import { router } from "expo-router";
 import { useLinkStore } from "@/hooks/useLinkStore";
@@ -17,9 +16,6 @@ export default function AddLinkForm() {
   const { showLoading, hideLoading } = useLoading();
   const setLinks = useLinkStore((state) => state.setLinks);
   
-
-  const {currentUser} = useGlobalContext();
-
   const {control, handleSubmit,
     formState: {isSubmitting, isValid}} = useForm({
         mode: 'onTouched',
@@ -34,14 +30,24 @@ export default function AddLinkForm() {
     });
 
   async function onSave(data: any) {
-    if(currentUser && data.links.length > 0) {
+    try {
       showLoading();
-      await addProfileLinks(data.links);
-      const updatedProfile = await getProfile();
+      if(data.links.length > 0) {
+        const res = await addProfileLinks(data.links);
+        if(res.error == undefined) {
+          hideLoading();
+          ToastAndroid.show('Added links successfully.', ToastAndroid.SHORT);
+          setLinks(res.links);
+          router.push('/profile/EditProfileLinks');
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }     
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setLinks(updatedProfile.links);
     }
-    router.push('/profile/EditProfileLinks');
   }
 
   useEffect(() => {    

@@ -5,11 +5,12 @@ import FilePicker from "../FilePicker";
 
 interface Props {
   isLeader: boolean | undefined
+  isArchived?: boolean
   imgUrl: string | undefined
   onImageSelect: (file: DocumentPickerResponse) => void;
 }
 
-const MedGroupImage = ({isLeader, imgUrl, onImageSelect} : Props) => { 
+const MedGroupImage = ({isArchived, isLeader, imgUrl, onImageSelect} : Props) => { 
    return (
     <View className="relative self-start">
       {imgUrl ? (
@@ -28,7 +29,7 @@ const MedGroupImage = ({isLeader, imgUrl, onImageSelect} : Props) => {
       ) : (
         <Text>Loading image...</Text>
       )}
-      {isLeader && 
+      {!isArchived && isLeader && 
         <View className="absolute bottom-0 right-0">
           <FilePicker
             onFileSelect={onImageSelect}

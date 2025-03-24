@@ -39,9 +39,7 @@ import { useEffect, useState } from "react";
      <Controller
        control={control}
        name="fieldId"
-       rules={{ 
-        ...(requiredInput && {required: "Please select a field"}) 
-      }}
+       rules={requiredInput ? { required: "Please select a field" } : {}}
        render={({ field: { onChange, value } }) => {
          const selectedField = fields.find((field) => field.id === value);
  

@@ -1,7 +1,6 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import { getProfile, removeProfileLink, updateProfileLink } from "@/actions/profileAction";
@@ -18,8 +17,6 @@ export default function EditLinkForm() {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setLinks = useLinkStore((state) => state.setLinks) 
 
-  const {currentUser} = useGlobalContext();
-
   const { selectedLink } = useLinkStore(
     useShallow((state) => ({
         selectedLink: state.selectedLink
@@ -32,25 +29,47 @@ export default function EditLinkForm() {
     });
 
   async function onSave(data: FieldValues) {
-    if(currentUser && selectedLink) {
+    try {
       showLoading();
-      await updateProfileLink(selectedLink.id, data);
-      const updatedProfile = await getProfile();
+      if(selectedLink) {
+        const res = await updateProfileLink(selectedLink.id, data);
+        if(res.error == undefined) {
+          const updatedProfile = await getProfile();
+          hideLoading();
+          ToastAndroid.show('Updated link successfully.', ToastAndroid.SHORT);
+          setLinks(updatedProfile.links);
+          router.push('/profile/EditProfileLinks');
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }   
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setLinks(updatedProfile.links);
     }
-    router.push('/profile/EditProfileLinks');
   }
 
   async function onRemove() {
-    if(currentUser && selectedLink) {
+    try {
       showLoading();
-      await removeProfileLink(selectedLink.id);
-      const updatedProfile = await getProfile();
+      if(selectedLink) {
+        const res = await removeProfileLink(selectedLink.id);
+        if(res.statusCode == 200) {
+          const updatedProfile = await getProfile();
+          hideLoading();
+          ToastAndroid.show('Deleted link successfully.', ToastAndroid.SHORT);
+          setLinks(updatedProfile.links);
+          router.push('/profile/EditProfileLinks');
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }   
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setLinks(updatedProfile.links);
     }
-    router.push('/profile/EditProfileLinks');
   }
 
   useEffect(() => {
@@ -89,6 +108,7 @@ export default function EditLinkForm() {
                       label: "text-secondary"
                     }}
                     rules={{
+                      validate: (value) => value.trim() !== "" || "Invalid link name.",
                       pattern: {
                         value: /^[a-zA-Z0-9\s\-_()]+$/,
                         message: "Invalid link name.",
@@ -106,6 +126,7 @@ export default function EditLinkForm() {
                       label: "text-secondary"
                     }}
                     rules={{
+                      validate: (value) => value.trim() !== "" || "Invalid URL.",
                       pattern: {
                         value: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w@:%_\+.~#?&//=]*)?$/i,
                         message: 'Invalid URL.'

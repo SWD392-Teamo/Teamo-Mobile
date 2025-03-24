@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
@@ -21,12 +21,12 @@ import { AntDesign } from "@expo/vector-icons";
 import PositionForGroupCreate from "./PositionForGroupCreate";
 import { useSkillStore } from "@/hooks/useSkillStore";
 import { getSkills } from "@/actions/skillAction";
+import { createGroup, getGroupById } from "@/actions/groupAction";
+import { useGroupStore } from "@/hooks/useGroupStore";
 
 export default function CreateGroupForm() {
   const {showLoading, hideLoading} = useLoading();
-  const [addedPositions, setAddedPositions] = useState<GroupPositionToAdd[]>([
-    {name: "", count: 0, skillIds: []}
-  ])
+  const [addedPositions, setAddedPositions] = useState<GroupPositionToAdd[]>([]);
   const [currentSemester, setCurrentSemester] = useState<Semester>();
 
   const { selectedSubject } = useSubjectStore(
@@ -49,24 +49,48 @@ export default function CreateGroupForm() {
     }))
   )
 
+  const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
+
   const {control, handleSubmit,
     formState: {isSubmitting, isValid}} = useForm({
         mode: 'onTouched'
     });
 
   async function onCreate(data: FieldValues) {
-    if(selectedSubject && currentSemester) {
-      var newGroup: GroupToCreate = {
-        name: data.name,
-        title: data.title,
-        description: data.description,
-        semesterId: currentSemester.id,
-        maxMember: data.maxMember,
-        fieldId: data.fieldId,
-        subjectId: selectedSubject.id,
-        groupPositions: data.groupPositions
+    try {
+      showLoading();
+      if(selectedSubject && currentSemester) {
+        var newGroup: GroupToCreate = {
+          name: data.name,
+          title: data.title,
+          description: data.description,
+          semesterId: currentSemester.id,
+          maxMember: data.maxMember,
+          fieldId: data.fieldId,
+          subjectId: selectedSubject.id,
+          groupPositions: addedPositions.length > 0 ? data.groupPositions : addedPositions 
+        }
+        
+        const res = await createGroup(newGroup);
+    
+        if (res.error == undefined) {
+          const createdGroup = await getGroupById(res.id);
+          hideLoading();
+          ToastAndroid.show('Group created successfully', ToastAndroid.SHORT);
+          setSelectedGroup(createdGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]",
+            params: { id: res.id }
+          });
+        }
+        else if (res.statusCode){
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
       }
-      console.log(newGroup);
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
+      hideLoading();
     }
   }
 
@@ -145,6 +169,7 @@ export default function CreateGroupForm() {
                     }}
                     rules={{
                       required: 'Name is required.',
+                      validate: (value) => value.trim() !== "" || "Invalid group name.",
                       pattern: {
                         value: /^[\w\s\W]+$/,
                         message: 'Invalid group name.'
@@ -163,6 +188,7 @@ export default function CreateGroupForm() {
                     }}
                     rules={{
                       required: 'Title is required',
+                      validate: (value) => value.trim() !== "" || "Invalid title.",
                       pattern: {
                         value: /^[\w\s\W]+$/,
                         message: 'Invalid group title.'
@@ -188,7 +214,7 @@ export default function CreateGroupForm() {
                   />
                   <NumberPicker 
                     control={control}
-                    name="maxMeber"
+                    name="maxMember"
                     title="Max Member"
                     showlabel={true}
                     requiredInput={true}
