@@ -64,7 +64,6 @@ export default function PostForm({post}: PostProps) {
             const formData = new FormData();
 
             formData.append('content', data.content);
-            console.log(data.content)
 
             if (selectedDocument) {
                 formData.append('document', selectedDocument);
