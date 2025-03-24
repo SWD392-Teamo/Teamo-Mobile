@@ -159,8 +159,9 @@ export default function ApplicationsListing({isForUser}: Props) {
         page,
         data,
         getUrlForGroup,
-        getUserApplications,
-        appendData
+        getGroupApplications,
+        appendData,
+        selectedGroup?.id
       );
     }
         
@@ -176,71 +177,70 @@ export default function ApplicationsListing({isForUser}: Props) {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView
-        onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-          if (isCloseToBottom(nativeEvent)) {
-            handleLoadMore();
-          }
-        }}
-        scrollEventThrottle={400}
-      >
-        <View className = 'w-full flex justify-content-center'>
-          <View className='flex flex-row justify-start'>
-            <View className='max-w-[150px]'> 
-              <CustomButton
-                title='Requested'
-                handlePress={() => {
-                  setParams({status: 'Requested'})
-                  setStatus('Requested')
-                }}
-                variant={status == 'Requested' ? 'active' : 'inactive'}
-                containerStyles='small'
-              />
-            </View>
-            <View className='max-w-[150px]'>
-              <CustomButton
-                title='Approved'
-                handlePress={() => {
-                  setParams({status: 'Approved'})
-                  setStatus('Approved')
-                }}
-                variant={status == 'Approved' ? 'active' : 'inactive'}
-                containerStyles='small'
-              />
-            </View>
-            <View className='max-w-[150px]'>
-              <CustomButton
-                title='Rejected'
-                handlePress={() => {
-                  setParams({status: 'Rejected'})
-                  setStatus('Rejected')
-                }}
-                variant={status == 'Rejected' ? 'active' : 'inactive'}
-                containerStyles='small'
-              />
-            </View>
+    <ScrollView
+      onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        if (isCloseToBottom(nativeEvent)) {
+          handleLoadMore();
+        }
+      }}
+      scrollEventThrottle={400}
+      className='mb-14'
+    >
+      <View className = 'w-full flex justify-content-center'>
+        <View className='flex flex-row justify-center'>
+          <View className='max-w-[130px]'> 
+            <CustomButton
+              title='Requested'
+              handlePress={() => {
+                setParams({status: 'Requested'})
+                setStatus('Requested')
+              }}
+              variant={status == 'Requested' ? 'active' : 'inactive'}
+              containerStyles='small'
+            />
           </View>
-          <View className='m-3 mt-5'>
-            {data?.map((application) => (
-              <ApplicationCard 
-                key={application.id}
-                application={application}
-                approveAction={() => onApproveApplication(application.groupId,application.id,application)}
-                rejectAction={() => onRejectApplication(application.groupId,application.id)}
-                deleteAction={() => onDeleteApplication(application.groupId,application.id)}
-                isForUser={isForUser}
-              />
-            ))}
-          </View>  
-          {loadingMore && (
-            <View className="py-4 flex items-center justify-center">
-              <ActivityIndicator size="small" color={colors.light.tint} />
-              <Text className="text-center mt-2 text-gray-500">Loading applications...</Text>
-              </View>
-          )}
+          <View className='max-w-[130px]'>
+            <CustomButton
+              title='Approved'
+              handlePress={() => {
+                setParams({status: 'Approved'})
+                setStatus('Approved')
+              }}
+              variant={status == 'Approved' ? 'active' : 'inactive'}
+              containerStyles='small'
+            />
+          </View>
+          <View className='max-w-[130px]'>
+            <CustomButton
+              title='Rejected'
+              handlePress={() => {
+                setParams({status: 'Rejected'})
+                setStatus('Rejected')
+              }}
+              variant={status == 'Rejected' ? 'active' : 'inactive'}
+              containerStyles='small'
+            />
+          </View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <View className='m-3 mt-5'>
+          {data?.map((application) => (
+            <ApplicationCard 
+              key={application.id}
+              application={application}
+              approveAction={() => onApproveApplication(application.groupId,application.id,application)}
+              rejectAction={() => onRejectApplication(application.groupId,application.id)}
+              deleteAction={() => onDeleteApplication(application.groupId,application.id)}
+              isForUser={isForUser}
+            />
+          ))}
+        </View>  
+        {loadingMore && (
+          <View className="py-4 flex items-center justify-center">
+            <ActivityIndicator size="small" color={colors.light.tint} />
+            <Text className="text-center mt-2 text-gray-500">Loading applications...</Text>
+            </View>
+        )}
+      </View>
+    </ScrollView>
   )
 }

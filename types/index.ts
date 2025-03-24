@@ -156,6 +156,20 @@ export type Semester = {
     status: string
 }
 
+export type Post = {
+  id: number;
+  groupId: number;
+  studentId: number;
+  groupName: string;
+  groupMemberName: string;
+  groupMemberImgUrl: string;
+  content: string;
+  status: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  documentUrl?: string;
+}
+
 // Generic type for loadMore function
 export type LoadMoreFunction<T> = (
     page: number,
