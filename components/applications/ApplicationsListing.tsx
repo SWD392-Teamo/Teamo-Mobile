@@ -8,7 +8,7 @@ import { useLoading } from '@/providers/LoadingProvider';
 import loadMore from '@/utils/loadMore';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, Text, ToastAndroid, View } from 'react-native';
 import { useShallow } from 'zustand/shallow';
 import ApplicationCard from './ApplicationCard';
 import { useGroupStore } from '@/hooks/useGroupStore';
@@ -22,6 +22,7 @@ type Props = {
 export default function ApplicationsListing({isForUser}: Props) {
   const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [sort, setSort] = useState<string>("")
   const [status, setStatus] = useState<string>("")
   const [loadingMore, setLoadingMore] = useState(false);
@@ -97,25 +98,66 @@ export default function ApplicationsListing({isForUser}: Props) {
   }
 
   async function onApproveApplication(groupId: number, appId: number, application: Application) {
-    await reviewApplication(groupId, appId, {status: 'Approved'});
-    var newMember: GroupMemberToAdd = {
-      studentId: application.studentId,
-      groupPositionIds: [application.groupPositionId]
-    };
-    await addMemberToGroup(groupId, newMember);
-    const updatedGroup = await getGroupById(groupId);
-    setSelectedGroup(updatedGroup);
-    await initData();
+    try {
+      showLoading();
+      const res = await reviewApplication(groupId, appId, {status: 'Approved'});
+      if(res.error == undefined) {
+        ToastAndroid.show('Approved application successfully.', ToastAndroid.SHORT);
+        var newMember: GroupMemberToAdd = {
+          studentId: application.studentId,
+          groupPositionIds: [application.groupPositionId]
+        };
+        const addRes = await addMemberToGroup(groupId, newMember);
+        if(addRes.error == undefined) {
+          ToastAndroid.show('Added member successfully.', ToastAndroid.SHORT);
+          const updatedGroup = await getGroupById(groupId);
+          setSelectedGroup(updatedGroup);
+        } else if(addRes.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      } else if(res.statusCode) {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      }
+      await initData();
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
+      hideLoading();
+    }
   }
 
   async function onRejectApplication(groupId: number, appId: number) {
-    await reviewApplication(groupId, appId, {status: 'Rejected'});
-    await initData();
+    try {
+      showLoading();
+      const res = await reviewApplication(groupId, appId, {status: 'Rejected'});
+      if(res.error == undefined) {
+        ToastAndroid.show('Rejected application successfully.', ToastAndroid.SHORT);
+      } else if(res.statusCode) {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      }
+      await initData();  
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
+      hideLoading();
+    }
   }
 
   async function onDeleteApplication(groupId: number, appId: number) {
-    await deleteApplication(groupId, appId);
-    await initData();
+    try {
+      showLoading();
+      const res = await deleteApplication(groupId, appId);
+      if(res.statusCode == 200) {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show(res.message, ToastAndroid.SHORT);
+      }
+      await initData();
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
+      hideLoading();
+    }
   }
 
   useEffect(() => {

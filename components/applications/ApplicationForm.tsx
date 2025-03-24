@@ -78,7 +78,7 @@ export default function ApplicationForm({
     }
 
   return (
-    <View>
+    <View className='mx-5'>
         <InputField 
             title='Request' 
             name='requestContent' control={control}

@@ -1,5 +1,5 @@
 import { fetchWrapper } from "@/lib/fetchWrapper"
-import { Group, GroupMemberToAdd, PagedResult } from "@/types"
+import { Group, GroupMemberToAdd, GroupToCreate, PagedResult } from "@/types"
 import { FieldValues } from "react-hook-form"
 
 export async function getGroups(query: string): Promise<PagedResult<Group>> {
@@ -12,6 +12,10 @@ export async function getGroupById(groupId: number): Promise<Group> {
 
 export async function getOwnedGroups(query: string): Promise<PagedResult<Group>> {
     return await fetchWrapper.get(`profile/groups${query}`)
+}
+
+export async function createGroup(newGroup: GroupToCreate): Promise<any> {
+    return await fetchWrapper.post(`groups`, newGroup);
 }
 
 export async function deleteGroup(groupId: number): Promise<any> {

@@ -1,7 +1,6 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import CustomButton from "@/components/CustomButton";
 import { deleteProfileSkill, getProfile, updateProfileSkill } from "@/actions/profileAction";
@@ -17,8 +16,6 @@ export default function EditSkillForm() {
   const { showLoading, hideLoading } = useLoading();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const setStudentSkills = useStudentSkillStore((state) => state.setStudentSkills); 
-
-  const {currentUser} = useGlobalContext();
 
   const { selectedStudentSkill } = useStudentSkillStore(
     useShallow((state) => ({
@@ -40,25 +37,47 @@ export default function EditSkillForm() {
       }, [selectedStudentSkill, setValue]);
 
   async function onSave(data: FieldValues) {
-    if(currentUser && selectedStudentSkill) {
+    try {
       showLoading();
-      await updateProfileSkill(selectedStudentSkill.id, data);
-      const updatedProfile = await getProfile();
+      if(selectedStudentSkill) {
+        const res = await updateProfileSkill(selectedStudentSkill.id, data);
+        if(res.error == undefined) {
+          const updatedProfile = await getProfile();
+          hideLoading();
+          ToastAndroid.show('Updated skill successfully.', ToastAndroid.SHORT);
+          setStudentSkills(updatedProfile.studentSkills);
+          router.push('/profile/EditProfileSkills');
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }        
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setStudentSkills(updatedProfile.studentSkills);
     }
-    router.push('/profile/EditProfileSkills');
   }
 
   async function onDelete() {
-    if(currentUser && selectedStudentSkill) {
+    try {
       showLoading();
-      await deleteProfileSkill(selectedStudentSkill.id);
-      const updatedProfile = await getProfile();
+      if(selectedStudentSkill) {
+        const res = await deleteProfileSkill(selectedStudentSkill.id);
+        if(res.statusCode == 200) {
+          const updatedProfile = await getProfile();
+          hideLoading();
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+          setStudentSkills(updatedProfile.studentSkills);
+          router.push('/profile/EditProfileSkills');
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      } 
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setStudentSkills(updatedProfile.studentSkills);
     }
-    router.push('/profile/EditProfileSkills');
   }
 
   useEffect(() => {    

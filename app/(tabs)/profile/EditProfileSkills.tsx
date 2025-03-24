@@ -1,4 +1,3 @@
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View, Text } from "react-native";
@@ -13,24 +12,20 @@ import { useLoading } from "@/providers/LoadingProvider";
 export default function EditProfileSkills() {
   const { showLoading, hideLoading } = useLoading();
 
-  const {currentUser} = useGlobalContext();
-
   const studentSkills = useStudentSkillStore(state => state.studentSkills);
   const setStudentSkills = useStudentSkillStore(state => state.setStudentSkills);
         
   const fetchStudentSkills = useCallback(async () => {
-      if (currentUser) {
-        showLoading();
-        try {
-          const profile = await getProfile();
-          setStudentSkills(profile.studentSkills);
-        } catch (error) {
-          console.error("Error fetching student skills:", error);
-        } finally {
-          hideLoading();
-        }
-      }
-    }, [currentUser, setStudentSkills]);
+    showLoading();
+    try {
+      const profile = await getProfile();
+      setStudentSkills(profile.studentSkills);
+    } catch (error) {
+      console.error("Error fetching student skills:", error);
+    } finally {
+      hideLoading();
+    }
+    }, [setStudentSkills]);
     
     useFocusEffect(
       useCallback(() => {

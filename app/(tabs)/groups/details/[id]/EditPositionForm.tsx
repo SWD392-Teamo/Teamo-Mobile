@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, Text, Image } from "react-native";
+import { ScrollView, View, Text, Image, ToastAndroid } from "react-native";
 import BackButton from "@/components/BackButton";
 import { useShallow } from "zustand/shallow";
 import queryString from "query-string";
@@ -53,30 +53,52 @@ export default function EditPositionForm() {
   const skillIds = watch('skillIds', []);
 
   async function onSave(data: FieldValues) {
-    if(selectedGroup && selectedGroupPosition) {
+    try {
       showLoading();
-      await updateGroupPosition(selectedGroup.id, selectedGroupPosition.id, data);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup && selectedGroupPosition) {
+        const res = await updateGroupPosition(selectedGroup.id, selectedGroupPosition.id, data);
+        if(res.error == undefined) {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show('Updated position successfully.', ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
+            params: { id: selectedGroup.id }
+          });
+        } else if(res.statusCode) {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
-        params: { id: selectedGroup.id }
-      });
     }
   }
 
   async function onDelete() {
-    if(selectedGroup && selectedGroupPosition) {
+    try {
       showLoading();
-      await deleteGroupPosition(selectedGroup.id, selectedGroupPosition.id);
-      const updatedGroup = await getGroupById(selectedGroup.id);
+      if(selectedGroup && selectedGroupPosition) {
+        const res = await deleteGroupPosition(selectedGroup.id, selectedGroupPosition.id);
+        if(res.statusCode == 200)  {
+          const updatedGroup = await getGroupById(selectedGroup.id);
+          hideLoading();
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+          setSelectedGroup(updatedGroup);
+          router.push({
+            pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
+            params: { id: selectedGroup.id }
+          });
+        } else {
+          ToastAndroid.show(res.message, ToastAndroid.SHORT);
+        }
+      }    
+    } catch (error: any) {
+      ToastAndroid.show('Error occured: ' + error.message, ToastAndroid.SHORT);
+    } finally {
       hideLoading();
-      setSelectedGroup(updatedGroup);
-      router.push({
-        pathname: "/(tabs)/groups/details/[id]/EditGroupPositions",
-        params: { id: selectedGroup.id }
-      });
     }
   }
 
@@ -139,6 +161,7 @@ export default function EditPositionForm() {
                       label: "text-secondary"
                     }}
                     rules={{
+                      validate: (value) => value.trim() !== "" || "Invalid position name.",
                       pattern: {
                         value: /^[a-zA-Z\s]+$/,
                         message: "Invalid position name.",

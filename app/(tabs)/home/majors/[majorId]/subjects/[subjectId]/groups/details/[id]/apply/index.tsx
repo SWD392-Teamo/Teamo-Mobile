@@ -19,7 +19,7 @@ export default function Login() {
     <SafeAreaView>
       <ScrollView>
         {/* Header */}
-        <View>
+        <View className='ml-5'>
             <View className="flex flex-row justify-content-start">
                 <BackButton url={`home/majors/${selectedMajor?.id}/subjects/${selectedSubject?.id}/groups/details/${selectedGroup?.id}`} />
                 <Text className="ml-5 text-bsm font-blight">{selectedGroup?.name}</Text>

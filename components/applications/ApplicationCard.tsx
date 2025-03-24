@@ -5,6 +5,7 @@ import { Application } from "@/types";
 import dateTimeFormatter from "@/utils/dateTimeFormatter";
 import { downloadFileAndroid } from "@/utils/FileDownloader";
 import { Text, View } from "react-native";
+import ApplicationStatusBadge from "./ApplicationStatus";
 
 interface Props{
   application: Application
@@ -26,11 +27,11 @@ export default function ApplicationCard({application, approveAction, rejectActio
 
   return (
     <View
-      className="flex flex-row items-center justify-between w-full p-3 bg-primary rounded-lg mb-3"
+      className="flex flex-row items-center justify-between w-full p-3 bg-tertiary border-2 border-primary rounded-lg mb-3"
     >
       <View className="flex-1 ml-2">
         <View className='flex flex-row items-center justify-between'>
-          <Text className="font-bbold text-lg text-tertiary">
+          <Text className="font-bbold text-lg text-primary">
             {application.groupName}
           </Text>
           {application.documentUrl && (
@@ -44,21 +45,19 @@ export default function ApplicationCard({application, approveAction, rejectActio
             />
           )}
         </View>
-        <Text className="font-bregular text-bsm text-tertiary mt-1">
+        <Text className="font-bregular text-bsm text-primary mt-1">
           {application.groupPositionName}
         </Text>
         <View className="flex flex-row flex-wrap">
-          <Text className="font-bregular text-bsm text-tertiary mt-1">
+          <Text className="font-bregular text-bsm text-primary mt-1">
             {application.requestContent}
           </Text>
         </View>
         <View className="mt-1 flex-row mb-5">
-          <Text className="font-bregular text-bsm text-tertiary mr-4">
+          <Text className="font-bregular text-bsm text-primary mr-4">
             {dateTimeFormatter(application.requestTime)}
           </Text>
-          <Text className="font-bbold text-tertiary">
-            {application.status}
-          </Text>
+          <ApplicationStatusBadge status={application.status} />
         </View>
         
 
@@ -66,15 +65,15 @@ export default function ApplicationCard({application, approveAction, rejectActio
           <View className="flex flex-row gap-2 mt-3">
             <CustomButton
               title="Approve"
-              variant="primary-outline"
+              variant="active"
               handlePress={approveAction}
-              containerStyles="min-w-[150px]"
+              containerStyles="small"
             />
             <CustomButton
               title="Reject"
-              variant="secondary"
+              variant="delete"
               handlePress={rejectAction}
-              containerStyles="min-w-[150px]"
+              containerStyles="small"
             />
           </View>
         }
