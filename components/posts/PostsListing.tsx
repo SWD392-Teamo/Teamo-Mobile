@@ -14,6 +14,7 @@ import { useGroupStore } from '@/hooks/useGroupStore';
 import BackButton from '../BackButton';
 import CustomButton from '../CustomButton';
 import { icons } from '@/constants';
+import ProfileModalForView from '../profile/ProfileModalForView';
 
 type Props = {
   isNews: boolean
@@ -24,9 +25,22 @@ export default function PostsListing({isNews}: Props) {
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [profileModalVisible, setProfileModalVisible] = useState(false);
+    const [userId, setUserId] = useState<number | null>(null);
     const {id} = useLocalSearchParams();
 
     const router = useRouter();
+
+    const handleOpenProfile = (studentId: number) => {
+      setUserId(studentId);
+      setProfileModalVisible(true);
+    };
+  
+    const handleCloseProfile = () => {
+      setProfileModalVisible(false);
+      // Reset userId to null after closing the modal
+      setUserId(null);
+    };
     
     const { selectedGroup } = useGroupStore(
         useShallow((state) => ({
@@ -154,7 +168,7 @@ export default function PostsListing({isNews}: Props) {
             <View className="w-full flex flex-col p-3 gap-8">
               {data &&
                 data.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <PostCard key={post.id} post={post} onViewProfile={() => handleOpenProfile(post.studentId)} />
                 ))}
             </View>
             {loadingMore && (
@@ -165,6 +179,13 @@ export default function PostsListing({isNews}: Props) {
             )}
           </View>
         </ScrollView>
+        {userId &&
+          <ProfileModalForView
+            isVisible={profileModalVisible}
+            userId={userId}
+            onClose={handleCloseProfile}
+          />
+        }
       </SafeAreaView>
     );
   }
