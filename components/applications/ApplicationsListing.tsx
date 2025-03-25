@@ -14,6 +14,7 @@ import ApplicationCard from './ApplicationCard';
 import { useGroupStore } from '@/hooks/useGroupStore';
 import { Application, GroupMemberToAdd } from '@/types';
 import { addMemberToGroup, getGroupById } from '@/actions/groupAction';
+import ProfileModalForView from '../profile/ProfileModalForView';
 
 type Props = {
   isForUser: boolean
@@ -22,7 +23,8 @@ type Props = {
 export default function ApplicationsListing({isForUser}: Props) {
   const { showLoading, hideLoading } = useLoading();
   const {currentUser} = useGlobalContext()
-  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const [sort, setSort] = useState<string>("")
   const [status, setStatus] = useState<string>("")
   const [loadingMore, setLoadingMore] = useState(false);
@@ -96,6 +98,17 @@ export default function ApplicationsListing({isForUser}: Props) {
       hideLoading();
     });
   }
+
+  const handleOpenProfile = (studentId: number) => {
+    setUserId(studentId);
+    setProfileModalVisible(true);
+  };
+
+  const handleCloseProfile = () => {
+    setProfileModalVisible(false);
+    // Reset userId to null after closing the modal
+    setUserId(null);
+  };
 
   async function onApproveApplication(groupId: number, appId: number, application: Application) {
     try {
@@ -219,6 +232,7 @@ export default function ApplicationsListing({isForUser}: Props) {
   };
 
   return (
+    <>
     <ScrollView
       onScroll={({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         if (isCloseToBottom(nativeEvent)) {
@@ -272,6 +286,7 @@ export default function ApplicationsListing({isForUser}: Props) {
               approveAction={() => onApproveApplication(application.groupId,application.id,application)}
               rejectAction={() => onRejectApplication(application.groupId,application.id)}
               deleteAction={() => onDeleteApplication(application.groupId,application.id)}
+              viewProfileAction={() => handleOpenProfile(application.studentId)}
               isForUser={isForUser}
             />
           ))}
@@ -284,5 +299,13 @@ export default function ApplicationsListing({isForUser}: Props) {
         )}
       </View>
     </ScrollView>
+    {userId &&
+      <ProfileModalForView
+        isVisible={profileModalVisible}
+        userId={userId}
+        onClose={handleCloseProfile}
+      />
+    }
+    </>
   )
 }

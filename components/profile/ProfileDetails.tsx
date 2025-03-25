@@ -13,9 +13,10 @@ import { router } from 'expo-router';
 
 interface ProfileDetailsProps {
     profile: Profile | null;
+    allowEdit: boolean
 }
 
-const ProfileDetails = ({profile} : ProfileDetailsProps) => {
+const ProfileDetails = ({profile, allowEdit} : ProfileDetailsProps) => {
     const {currentUser} = useGlobalContext()
 
     async function onEditSkills() {
@@ -56,7 +57,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <View className='mt-2 ml-10 justify-content-start'>
                 <View className='flex flex-row items-center justify-between w-full'>
                     <Text className="mb-2 text-bm font-bsemibold text-black">Skills</Text>
-                    {currentUser?.id == profile?.id && (
+                    {allowEdit && (
                         <View className="items-end">
                                 <CustomButton
                                     title=""
@@ -80,7 +81,7 @@ const ProfileDetails = ({profile} : ProfileDetailsProps) => {
             <View className='mt-2 mb-2 ml-10 justify-content-start'>
                 <View className='flex flex-row items-center justify-between w-full'>
                     <Text className="mb-2 text-bm font-bsemibold text-black">Links</Text>
-                    {currentUser?.id == profile?.id && (
+                    {allowEdit && (
                         <View className='items-end'>
                             <CustomButton
                                 title=""

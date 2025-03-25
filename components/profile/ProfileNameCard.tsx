@@ -1,4 +1,3 @@
-import { useGlobalContext } from '@/providers/AuthProvider'
 import { Text, View } from 'react-native'
 import CustomButton from '../CustomButton'
 import { icons } from '@/constants'
@@ -9,12 +8,11 @@ interface ProfileNameCardProps {
     id: number | undefined
     name: string | undefined
     description: string | undefined
+    allowEdit: boolean
 }
 
 
-const ProfileNameCard = ({id, name, description} : ProfileNameCardProps) => {
-    const { currentUser } = useGlobalContext();
-
+const ProfileNameCard = ({id, name, description, allowEdit} : ProfileNameCardProps) => {
     async function onEditDescription() {
         router.push('/profile/EditProfileDescription');
     }
@@ -23,7 +21,7 @@ const ProfileNameCard = ({id, name, description} : ProfileNameCardProps) => {
         <View className='flex-1 ml-5'>
             <View className='flex flex-row items-center justify-between'>
                 <Text className="text-bl font-bbold text-black">{name}</Text>
-                {currentUser?.id == id && (
+                {allowEdit && (
                     <CustomButton
                         title=""
                         variant="default"

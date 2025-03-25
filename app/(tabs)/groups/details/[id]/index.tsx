@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, Image, SafeAreaView, Pressable, ToastAndroid } from "react-native";
+import { View, Text, ScrollView, Image, SafeAreaView, Pressable, ToastAndroid, TouchableOpacity } from "react-native";
 import BackButton from "@/components/BackButton";
 import DateConverter from "@/components/DateConvert";
 import GroupStatusBadge from "@/components/groups/GroupStatus";
@@ -21,11 +21,14 @@ import { DocumentPickerResponse } from "@react-native-documents/picker";
 import convertDocument from "@/utils/DocumentConverter";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useLoading } from "@/providers/LoadingProvider";
+import ProfileModalForView from "@/components/profile/ProfileModalForView";
 
 const GroupDetail: React.FC = () => {
   const {showLoading, hideLoading} = useLoading();
   const {currentUser} = useGlobalContext();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
   const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
   const { selectedGroup } = useGroupStore(
@@ -33,6 +36,17 @@ const GroupDetail: React.FC = () => {
       selectedGroup: state.selectedGroup,
     }))
   );
+
+  const handleOpenProfile = (memberUserId: number) => {
+    setUserId(memberUserId);
+    setProfileModalVisible(true);
+  };
+
+  const handleCloseProfile = () => {
+    setProfileModalVisible(false);
+    // Reset userId to null after closing the modal
+    setUserId(null);
+  };
 
   // Get group members list and positions list
   const groupMembers = selectedGroup?.groupMembers;
@@ -101,7 +115,7 @@ const GroupDetail: React.FC = () => {
 
         {/* Group Image */}
         <View className="rounded-lg flex flex-col items-center px-3 transition flex-1 mb-16">
-          <View className="flex flex-col items-center mt-2 w-15 h-15 gap-4 my-3">
+          <View className="justify-center items-center mt-2 w-15 h-15 gap-4 my-3">
             {selectedGroup?.imgUrl ? (
               <MedGroupImage 
                 imgUrl={selectedGroup?.imgUrl}
@@ -117,13 +131,15 @@ const GroupDetail: React.FC = () => {
                 onImageSelect={handleImageUpload} 
               />
             )}
-            <Text className="text-center w-full font-bbold text-primary text-2xl my-2">
-              {selectedGroup?.name}
-            </Text>
           </View>
 
           {/* Group title and Status */}
           <View className="w-full flex justify-between items-center">
+            <View className="my-3">
+              <Text className="text-center w-full font-bbold text-primary text-2xl">
+                {selectedGroup?.name}
+              </Text>
+            </View>
             <View className="flex flex-col gap-2 items-center">
               <Text className="text-2xl font-bbold text-secondary">
                 {selectedGroup?.title}
@@ -289,38 +305,43 @@ const GroupDetail: React.FC = () => {
             <View className="text-left w-full font-bregular text-lg">
               <View className="grid grid-cols-2 gap-4 mt-4">
                 {selectedGroup?.groupMembers.map((member: GroupMember, index: number) => (
-                  <View key={index} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                    <View className="flex items-center gap-4">
-                      <View key={member.studentId}>
-                        {member?.imgUrl ? (
-                          <MemberAvatar imgUrl={member?.imgUrl} />
-                        ) : (
-                          <MemberAvatar imgUrl={defaultAvatar} />
-                        )}
-                      </View>
-                      <View className="mb-3">
-                        <View className="flex flex-row items-center gap-2">
-                          <Text className="font-bbold">{member.studentName}</Text>
-                          {member?.role === "Leader" && (
-                            <Image
-                              source={icons.star}
-                              resizeMode="contain"
-                              className="w-6 h-6"
-                              tintColor={colors.light.yellowIcon}
-                            />
+                  <TouchableOpacity 
+                    onPress={() => handleOpenProfile(member.studentId)}
+                    key={index}
+                  >
+                    <View className="bg-gray-100 p-4 rounded-lg shadow-md">
+                      <View className="flex items-center gap-4">
+                        <View key={member.studentId}>
+                          {member?.imgUrl ? (
+                            <MemberAvatar imgUrl={member?.imgUrl} />
+                          ) : (
+                            <MemberAvatar imgUrl={defaultAvatar} />
                           )}
                         </View>
-                        <Text className="text-primary text-sm text-center">{member.role}</Text>
+                        <View className="mb-3">
+                          <View className="flex flex-row items-center gap-2">
+                            <Text className="font-bbold">{member.studentName}</Text>
+                            {member?.role === "Leader" && (
+                              <Image
+                                source={icons.star}
+                                resizeMode="contain"
+                                className="w-6 h-6"
+                                tintColor={colors.light.yellowIcon}
+                              />
+                            )}
+                          </View>
+                          <Text className="text-primary text-sm text-center">{member.role}</Text>
+                        </View>
+                      </View>
+                      <View className="flex flex-row flex-wrap items-center justify-center mt-2 gap-2">
+                      {member.positions.map((position) => (
+                        <Text 
+                          key={position}
+                          className="mt-1 px-2 py-1 bg-gray-200 rounded-lg text-grey font-bregular text-sm">{position}</Text>
+                      ))}
                       </View>
                     </View>
-                    <View className="flex flex-row flex-wrap items-center justify-center mt-2 gap-2">
-                    {member.positions.map((position) => (
-                      <Text 
-                        key={position}
-                        className="mt-1 px-2 py-1 bg-gray-200 rounded-lg text-grey font-bregular text-sm">{position}</Text>
-                    ))}
-                    </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>
@@ -348,6 +369,13 @@ const GroupDetail: React.FC = () => {
         }}
         onCancel={() => setConfirmModalVisible(false)}
       />
+      {userId !== null && (
+        <ProfileModalForView
+          isVisible={profileModalVisible}
+          userId={userId}
+          onClose={handleCloseProfile}
+        />
+      )}
     </SafeAreaView>
   );
 };

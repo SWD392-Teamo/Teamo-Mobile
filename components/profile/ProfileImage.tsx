@@ -1,17 +1,15 @@
 import FilePicker from "@/components/FilePicker";
-import { useGlobalContext } from "@/providers/AuthProvider";
 import { DocumentPickerResponse } from "@react-native-documents/picker";
 import { Image, View } from "react-native";
 
 interface ProfileImageProps{
     id: number | undefined
     imgUrl: string | undefined
+    allowEdit: boolean
     onImageSelect: (file: DocumentPickerResponse) => void;
 }
 
-const ProfileImage = ({id, imgUrl, onImageSelect} : ProfileImageProps) => {
-    const {currentUser} = useGlobalContext();
-
+const ProfileImage = ({id, imgUrl, allowEdit, onImageSelect} : ProfileImageProps) => {
     return(
         <View className="relative self-start">
             <Image
@@ -26,7 +24,7 @@ const ProfileImage = ({id, imgUrl, onImageSelect} : ProfileImageProps) => {
                 source={{ uri: imgUrl }}
                 alt="Profile"
             />
-            {currentUser?.id == id && (
+            {allowEdit && (
                 <View className="absolute bottom-0 right-0">
                     <FilePicker
                         onFileSelect={onImageSelect}
