@@ -13,8 +13,16 @@ import { downloadFileAndroid } from "@/utils/FileDownloader";
 import { colors } from "@/constants/colors";
 import { useGroupStore } from "@/hooks/useGroupStore";
 import { useShallow } from "zustand/shallow";
+import { useGlobalContext } from "@/providers/AuthProvider";
 
-const PostCard: React.FC<{ post: Post }> = ({ post }) => {
+type Props = {
+  post: Post;
+  onViewProfile: () => void;
+}
+
+
+export default function PostCard({post, onViewProfile}: Props) {
+  const { currentUser } = useGlobalContext();
   const { setSelectedPost } = usePostStore();
 
   const { selectedGroup } = useGroupStore(
@@ -47,7 +55,10 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
       <View>
         {/* Header: User info and post time */}
         <View className="flex flex-row items-center justify-between mb-3">
-          <View className="flex flex-row items-center gap-3">
+          <TouchableOpacity 
+            onPress={onViewProfile}
+            className="flex flex-row items-center gap-3"
+          >
             <UserAvatar 
               imgUrl={post?.groupMemberImgUrl || defaultAvatar}  
             />
@@ -57,10 +68,12 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
               </Text>
               <Text className="text-gray-500 text-xs">{formattedDate}</Text>
             </View>
-          </View>
-          <TouchableOpacity onPress={() => {router.push(`/groups/details/${selectedGroup?.id}/posts/update/${post.id}`)}}>
-            <MaterialCommunityIcons name="dots-horizontal" size={24} color="gray" />
           </TouchableOpacity>
+          {currentUser?.id == post.studentId &&
+            <TouchableOpacity onPress={() => {router.push(`/groups/details/${selectedGroup?.id}/posts/update/${post.id}`)}}>
+              <MaterialCommunityIcons name="dots-horizontal" size={24} color="gray" />
+            </TouchableOpacity>
+          }
         </View>
 
         {/* Post content */}
@@ -116,5 +129,3 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
     </View>
   );
 };
-
-export default PostCard;
