@@ -90,6 +90,10 @@ export default function ApplicationForm({
                 minLength: {
                     value: 10,
                     message: 'Content must be at least 10 characters'
+                },
+                maxLength: {
+                    value: 100,
+                    message: 'Content contains at most 100 characters'
                 }
             }} 
         />

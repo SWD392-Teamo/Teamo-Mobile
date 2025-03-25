@@ -57,8 +57,8 @@ const GroupCard: React.FC<{ group: Group, owned: boolean }> = ({ group, owned })
                 <SmallGroupImage imgUrl={defaultGroup} />
               </View>
             )}
-            <View className='flex flex-row flex-wrap'>
-              <Text className="text-left w-full font-bbold text-primary text-xl my-2">
+            <View className='flex flex-row flex-wrap w-full items-center max-w-72'>
+              <Text className="font-bbold text-primary text-xl my-2">
                 {group?.name}
               </Text>
             </View>

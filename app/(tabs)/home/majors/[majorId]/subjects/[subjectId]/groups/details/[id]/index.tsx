@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, ScrollView, Image, SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import BackButton from "@/components/BackButton";
 import DateConverter from "@/components/DateConvert";
 import GroupStatusBadge from "@/components/groups/GroupStatus";
@@ -15,6 +15,7 @@ import { useSubjectStore } from "@/hooks/useSubjectStore";
 import { GroupMember } from "@/types";
 import { colors } from "@/constants/colors";
 import Divider from "@/components/Divider";
+import ProfileModalForView from "@/components/profile/ProfileModalForView";
 
 const GroupDetail: React.FC = () => {
   const { selectedGroup } = useGroupStore(
@@ -31,6 +32,21 @@ const GroupDetail: React.FC = () => {
   const groupMembers = selectedGroup?.groupMembers;
   const groupPositions = selectedGroup?.groupPositions;
 
+  //For profile modal - viewing members profile
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+
+  const handleOpenProfile = (memberUserId: number) => {
+    setUserId(memberUserId);
+    setProfileModalVisible(true);
+  };
+
+  const handleCloseProfile = () => {
+    setProfileModalVisible(false);
+    // Reset userId to null after closing the modal
+    setUserId(null);
+  };
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -44,7 +60,7 @@ const GroupDetail: React.FC = () => {
 
         {/* Group Image */}
         <View className="rounded-lg flex flex-col items-center px-3 transition flex-1 mb-16">
-          <View className="flex flex-col items-center mt-2 w-15 h-15 gap-4 my-3">
+          <View className="justify-center items-center mt-2 w-15 h-15 gap-4 my-3">
             {selectedGroup?.imgUrl ? (
               <MedGroupImage 
                 imgUrl={selectedGroup?.imgUrl}
@@ -58,13 +74,15 @@ const GroupDetail: React.FC = () => {
                 onImageSelect={() => {}}
               />
             )}
-            <Text className="text-center w-full font-bbold text-primary text-2xl my-2">
-              {selectedGroup?.name}
-            </Text>
           </View>
 
           {/* Group title and Status */}
           <View className="w-full flex justify-between items-center">
+            <View className="my-3">
+              <Text className="text-center w-full font-bbold text-primary text-2xl">
+                {selectedGroup?.name}
+              </Text>
+            </View>
             <View className="flex flex-col gap-2 items-center">
               <Text className="text-2xl font-bbold text-secondary">
                 {selectedGroup?.title}
@@ -131,7 +149,7 @@ const GroupDetail: React.FC = () => {
           {/*position */}
           <View className="container">
             <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
-              Position
+              Positions
             </Text>
             {groupPositions && groupMembers && (
               <GroupPositionCard
@@ -146,45 +164,57 @@ const GroupDetail: React.FC = () => {
           
           <View className="container">
             <Text className="text-left w-full font-bsemibold text-2xl text-grey my-5">
-              Member
+              Members
             </Text>
             
             {/*Member */}
             <View className="text-left w-full font-bregular text-lg">
               <View className="grid grid-cols-2 gap-4 mt-4">
                 {selectedGroup?.groupMembers.map((member: GroupMember, index: number) => (
-                  <View key={index} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                    <View className="flex items-center gap-4">
-                      <View key={member.studentId}>
-                        {member?.imgUrl ? (
-                          <MemberAvatar imgUrl={member?.imgUrl} />
-                        ) : (
-                          <MemberAvatar imgUrl={defaultAvatar} />
-                        )}
-                      </View>
-                      <View className="mb-3">
-                        <View className="flex flex-row items-center gap-2">
-                          <Text className="font-bbold">{member.studentName}</Text>
-                          {member?.role === "Leader" && (
-                            <Image
-                                  source={icons.star}
-                                  resizeMode="contain"
-                                  className="w-6 h-6"
-                                  tintColor={colors.light.yellowIcon}
-                              />
+                  <TouchableOpacity 
+                    onPress={() => handleOpenProfile(member.studentId)}
+                    key={index}
+                  >
+                    <View className="bg-gray-100 p-4 rounded-lg shadow-md">
+                      <View className="flex items-center gap-4">
+                        <View key={member.studentId}>
+                          {member?.imgUrl ? (
+                            <MemberAvatar imgUrl={member?.imgUrl} />
+                          ) : (
+                            <MemberAvatar imgUrl={defaultAvatar} />
                           )}
                         </View>
-                        <Text className="text-primary text-sm text-center">{member.role}</Text>
+                        <View className="mb-3">
+                          <View className="flex flex-row items-center gap-2">
+                            <Text className="font-bbold">{member.studentName}</Text>
+                            {member?.role === "Leader" && (
+                              <Image
+                                    source={icons.star}
+                                    resizeMode="contain"
+                                    className="w-6 h-6"
+                                    tintColor={colors.light.yellowIcon}
+                                />
+                            )}
+                          </View>
+                          <Text className="text-primary text-sm text-center">{member.role}</Text>
+                        </View>
                       </View>
+                      <Text className="mt-2 text-grey font-bregular text-center">{member.positions}</Text>
                     </View>
-                    <Text className="mt-2 text-grey font-bregular text-center">{member.positions}</Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
+      {userId !== null && (
+        <ProfileModalForView
+          isVisible={profileModalVisible}
+          userId={userId}
+          onClose={handleCloseProfile}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -72,11 +72,13 @@ export default function Profile() {
               id = {data?.id} 
               imgUrl = {data?.imgUrl} 
               onImageSelect={handleImageUpload}
+              allowEdit={true}
             />
             <ProfileNameCard
               id = {data?.id}
               name = {data?.firstName + ' ' + data?.lastName}
               description = {data?.description}
+              allowEdit={true}
             />
           </View>
 
@@ -106,6 +108,7 @@ export default function Profile() {
             (
               <ProfileDetails 
                 profile={data}
+                allowEdit={true}
               />
             ) : (activeView == 'applications') ? (
               <ApplicationsListing isForUser={true} />

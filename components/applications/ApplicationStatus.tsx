@@ -8,7 +8,7 @@ export default function ApplicationStatusBadge({ status }: { status: string }) {
     };
   
     return (
-      <Text className={`w-[75px] text-center px-3 py-1 rounded-full text-sm font-bsemibold ${statusClasses[status] || "bg-gray-100 text-gray-700"}`}>
+      <Text className={`w-[100px] text-center px-3 py-1 rounded-full text-sm font-bsemibold ${statusClasses[status] || "bg-gray-100 text-gray-700"}`}>
         {status}
       </Text>
     );
