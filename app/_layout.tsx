@@ -1,20 +1,34 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import "@/global.css";
+import AuthProvider from '@/providers/AuthProvider';
+import NotificationProvider from "@/providers/NotificationProvider";
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import StackNavigator from "./StackNavigator";
+import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
+import { LoadingProvider } from "@/providers/LoadingProvider";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    "BeVietnamPro-Black": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Black.ttf"),
+    "BeVietnamPro-Bold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Bold.ttf"),
+    "BeVietnamPro-ExtraBold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf"),
+    "BeVietnamPro-ExtraLight": require("../assets/fonts/BeVietnamPro/BeVietnamPro-ExtraLight.ttf"),
+    "BeVietnamPro-Light": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Light.ttf"),
+    "BeVietnamPro-Medium": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Medium.ttf"),
+    "BeVietnamPro-Regular": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Regular.ttf"),
+    "BeVietnamPro-SemiBold": require("../assets/fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf"),
+    "BeVietnamPro-Thin": require("../assets/fonts/BeVietnamPro/BeVietnamPro-Thin.ttf"),
+    "Righteous-Regular": require('../assets/fonts/Righteous/Righteous-Regular.ttf'),
+  });
+
+  // Reanimated configuration
+  configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false,
   });
 
   useEffect(() => {
@@ -22,18 +36,18 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
+  
   if (!loaded) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <NotificationProvider>
+      <LoadingProvider>
+        <AuthProvider>
+          <StackNavigator/>
+        </AuthProvider>
+      </LoadingProvider>
+    </NotificationProvider>
   );
 }
