@@ -82,7 +82,7 @@ async function signInWithGoogle() {
 async function authenticateUser(res: any) {
     // Check for incorrect email or password
     if (res?.error && res?.error.status == 401) {
-        ToastAndroid.show('Incorrect email or password', ToastAndroid.SHORT);
+        ToastAndroid.show(res.error.message.message, ToastAndroid.SHORT);
         return;
     }
 
@@ -109,6 +109,7 @@ async function authenticateUser(res: any) {
   async function onSubmit(data: FieldValues) {
     try {
         const res = await login(data);
+
         // Set authentication status
         await authenticateUser(res);
     } catch (error: any) {
